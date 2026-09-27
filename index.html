@@ -121,6 +121,12 @@ a{color:inherit}
    the site nav changes, re-lift from live.
    Shared copy: ~/hex/docs/site-chrome/taylored-chrome.html
    ============================================================ */
+/* One rule that is NOT lifted. On the site the chrome inherits
+   #lcp's line-height:1.74; this page's body runs 1.65, which made the
+   footer 10px shorter than the live one. Re-asserted here so the two
+   measure the same. */
+.nav,.foot{line-height:1.74}
+
 .xos{color:#b8924a}
 .nav{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--navh); display:flex;align-items:center;justify-content:space-between;gap:1rem; padding:0 clamp(1.1rem,3.5vw,2.6rem); background:transparent;border-bottom:1px solid transparent; transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
 .nav.scrolled{background:transparent;border-bottom:1px solid var(--line)}
