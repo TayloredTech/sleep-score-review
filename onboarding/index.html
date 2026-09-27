@@ -504,7 +504,9 @@ details[open] summary .chev{transform:rotate(180deg)}
 .sect{
   margin-top:2.6rem;padding-top:1.7rem;border-top:1px solid var(--rule-d)
 }
-.sect:first-of-type{margin-top:1.8rem}
+/* The first section sits directly under the progress rail, so its divider
+   would be a rule with nothing above it and a void underneath. */
+.sect:first-of-type{margin-top:0;padding-top:0;border-top:0}
 .sect > h2{
   font-size:clamp(1.3rem,3.8vw,1.7rem);margin:0 0 .2rem
 }
@@ -896,7 +898,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      Every question below is Rachel's, in her order and her wording.
      The italic notes under each are her "commonly misunderstood" lines.
      ============================================================ -->
-<section class="s s--paper">
+<section class="s s--paper" style="padding-top:clamp(1.8rem,5vw,2.6rem)">
 <form class="form" id="f" method="post" action="#" novalidate autocomplete="on">
 
   <!-- ---------- 1. About you ---------- -->
