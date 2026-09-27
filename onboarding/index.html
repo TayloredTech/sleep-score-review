@@ -752,7 +752,7 @@ select.in{
 }
 </style>
 <script>
-/* ⛔ THIS MUST STAY ABOVE THE GTM SNIPPET AND IT IS NOT AN ORDERING PREFERENCE.
+/* ⛔ THIS MUST STAY ABOVE THE GTM SNIPPET. Move it below and the token leaks.
    Someone returning to finish their upload arrives at /onboarding/?t=<64 hex>.
    That token is the only thing standing between a stranger and one named
    person's sleep export, and Google Analytics records `page_location` from
