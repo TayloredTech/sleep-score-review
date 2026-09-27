@@ -1930,6 +1930,12 @@ bindFile("file", "drop", "dlab", "dsub", "e23", function(f){
   paintProgress();
 });
 
+/* The button ships disabled in the markup so a JavaScript failure cannot turn
+   this form into a GET with every answer in the query string. Reaching this line
+   is the proof the script is alive, so this is the only place that enables it. */
+$("go").disabled = false;
+$("go").removeAttribute("aria-describedby");
+
 paintProgress();
 
 /* The token was lifted out of the URL by the inline script in <head>, before
