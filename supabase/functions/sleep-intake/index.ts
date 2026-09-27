@@ -138,6 +138,87 @@ async function storage(path: string, init: RequestInit = {}) {
   });
 }
 
+// ---------- Klaviyo ----------
+// Two server-side events drive the reminder flow:
+//   Sleep Data Submitted  - the answers landed
+//   Sleep File Uploaded   - the export landed, so stop chasing
+// The browser never talks to Klaviyo, so the private key stays here.
+const KLAVIYO_KEY = Deno.env.get("KLAVIYO_API_KEY") ?? "";
+const KLAVIYO_REVISION = "2024-10-15";
+const KLAVIYO_TIMEOUT_MS = 5000;
+
+// Marketing telemetry must never be able to cost somebody their answers or
+// their upload. Everything in here is best effort: no throw escapes, a
+// non-2xx is logged and swallowed, and a slow Klaviyo is abandoned rather
+// than held onto. The Supabase write has already committed by the time this
+// runs, so a failure here loses an email trigger and nothing else.
+async function klaviyoEvent(
+  metric: string,
+  email: string,
+  name: string,
+  eventProps: Record<string, unknown>,
+  profileProps: Record<string, unknown>,
+  uniqueId: string,
+): Promise<void> {
+  if (!KLAVIYO_KEY) {
+    console.error("klaviyo skipped, no KLAVIYO_API_KEY in function env");
+    return;
+  }
+  // No email means no profile to attach the event to, and Klaviyo would
+  // reject it. Nothing to do but say so in the log.
+  if (!email) {
+    console.error("klaviyo " + metric + " skipped, no email on the row");
+    return;
+  }
+  try {
+    const payload = {
+      data: {
+        type: "event",
+        attributes: {
+          properties: eventProps,
+          // Naming the metric is enough. Klaviyo creates it on first sight
+          // and reuses the same metric id after that.
+          metric: { data: { type: "metric", attributes: { name: metric } } },
+          profile: {
+            data: {
+              type: "profile",
+              attributes: {
+                email,
+                // Only ever the first word of what they typed, same rule
+                // the confirmation screen follows.
+                first_name: firstName(name),
+                properties: profileProps,
+              },
+            },
+          },
+          // A retried call with the same reference is the same event, so a
+          // lost response cannot double-trigger the flow.
+          unique_id: uniqueId,
+        },
+      },
+    };
+    const r = await fetch("https://a.klaviyo.com/api/events/", {
+      method: "POST",
+      headers: {
+        Authorization: "Klaviyo-API-Key " + KLAVIYO_KEY,
+        revision: KLAVIYO_REVISION,
+        "Content-Type": "application/vnd.api+json",
+        Accept: "application/vnd.api+json",
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(KLAVIYO_TIMEOUT_MS),
+    });
+    if (!r.ok) {
+      const t = await r.text().catch(() => "");
+      console.error("klaviyo " + metric + " -> " + r.status + " " + t.slice(0, 400));
+    }
+  } catch (e) {
+    console.error(
+      "klaviyo " + metric + " failed: " + (e instanceof Error ? e.message : String(e)),
+    );
+  }
+}
+
 // ---------- main ----------
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin");
@@ -257,6 +338,26 @@ Deno.serve(async (req) => {
       });
       if (r.ok) {
         await dropDraft();
+        // The row is committed. Tell Klaviyo somebody has submitted so the
+        // confirm-and-remind flow can start. file_uploaded is false here by
+        // construction: the export is a separate signed PUT that has not
+        // happened yet, even for the people who picked a file. The truth
+        // about the file arrives on the Sleep File Uploaded event below.
+        // safety_flag is deliberately NOT sent. It is a clinical red flag
+        // and it has no business steering a marketing email.
+        await klaviyoEvent(
+          "Sleep Data Submitted",
+          email,
+          name,
+          { ref, device, file_uploaded: false },
+          {
+            sleep_review_submitted_at: new Date().toISOString(),
+            sleep_review_ref: ref,
+            sleep_review_device: device,
+            sleep_file_uploaded: false,
+          },
+          ref + ":submitted",
+        );
         return json({ ok: true, ref, upload_token }, 200, origin);
       }
       const txt = await r.text();
@@ -321,9 +422,11 @@ Deno.serve(async (req) => {
   if (action === "upload-done") {
     if (!isHex64(body.upload_token)) return bad("bad upload_token", origin);
     if (typeof body.path !== "string" || body.path.length > 300) return bad("bad path", origin);
+    // ref, name, email and device are read only to address the Klaviyo event
+    // below. None of them is ever returned to the caller.
     const look = await pg(
       "sleep_submissions?upload_token=eq." + body.upload_token +
-        "&select=id,uploaded_at,deleted_at,delete_after",
+        "&select=id,uploaded_at,deleted_at,delete_after,ref,name,email,device",
     );
     if (!look.ok) return json({ ok: false, error: "lookup failed" }, 500, origin);
     const rows = await look.json();
@@ -367,6 +470,21 @@ Deno.serve(async (req) => {
     });
     if (!upd.ok) return json({ ok: false, error: "update failed" }, 500, origin);
     const u = await upd.json();
+    // The export is in the bucket. This is the event that stops the reminder
+    // flow chasing somebody who has already sent their file.
+    const uploadedAt = u?.[0]?.uploaded_at ?? new Date().toISOString();
+    await klaviyoEvent(
+      "Sleep File Uploaded",
+      String(row.email ?? ""),
+      String(row.name ?? ""),
+      { ref: row.ref, device: row.device, file_uploaded: true },
+      {
+        sleep_file_uploaded: true,
+        sleep_file_uploaded_at: uploadedAt,
+        sleep_review_ref: row.ref,
+      },
+      String(row.ref) + ":uploaded",
+    );
     return json({ ok: true, delete_after: u?.[0]?.delete_after ?? null }, 200, origin);
   }
 
