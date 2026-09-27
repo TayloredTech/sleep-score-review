@@ -45,17 +45,32 @@
   --line:rgba(217,189,146,.16); --line-soft:rgba(217,189,146,.28);
   --gold:#b8924a; --gold-soft:#cdaa6b; --gold-bright:#d9c08a; --gold-deep:#9a784b;
   --paper:#f0ede4; --paper-line:#d9d3c4;
-  --ink:#16222e; --ink-soft:#41505c; --ink-faint:#75838d;
+  --ink:#16222e; --ink-soft:#41505c; /* 7.10:1 on paper */
+  /* Every use of --ink-faint on this page is small prose on a light
+     surface (.aside, .promise .small, .disclaimer), so it has to clear
+     4.5:1 and the inherited #75838d gives 3.33:1 despite a comment
+     claiming 4.6. Same hue, dropped until it measures. */
+  --ink-faint:#5e6971;  /* 4.80:1 on paper, 4.97:1 on cream */
   --label:'Josefin Sans',Verdana,sans-serif;
   --pad:clamp(1.25rem,5vw,4.5rem);
   --navh:4.6rem;
 
   /* ---- page-local aliases onto that palette ---- */
   --navy:var(--bg2); --navy-deep:var(--band); --navy-mid:var(--bg1);
-  --cream:var(--hd); --cream-soft:var(--tx); --cream-faint:var(--tx-faint);
+  --cream:var(--hd); --cream-soft:var(--tx);
+  /* --tx-faint (#7c8f9b) is the site's quietest text and it clears 4.5:1
+     on the darkest band only. This page puts the same quiet labels on
+     --bg2 and on the translucent hero panel, which are lighter, and
+     there they measure 3.85 to 4.28. --tx-dim is the next step up and
+     clears every surface on the page while still reading as quiet. */
+  --cream-faint:var(--tx-dim);
   --rule-l:var(--line);
   --sage:#7fa07a;
-  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
+  /* gold for small text and links on paper. The inherited value was
+     #8f6f45 carrying a "4.8:1" comment, and it measures 3.96:1 on
+     --paper, so every link, numeral and label using it was under the
+     4.5 floor. Same hue, dropped until it measures: 4.54:1. */
+  --gold-ink:#84663f;
   --drag-l:#9fb0ba;
   --rule-d:rgba(22,34,46,.13);
   --rule-d-soft:rgba(22,34,46,.07);
@@ -210,7 +225,14 @@ a{color:inherit}
 .s--navy{background:var(--navy);color:var(--cream-soft)}
 .s--mid{background:var(--navy-mid);color:var(--cream-soft)}
 .s--deep{background:var(--navy-deep);color:var(--cream-soft)}
-.dark p{color:var(--cream-soft)}
+/* No `.dark p` rule here on purpose. It reads as harmless, but a
+   class-plus-type selector scores 0,1,1 and every component colour
+   below it (.price, .pull, .p-num, .p-mh, .eyebrow) scores 0,1,0, so
+   it silently won every one of them and flattened the gold and the
+   cream back to body grey. Each dark surface already sets `color` on
+   the section itself, so paragraphs inherit --cream-soft anyway and
+   any component rule beats inheritance. Caught by a contrast probe
+   that reported five different elements as the same colour. */
 .s + .s--paper,.s--paper + .s--cream{border-top:1px solid var(--rule-d-soft)}
 
 .hold{max-width:66rem;margin:0 auto}
@@ -271,7 +293,9 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   letter-spacing:.2em;text-transform:uppercase;color:var(--cream-faint);
   margin:0 0 .85rem
 }
-.s--paper .eyebrow,.s--cream .eyebrow{color:var(--ink-faint)}
+/* .eyebrow is 0.74rem bold, which is not WCAG "large text", so it
+   needs 4.5:1. --ink-faint gives 3.33:1 on paper. */
+.s--paper .eyebrow,.s--cream .eyebrow{color:var(--gold-ink)}
 
 /* ============================================================
    HERO
@@ -298,34 +322,90 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 .hero .lines p{color:var(--cream-soft);max-width:34rem}
 
 /* ------------------------------------------------------------
-   THE DEVICE
-   The hero image is the app this service reads, not a drawing of
-   it. It runs off the bottom edge of the band on purpose: the cut
-   is what stops the hero reading as another centred block.
+   THE PANEL
+   Our own reading of a 61, in our own palette and type. See the
+   note on the markup for why this is not a screenshot.
+
+   It runs off the bottom edge of the band on purpose: the cut is
+   what stops the hero reading as another centred block, and it
+   says there is more underneath than the hero can show.
 
    The bleed is a negative margin-bottom on a grid item, so the row
-   stops short of the image and .hero's overflow:hidden does the
+   stops short of the panel and .hero's overflow:hidden does the
    cropping. Deterministic at every width, because the amount of
    bleed is stated rather than left to whichever column is taller.
    ------------------------------------------------------------ */
-.phone{
-  width:min(15.5rem,58vw);margin:2.2rem auto 0;
-  margin-bottom:calc(-1 * (var(--gap-m) + 1.5rem));
-  filter:drop-shadow(0 24px 48px rgba(0,0,0,.45))
+.panel{
+  width:min(20rem,86vw);margin:2.4rem auto 0;
+  margin-bottom:calc(-1 * (var(--gap-m) + 1rem));
+  padding:1.5rem 1.5rem 2.6rem;
+  border:1px solid var(--line-soft);border-radius:6px;
+  background:linear-gradient(170deg,rgba(243,241,234,.075),rgba(243,241,234,.02));
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+  box-shadow:0 26px 60px rgba(0,0,0,.38);
+  /* The panel is cut by the hero's bottom edge. A hard clip through a
+     line of text reads as a rendering fault, so the last stretch
+     dissolves instead and the cut looks like what it is: more of this
+     than the hero has room for. */
+  -webkit-mask-image:linear-gradient(to bottom,#000 76%,rgba(0,0,0,.25) 93%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 76%,rgba(0,0,0,.25) 93%,transparent 100%)
 }
-.phone img{display:block;width:100%;height:auto}
+.p-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin:0}
+.p-head .eyebrow{margin:0}
+.p-num{
+  font-family:Manrope,sans-serif;font-weight:700;letter-spacing:-.03em;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-size:3.1rem;line-height:.9;color:var(--cream);margin:0
+}
+.p-of{font-size:.95rem;font-weight:600;letter-spacing:0;color:var(--cream-faint);margin-left:.2rem}
+
+.p-chart{display:block;width:100%;height:auto;margin:1.5rem 0 .55rem;overflow:visible}
+/* 61 is not a good number, so it is not drawn in gold, and it is not
+   an emergency either, so it is not drawn in red. */
+.p-chart .bars rect{fill:var(--drag-l);opacity:.34}
+.p-chart .bars rect.now{opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  .p-chart .bars rect{transform-origin:50% 88px;animation:rise .7s cubic-bezier(.16,.9,.3,1) both}
+  .p-chart .bars rect:nth-child(n+2){animation-delay:.04s}
+  .p-chart .bars rect.now{animation-delay:.46s}
+}
+@keyframes rise{from{transform:scaleY(.04)}to{transform:scaleY(1)}}
+
+.p-axis{
+  display:flex;justify-content:space-between;gap:1rem;margin:0;
+  font-family:Manrope,sans-serif;font-size:.6rem;font-weight:700;
+  letter-spacing:.16em;color:var(--tx-dim)
+}
+
+.p-miss{margin-top:1.6rem;padding-top:1.2rem;border-top:1px solid var(--line-soft)}
+.p-mh{
+  font-family:Manrope,sans-serif;font-size:.64rem;font-weight:700;
+  letter-spacing:.18em;color:var(--gold);margin:0 0 .75rem
+}
+.p-miss ul{list-style:none;margin:0;display:grid;gap:.5rem}
+.p-miss li{
+  position:relative;padding-left:1.15rem;
+  font-size:.88rem;line-height:1.35;color:var(--cream-soft)
+}
+.p-miss li::before{
+  content:"";position:absolute;left:0;top:.52em;
+  width:5px;height:5px;border-radius:50%;
+  border:1px solid var(--drag-l);opacity:.75
+}
+.p-note{margin:.75rem 0 0;font-size:.72rem;color:var(--cream-faint)}
+
 @media (min-width:900px){
   .hgrid{
     display:grid;grid-template-columns:minmax(0,1fr) auto;
     gap:0 clamp(2rem,5vw,4rem);align-items:start
   }
   .hcopy{padding-top:clamp(.5rem,3vw,2.2rem)}
-  .phone{width:clamp(14rem,23vw,18.5rem);margin-top:0;margin-left:0;margin-right:0}
+  .panel{width:clamp(17rem,25vw,19.5rem);margin-top:.25rem;margin-left:0;margin-right:0}
 }
 @media (min-width:1180px){
   /* past this width the copy has all the measure it needs, so the
-     spare space goes to the image rather than to the line length */
-  .phone{width:20rem}
+     spare space goes to the panel rather than to the line length */
+  .panel{width:21rem}
 }
 
 /* ============================================================
@@ -620,7 +700,8 @@ details[open] summary .chev{transform:rotate(180deg)}
 }
 
 @media print{
-  .nav,.btnrow,.phone{display:none}
+  .nav,.btnrow{display:none}
+  .panel{break-inside:avoid;box-shadow:none;border-color:#ccc}
   .foot{background:#fff !important;color:#000 !important;border-top:1px solid #ccc}
   body{background:#fff;color:#000;font-size:11pt}
   .dark,.offer,.person,.break::after{background:#fff !important;color:#000 !important}
@@ -699,17 +780,63 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>We&rsquo;ll look at what your ring has been recording and how you actually live, then show you what to change first.</p>
     </div>
    </div>
-   <!-- The screen Rachel sent on 28 Sept. It is the app this service
-        reads, so it goes in whole rather than redrawn. WebP first, the
-        PNG only for browsers that cannot take it. -->
-   <div class="phone">
-     <picture>
-       <source srcset="assets/oura-today.webp" type="image/webp">
-       <img src="assets/oura-today.png" width="678" height="1398"
-            alt="A phone showing the &#332;ura app: Readiness 69, Sleep 61, Activity 81, Heart rate 94."
-            fetchpriority="high" decoding="async">
-     </picture>
-   </div>
+   <!-- ============================================================
+        THE PANEL
+        Rachel's first hero was the &#332;ura Today screen. Her own second
+        note, 28 Sept, is the reason it is not here: both reference
+        shots show GOOD scores (69/61/81/94 and 88/84/91, "Go get
+        'em!"), and a hero arguing that the reader's sleep is fine
+        argues against the thing this page sells.
+
+        So this is ours, not theirs. Our palette, our type, our chart,
+        no other company's interface reproduced on a page that sells a
+        service, and no invented numbers presented as a real &#332;ura
+        screen. It also shows the right thing: not the score their ring
+        already gives them, but the fortnight of scores underneath it
+        and the fact that the reason is not in there.
+
+        61 is the number the rest of the page uses. The bars are drawn
+        in --drag-l rather than gold or red, because 61 is not a good
+        number and it is not an emergency either.
+        ============================================================ -->
+   <figure class="panel">
+     <figcaption class="p-head">
+       <p class="eyebrow">SLEEP SCORE</p>
+       <p class="p-num">61<span class="p-of">/100</span></p>
+     </figcaption>
+
+     <svg class="p-chart" viewBox="0 0 272 88" role="img"
+          aria-label="Fourteen nights of sleep scores, every one of them between 54 and 66, ending on 61.">
+       <g class="bars">
+         <rect x="0" y="37.0" width="12" height="51.0" rx="3"/>
+         <rect x="20" y="31.7" width="12" height="56.3" rx="3"/>
+         <rect x="40" y="39.6" width="12" height="48.4" rx="3"/>
+         <rect x="60" y="33.4" width="12" height="54.6" rx="3"/>
+         <rect x="80" y="36.1" width="12" height="51.9" rx="3"/>
+         <rect x="100" y="29.9" width="12" height="58.1" rx="3"/>
+         <rect x="120" y="37.8" width="12" height="50.2" rx="3"/>
+         <rect x="140" y="35.2" width="12" height="52.8" rx="3"/>
+         <rect x="160" y="32.6" width="12" height="55.4" rx="3"/>
+         <rect x="180" y="40.5" width="12" height="47.5" rx="3"/>
+         <rect x="200" y="34.3" width="12" height="53.7" rx="3"/>
+         <rect x="220" y="37.0" width="12" height="51.0" rx="3"/>
+         <rect x="240" y="30.8" width="12" height="57.2" rx="3"/>
+         <rect class="now" x="260" y="34.3" width="12" height="53.7" rx="3"/>
+       </g>
+     </svg>
+     <p class="p-axis"><span>14 NIGHTS AGO</span><span>LAST NIGHT</span></p>
+     <p class="p-note">An example fortnight, drawn to scale.</p>
+
+     <div class="p-miss">
+       <p class="p-mh">WHAT YOUR RING DIDN&rsquo;T RECORD</p>
+       <ul>
+         <li>What time you trained</li>
+         <li>When you last had coffee</li>
+         <li>The two glasses of wine</li>
+         <li>The week you were having</li>
+       </ul>
+     </div>
+   </figure>
   </div>
  </div>
 </section>
