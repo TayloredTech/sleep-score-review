@@ -9,6 +9,9 @@
 <!-- A post-purchase intake form has no business in search results, and it
      would compete with the sales page for the same words. -->
 <meta name="robots" content="noindex,follow">
+<!-- The upload token arrives in the query string, so nothing may carry a full
+     URL off this origin. strict-origin sends the origin and never the path. -->
+<meta name="referrer" content="strict-origin">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sleep.taylored.health/onboarding/">
 <meta property="og:title" content="Sleep Score Review &middot; Onboarding">
@@ -748,6 +751,28 @@ select.in{
   .scale-ends{padding-right:2.6rem}
 }
 </style>
+<script>
+/* ⛔ THIS MUST STAY ABOVE THE GTM SNIPPET AND IT IS NOT AN ORDERING PREFERENCE.
+   Someone returning to finish their upload arrives at /onboarding/?t=<64 hex>.
+   That token is the only thing standing between a stranger and one named
+   person's sleep export, and Google Analytics records `page_location` from
+   document.location.href, query string and all. Load GTM first and the token
+   goes to Google, sits in their property, and lands in the browser's address
+   bar and history where the next person to use the laptop can read it.
+
+   So: lift the token into a variable, rewrite the URL, and only then let
+   anything else run. replaceState rewrites the current history entry rather
+   than adding one, so the token is not in Back either. */
+(function(){
+  try {
+    var m = /[?&]t=([0-9a-f]{64})\b/.exec(location.search);
+    if (!m) return;
+    window.__ssrToken = m[1];
+    var clean = location.pathname + location.search.replace(m[0], "").replace(/^&/, "?") + location.hash;
+    history.replaceState(null, "", clean.replace(/\?$/, ""));
+  } catch (e) {}
+})();
+</script>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -1848,7 +1873,10 @@ bindFile("file", "drop", "dlab", "dsub", "e23", function(f){
 
 paintProgress();
 
-var t = new URLSearchParams(location.search).get("t");
+/* The token was lifted out of the URL by the inline script in <head>, before
+   GTM loaded. The URLSearchParams read is the fallback for the case where that
+   script was blocked, which is rare but must still work for the person. */
+var t = window.__ssrToken || new URLSearchParams(location.search).get("t");
 if (t && /^[0-9a-f]{64}$/.test(t)) tokenView(t);
 
 })();
