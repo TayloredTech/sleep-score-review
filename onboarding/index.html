@@ -561,11 +561,15 @@ select.in{
 /* a pair of fields on one row, stacked on the narrowest phones */
 .row2{display:grid;gap:.55rem;margin-top:.15rem}
 @media (min-width:26rem){.row2{grid-template-columns:1fr 1fr;gap:.55rem .9rem}}
-.row2 .sub{
+/* Every tracked label on this page is capitals, and this rule is what makes the
+   standalone ones look like labels rather than stray body text. It was scoped to
+   .row2 and the ones outside it rendered as plain inline prose. */
+.sub{
   font-family:Manrope,sans-serif;font-size:.68rem;font-weight:700;
   letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);
-  display:block;margin-top:.6rem
+  display:block;margin:.9rem 0 0
 }
+.row2 .sub{margin-top:.6rem}
 .row2 .in{margin-top:.3rem}
 
 /* ---- radio and checkbox sets, drawn as pills ---- */
@@ -639,11 +643,11 @@ select.in{
 
 /* ---- validation ---- */
 .err{
-  display:none;font-size:.9rem;color:#a8553a;font-weight:600;
+  display:none;font-size:.9rem;color:#9a4a30;font-weight:600;
   margin-top:.45rem
 }
 .err.on{display:block}
-.q.bad > .lab{color:#a8553a}
+.q.bad > .lab{color:#9a4a30}
 
 /* ---- the GP callout, shown only when a safety box is ticked ---- */
 .gp{
@@ -861,12 +865,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="q">
         <span class="lab">Your data export</span>
         <label class="drop" id="slotDrop">
-          <input type="file" id="slotFile" accept=".csv,.zip,.json,.txt,.xlsx">
+          <input type="file" id="slotFile" accept=".csv,.zip,.json,.txt,.xlsx" aria-label="Choose your tracker export file">
           <span class="dlab" id="slotDlab">Choose your export file</span>
-          <span class="dsub" id="slotDsub">CSV, ZIP, JSON or XLSX, up to 50MB</span>
+          <span class="dsub" id="slotDsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
         </label>
         <div class="prog" id="slotProg"><i></i></div>
-        <p class="err" id="slotErr"></p>
+        <p class="err" id="slotErr" role="alert" aria-live="assertive"></p>
       </div>
       <div class="send">
         <button class="btn" type="button" id="slotSend" disabled>Upload my export <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
@@ -893,7 +897,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      The italic notes under each are her "commonly misunderstood" lines.
      ============================================================ -->
 <section class="s s--paper">
-<form class="form" id="f" novalidate autocomplete="on">
+<form class="form" id="f" method="post" action="#" novalidate autocomplete="on">
 
   <!-- ---------- 1. About you ---------- -->
   <div class="sect">
@@ -904,15 +908,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="lab">Name and email <span class="req">*</span></span>
       <div class="row2">
         <div>
-          <span class="sub">NAME</span>
+          <label class="sub" for="q1name">NAME</label>
           <input class="in" type="text" id="q1name" name="q1name" autocomplete="name" placeholder="Your name">
         </div>
         <div>
-          <span class="sub">EMAIL</span>
+          <label class="sub" for="q1email">EMAIL</label>
           <input class="in" type="email" id="q1email" name="q1email" autocomplete="email" inputmode="email" placeholder="you@example.com">
         </div>
       </div>
-      <p class="err" id="e1"></p>
+      <p class="err" id="e1" role="alert" aria-live="assertive"></p>
     </div>
 
     <div class="q" data-q="2">
@@ -922,7 +926,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="radio" name="q2" value="WHOOP"> WHOOP</label>
       </div>
       <p class="opt-note">More devices are coming. For now the review reads &#332;ura and WHOOP exports.</p>
-      <p class="err" id="e2"></p>
+      <p class="err" id="e2" role="alert" aria-live="assertive"></p>
     </div>
 
     <div class="q" data-q="3">
@@ -936,7 +940,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="4">
       <span class="lab">Which hand and finger do you wear it on, and how does it fit?</span>
-      <p class="help">Commonly missed: a loose or badly placed ring gives less reliable heart rate and temperature readings, so a &ldquo;bad score&rdquo; can be partly bad data.</p>
+      <p class="help" data-help="1">Commonly missed: a loose or badly placed ring gives less reliable heart rate and temperature readings, so a &ldquo;bad score&rdquo; can be partly bad data.</p>
+      <label class="vh" for="q4where">Which hand and finger, or which wrist</label>
       <input class="in" type="text" id="q4where" name="q4where" placeholder="Left index finger, or left wrist">
       <div class="opts" role="radiogroup" aria-label="How does it fit">
         <label><input type="radio" name="q4fit" value="Snug"> Snug</label>
@@ -954,7 +959,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="q" data-q="5">
       <span class="lab">What bothers you most? <span class="req">*</span></span>
       <p class="opt-note">Pick up to 2.</p>
-      <div class="opts" id="q5box">
+      <p class="opt-note" id="q5note" role="status" aria-live="polite"></p>
+      <div class="opts" id="q5box" role="group" aria-label="What bothers you most, pick up to 2">
         <label><input type="checkbox" name="q5" value="Low scores"> Low scores</label>
         <label><input type="checkbox" name="q5" value="Waking up tired"> Waking up tired</label>
         <label><input type="checkbox" name="q5" value="Trouble falling asleep"> Trouble falling asleep</label>
@@ -962,11 +968,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="checkbox" name="q5" value="Waking too early"> Waking too early</label>
         <label><input type="checkbox" name="q5" value="Low HRV or recovery"> Low HRV or recovery</label>
       </div>
-      <p class="err" id="e5"></p>
+      <p class="err" id="e5" role="alert" aria-live="assertive"></p>
     </div>
 
     <div class="q" data-q="6">
       <span class="lab">What would a good result look like in a month?</span>
+      <label class="vh" for="q6">What would a good result look like in a month?</label>
       <textarea class="in" id="q6" name="q6" rows="3" placeholder="In your own words"></textarea>
     </div>
   </div>
@@ -978,22 +985,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="7">
       <span class="lab">What time do you usually go to bed and get up?</span>
-      <p class="help">Commonly misunderstood: sleeping in on weekends (&ldquo;social jet lag&rdquo;) shifts your body clock and makes Monday and Tuesday nights worse.</p>
+      <p class="help" data-help="1">Commonly misunderstood: sleeping in on weekends (&ldquo;social jet lag&rdquo;) shifts your body clock and makes Monday and Tuesday nights worse.</p>
       <span class="sub">WEEKDAYS</span>
       <div class="row2">
-        <div><span class="sub" style="margin-top:0">TO BED</span><input class="in" type="time" id="q7wdBed" name="q7wdBed"></div>
-        <div><span class="sub" style="margin-top:0">UP</span><input class="in" type="time" id="q7wdUp" name="q7wdUp"></div>
+        <div><label class="sub" style="margin-top:0" for="q7wdBed">WEEKDAY, TO BED</label><input class="in" type="time" id="q7wdBed" name="q7wdBed"></div>
+        <div><label class="sub" style="margin-top:0" for="q7wdUp">WEEKDAY, UP</label><input class="in" type="time" id="q7wdUp" name="q7wdUp"></div>
       </div>
       <span class="sub">WEEKENDS</span>
       <div class="row2">
-        <div><span class="sub" style="margin-top:0">TO BED</span><input class="in" type="time" id="q7weBed" name="q7weBed"></div>
-        <div><span class="sub" style="margin-top:0">UP</span><input class="in" type="time" id="q7weUp" name="q7weUp"></div>
+        <div><label class="sub" style="margin-top:0" for="q7weBed">WEEKEND, TO BED</label><input class="in" type="time" id="q7weBed" name="q7weBed"></div>
+        <div><label class="sub" style="margin-top:0" for="q7weUp">WEEKEND, UP</label><input class="in" type="time" id="q7weUp" name="q7weUp"></div>
       </div>
     </div>
 
     <div class="q" data-q="8">
       <span class="lab">How long do you spend in bed awake, before sleep or in the night?</span>
-      <p class="help">Misunderstood: time in bed is not time asleep. Going to bed earlier to &ldquo;catch up&rdquo; often means more time lying awake.</p>
+      <p class="help" data-help="1">Misunderstood: time in bed isn&rsquo;t time asleep. Going to bed earlier to &ldquo;catch up&rdquo; often means more time lying awake.</p>
       <div class="opts" role="radiogroup" aria-label="How long do you spend in bed awake">
         <label><input type="radio" name="q8" value="Under 15 minutes"> Under 15 minutes</label>
         <label><input type="radio" name="q8" value="15 to 30 minutes"> 15 to 30 minutes</label>
@@ -1010,7 +1017,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="9">
       <span class="lab">How much time do you spend outdoors in daylight before midday?</span>
-      <p class="help">Often missed: morning light sets your body clock. Many indoor workers get almost none.</p>
+      <p class="help" data-help="1">Often missed: morning light sets your body clock. Many indoor workers get almost none.</p>
       <div class="opts" role="radiogroup" aria-label="Time outdoors before midday">
         <label><input type="radio" name="q9" value="None"> None</label>
         <label><input type="radio" name="q9" value="Under 10 minutes"> Under 10 minutes</label>
@@ -1022,8 +1029,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="q" data-q="10">
       <span class="lab">In the last hour before bed, what are you doing?</span>
       <p class="opt-note">Tick all that apply.</p>
-      <p class="help">Misunderstood: bright room lighting matters too, not just phones.</p>
-      <div class="opts">
+      <p class="help" data-help="1">Misunderstood: bright room lighting matters too, not just phones.</p>
+      <div class="opts" role="group" aria-label="In the last hour before bed, what are you doing, tick all">
         <label><input type="checkbox" name="q10" value="Phone"> Phone</label>
         <label><input type="checkbox" name="q10" value="Laptop or work"> Laptop or work</label>
         <label><input type="checkbox" name="q10" value="TV"> TV</label>
@@ -1042,8 +1049,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="q" data-q="11">
       <span class="lab">What caffeine do you have, and what time is your last one?</span>
       <p class="opt-note">Tick all that apply, and add the time.</p>
-      <p class="help">Misunderstood: caffeine stays in your system for hours, so an afternoon coffee is still active at bedtime. Pre-workouts and some teas are hidden sources. &ldquo;I can drink coffee and still fall asleep&rdquo; does not mean it is not affecting deep sleep.</p>
-      <div class="opts">
+      <p class="help" data-help="1">Misunderstood: caffeine stays in your system for hours, so an afternoon coffee is still active at bedtime. Pre-workouts and some teas are hidden sources. &ldquo;I can drink coffee and still fall asleep&rdquo; doesn&rsquo;t mean it isn&rsquo;t affecting deep sleep.</p>
+      <div class="opts" role="group" aria-label="What caffeine do you have, tick all">
         <label><input type="checkbox" name="q11" value="Coffee"> Coffee</label>
         <label><input type="checkbox" name="q11" value="Tea"> Tea</label>
         <label><input type="checkbox" name="q11" value="Energy drinks"> Energy drinks</label>
@@ -1051,7 +1058,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="checkbox" name="q11" value="Soda"> Soda</label>
         <label><input type="checkbox" name="q11" value="Chocolate"> Chocolate</label>
       </div>
-      <span class="sub">TIME OF YOUR LAST ONE</span>
+      <label class="sub" for="q11time">TIME OF YOUR LAST ONE</label>
       <input class="in" type="time" id="q11time" name="q11time" style="max-width:11rem">
     </div>
   </div>
@@ -1063,7 +1070,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="12">
       <span class="lab">How many alcoholic drinks do you have a week, and when?</span>
-      <p class="help">The most misunderstood one: it helps you fall asleep, but it raises night-time heart rate, lowers HRV and breaks up sleep later in the night. It is often the clearest signal in ring data.</p>
+      <p class="help" data-help="1">The most misunderstood one: it helps you fall asleep, but it raises night-time heart rate, lowers HRV and breaks up sleep later in the night. It&rsquo;s often the clearest signal in ring data.</p>
       <div class="opts" role="radiogroup" aria-label="Drinks a week">
         <label><input type="radio" name="q12" value="0"> 0</label>
         <label><input type="radio" name="q12" value="1 to 3"> 1 to 3</label>
@@ -1087,9 +1094,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="q" data-q="13">
       <span class="lab">What time is your last meal, and is dinner your biggest meal?</span>
       <div class="row2">
-        <div><span class="sub" style="margin-top:0">LAST MEAL</span><input class="in" type="time" id="q13time" name="q13time"></div>
+        <div><label class="sub" style="margin-top:0" for="q13time">LAST MEAL</label><input class="in" type="time" id="q13time" name="q13time"></div>
         <div>
-          <span class="sub" style="margin-top:0">BIGGEST MEAL OF THE DAY</span>
+          <label class="sub" style="margin-top:0" for="q13big">BIGGEST MEAL OF THE DAY</label>
           <select class="in" id="q13big" name="q13big">
             <option value="">Choose one</option>
             <option>Yes, dinner is my biggest</option>
@@ -1103,7 +1110,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="14">
       <span class="lab">Do you snack or drink much fluid within 2 hours of bed?</span>
-      <p class="help">Commonly missed: late fluids mean bathroom trips, and big late meals raise night-time heart rate.</p>
+      <p class="help" data-help="1">Commonly missed: late fluids mean bathroom trips, and big late meals raise night-time heart rate.</p>
       <div class="opts" role="radiogroup" aria-label="Snacks or fluid within 2 hours of bed">
         <label><input type="radio" name="q14" value="No"> No</label>
         <label><input type="radio" name="q14" value="Snack"> Snack</label>
@@ -1120,19 +1127,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="15">
       <span class="lab">What exercise do you do, and at what time of day?</span>
-      <p class="help">Misunderstood: exercise helps sleep, but hard sessions late in the evening can keep heart rate up and HRV down overnight.</p>
-      <span class="sub">TYPE</span>
+      <p class="help" data-help="1">Misunderstood: exercise helps sleep, but hard sessions late in the evening can keep heart rate up and HRV down overnight.</p>
+      <label class="sub" for="q15type">TYPE OF EXERCISE</label>
       <input class="in" type="text" id="q15type" name="q15type" placeholder="Running, lifting, cycling, classes">
       <div class="row2">
         <div>
-          <span class="sub" style="margin-top:0">DAYS PER WEEK</span>
+          <label class="sub" style="margin-top:0" for="q15days">DAYS PER WEEK</label>
           <select class="in" id="q15days" name="q15days">
             <option value="">Choose one</option>
             <option>0</option><option>1</option><option>2</option><option>3</option>
             <option>4</option><option>5</option><option>6</option><option>7</option>
           </select>
         </div>
-        <div><span class="sub" style="margin-top:0">TYPICAL TIME</span><input class="in" type="time" id="q15time" name="q15time"></div>
+        <div><label class="sub" style="margin-top:0" for="q15time">TYPICAL TIME</label><input class="in" type="time" id="q15time" name="q15time"></div>
       </div>
       <span class="sub">INTENSITY</span>
       <div class="opts" role="radiogroup" aria-label="Intensity">
@@ -1149,8 +1156,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2>Your bedroom</h2>
 
     <div class="q" data-q="16">
-      <span class="lab">Describe your bedroom at night</span>
-      <p class="help">Commonly missed: a warm room is one of the most common and easily fixed causes of restless sleep.</p>
+      <span class="lab">Describe your bedroom at night:</span>
+      <p class="help" data-help="1">Commonly missed: a warm room is one of the most common and easily fixed causes of restless sleep.</p>
       <span class="sub">TEMPERATURE</span>
       <div class="opts" role="radiogroup" aria-label="Temperature">
         <label><input type="radio" name="q16temp" value="Cool"> Cool</label>
@@ -1173,8 +1180,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="17">
       <span class="lab">Who or what else sleeps in the room?</span>
-      <p class="help">Often overlooked: a partner&rsquo;s snoring, a pet on the bed or a child waking can explain waking in the night on its own.</p>
-      <div class="opts" id="q17box">
+      <p class="help" data-help="1">Often overlooked: a partner&rsquo;s snoring, a pet on the bed or a child waking can explain waking in the night on its own.</p>
+      <div class="opts" id="q17box" role="group" aria-label="Who or what else sleeps in the room">
         <label><input type="checkbox" name="q17" value="Partner"> Partner</label>
         <label><input type="checkbox" name="q17" value="Children"> Children</label>
         <label><input type="checkbox" name="q17" value="Pets"> Pets</label>
@@ -1189,19 +1196,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2>Mind and stress</h2>
 
     <div class="q" data-q="18">
-      <span class="lab">How stressed have you been over the last month, and what is the main source?</span>
+      <span class="lab">How stressed have you been over the last month (1 to 10), and what&rsquo;s the main source?</span>
       <div class="scale">
         <input type="range" id="q18n" name="q18n" min="1" max="10" step="1" value="5" aria-label="Stress, 1 to 10">
         <output for="q18n" id="q18out">5</output>
       </div>
       <div class="scale-ends"><span>1 NOT AT ALL</span><span>10 FLAT OUT</span></div>
-      <span class="sub">MAIN SOURCE</span>
+      <label class="sub" for="q18src">MAIN SOURCE OF STRESS</label>
       <input class="in" type="text" id="q18src" name="q18src" placeholder="Work, family, health, money, something else">
     </div>
 
     <div class="q" data-q="19">
       <span class="lab">Do you lie in bed thinking about work or problems?</span>
-      <p class="help">Misunderstood: people often treat this as a sleep problem when it is a wind-down problem.</p>
+      <p class="help" data-help="1">Misunderstood: people often treat this as a sleep problem when it&rsquo;s a wind-down problem.</p>
       <div class="opts" role="radiogroup" aria-label="Lying in bed thinking">
         <label><input type="radio" name="q19" value="Rarely"> Rarely</label>
         <label><input type="radio" name="q19" value="Sometimes"> Sometimes</label>
@@ -1219,8 +1226,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="q" data-q="20">
       <span class="lab">Does anything here apply to you? <span class="opt-tag">OPTIONAL</span></span>
       <p class="opt-note">Tick all that apply.</p>
-      <p class="help">Commonly missed: hormonal changes shift temperature and HRV readings, and travel or illness can make a whole month look bad.</p>
-      <div class="opts col">
+      <p class="help" data-help="1">Commonly missed: hormonal changes shift temperature and HRV readings, and travel or illness can make a whole month look bad.</p>
+      <div class="opts col" role="group" aria-label="Does anything here apply to you, optional, tick all">
         <label><input type="checkbox" name="q20" value="Menstrual cycle tracking"> Menstrual cycle tracking</label>
         <label><input type="checkbox" name="q20" value="Perimenopause or menopause"> Perimenopause or menopause</label>
         <label><input type="checkbox" name="q20" value="Shift work"> Shift work</label>
@@ -1232,7 +1239,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="21">
       <span class="lab">Any medications or supplements, and when do you take them? <span class="opt-tag">OPTIONAL</span></span>
-      <p class="help">Some medications change heart rate and HRV directly, and supplement timing often matters more than people think.</p>
+      <p class="help" data-help="1">Some medications change heart rate and HRV directly, and supplement timing often matters more than people think.</p>
+      <label class="vh" for="q21">Any medications or supplements, and when do you take them?</label>
       <textarea class="in" id="q21" name="q21" rows="3" placeholder="Including melatonin, magnesium and sleep aids"></textarea>
     </div>
   </div>
@@ -1244,17 +1252,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="q" data-q="22">
       <span class="lab">Do any of these apply? <span class="req">*</span></span>
-      <div class="opts col" id="q22box">
+      <div class="opts col" id="q22box" role="group" aria-label="Safety check, do any of these apply">
         <label><input type="checkbox" name="q22" value="I snore loudly" data-flag="1"> I snore loudly</label>
         <label><input type="checkbox" name="q22" value="Someone has noticed me stop breathing while asleep" data-flag="1"> Someone has noticed me stop breathing while asleep</label>
         <label><input type="checkbox" name="q22" value="I regularly nod off during the day" data-flag="1"> I regularly nod off during the day</label>
         <label><input type="checkbox" name="q22" value="None of these" data-solo="1"> None of these</label>
       </div>
-      <div class="gp" id="gp">
+      <div class="gp" id="gp" role="status" aria-live="polite">
         <b>Please speak with your GP before your review.</b>
         <p>These need a proper medical check.</p>
       </div>
-      <p class="err" id="e22"></p>
+      <p class="err" id="e22" role="alert" aria-live="assertive"></p>
     </div>
   </div>
 
@@ -1291,32 +1299,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <label class="drop" id="drop">
-        <input type="file" id="file" accept=".csv,.zip,.json,.txt,.xlsx">
+        <input type="file" id="file" accept=".csv,.zip,.json,.txt,.xlsx" aria-label="Choose your tracker export file">
         <span class="dlab" id="dlab">Choose your export file</span>
-        <span class="dsub" id="dsub">CSV, ZIP, JSON or XLSX, up to 50MB</span>
+        <span class="dsub" id="dsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
       </label>
       <div class="prog" id="prog"><i></i></div>
       <div class="opts col" style="margin-top:.7rem">
         <label><input type="checkbox" id="later" name="later"> I do not have the file here. Send me my own upload link.</label>
       </div>
-      <p class="err" id="e23"></p>
+      <p class="err" id="e23" role="alert" aria-live="assertive"></p>
     </div>
 
     <div class="q" data-q="24">
       <span class="lab">Please confirm <span class="req">*</span></span>
       <div class="consents">
         <label><input type="checkbox" name="c1"> I understand this is a sleep and recovery data review, not medical advice.</label>
-        <label><input type="checkbox" name="c2"> I am happy for you to store my data for this review and delete it within 90 days.</label>
-        <label><input type="checkbox" name="c3"> I understand this review cannot guarantee specific results, and refunds are available up to the end of my call.</label>
+        <label><input type="checkbox" name="c2"> I&rsquo;m happy for you to store my data for this review and delete it within 90 days.</label>
+        <label><input type="checkbox" name="c3"> I understand this review can&rsquo;t guarantee specific results, and refunds are available up to the end of my call.</label>
       </div>
-      <p class="err" id="ec"></p>
+      <p class="err" id="ec" role="alert" aria-live="assertive"></p>
     </div>
   </div>
 
   <!-- ---------- submit ---------- -->
   <div class="send">
-    <button class="btn" type="submit" id="go">Send my answers <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-    <p class="err" id="eTop"></p>
+    <button class="btn" type="submit" id="go" disabled aria-describedby="nojs">Send my answers <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    <p class="err" id="eTop" role="alert" aria-live="assertive"></p>
+    <noscript><p class="fine" id="nojs" style="color:#9a4a30;font-weight:600">This form
+      needs JavaScript to send your answers safely. With it switched off the Send
+      button stays disabled on purpose, because submitting would put your answers
+      in the web address. Turn JavaScript on, or email hello@taylored.health and
+      we will take your answers another way.</p></noscript>
     <p class="fine">The 90 days starts the moment your file lands, not from your call.</p>
   </div>
 </form>
@@ -1400,6 +1413,7 @@ var MAX_BYTES = 50 * 1024 * 1024;
 
 var $ = function(id){ return document.getElementById(id); };
 var form = $("f");
+var q18Touched = false;   /* see readAll, the stress slider cannot be blank */
 
 /* ---- the 23 questions, in Rachel's order and her wording. The labels
    travel with the answers so the stored row and Rachel's copy both read
@@ -1420,9 +1434,9 @@ var QS = [
   {n:13, q:"What time is your last meal, and is dinner your biggest meal?", f:["q13time","q13big"], sub:["Last meal","Biggest meal"]},
   {n:14, q:"Do you snack or drink much fluid within 2 hours of bed?", r:"q14"},
   {n:15, q:"What exercise do you do, and at what time of day?", f:["q15type","q15days","q15time"], sub:["Type","Days per week","Typical time"], r:"q15int", rsub:"Intensity"},
-  {n:16, q:"Describe your bedroom at night", r:"q16temp", rsub:"Temperature", r2:"q16dark", r2sub:"Darkness", r3:"q16noise", r3sub:"Noise"},
+  {n:16, q:"Describe your bedroom at night:", r:"q16temp", rsub:"Temperature", r2:"q16dark", r2sub:"Darkness", r3:"q16noise", r3sub:"Noise"},
   {n:17, q:"Who or what else sleeps in the room?", c:"q17"},
-  {n:18, q:"How stressed have you been over the last month, and what is the main source?", f:["q18n","q18src"], sub:["Stress, 1 to 10","Main source"]},
+  {n:18, q:"How stressed have you been over the last month (1 to 10), and what's the main source?", f:["q18n","q18src"], sub:["Stress, 1 to 10","Main source"]},
   {n:19, q:"Do you lie in bed thinking about work or problems?", r:"q19"},
   {n:20, q:"Does anything here apply to you?", c:"q20", optional:true},
   {n:21, q:"Any medications or supplements, and when do you take them?", f:["q21"], optional:true},
@@ -1445,7 +1459,11 @@ function readAll(){
     if (Q.c){ var cs = checks(Q.c); if (cs.length) parts.push({label:null, value:cs}); }
     if (Q.f) Q.f.forEach(function(id,i){
       var v = val(id);
-      if (id === "q18n" && v === "5" && !$("q18touched")) { /* still the default */ }
+      /* ⛔ The stress slider has to start somewhere, and a range input cannot
+         be blank. Shipping its default meant every submission read "stress 5
+         out of 10" and a reviewer would have read that as the client's own
+         answer. So it only counts once they have actually moved it. */
+      if (id === "q18n" && !q18Touched) return;
       if (v) parts.push({label:(Q.sub && Q.sub[i]) || null, value:v});
     });
     if (Q.r){ var rv = radio(Q.r); if (rv) parts.push({label:Q.rsub || null, value:rv}); }
@@ -1466,7 +1484,10 @@ function answeredCount(){
     }
     var any = false;
     if (Q.c && checks(Q.c).length) any = true;
-    if (Q.f) Q.f.forEach(function(id){ if (val(id)) any = true; });
+    if (Q.f) Q.f.forEach(function(id){
+      if (id === "q18n" && !q18Touched) return;
+      if (val(id)) any = true;
+    });
     if (Q.r && radio(Q.r)) any = true;
     if (Q.r2 && radio(Q.r2)) any = true;
     if (Q.r3 && radio(Q.r3)) any = true;
@@ -1549,6 +1570,13 @@ function queueSave(){
   }, 900);
 }
 
+function niceDate(iso){
+  if (!iso) return "";
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-NZ", {day:"numeric", month:"long", year:"numeric"});
+}
+
 function post(body){
   return fetch(API, {
     method:"POST",
@@ -1601,9 +1629,17 @@ function capTwo(){
   Array.prototype.forEach.call(els, function(el){ if (el.checked) n++; });
   Array.prototype.forEach.call(els, function(el){
     var off = (n >= 2 && !el.checked);
+    /* aria-disabled rather than disabled, so the options stay reachable and a
+       screen reader can still read what the other choices were. Silently
+       removing four controls from the tab order explains nothing. */
     el.disabled = off;
+    el.setAttribute("aria-disabled", off ? "true" : "false");
     el.parentNode.classList.toggle("off", off);
   });
+  var note = $("q5note");
+  if (note) note.textContent = (n >= 2)
+    ? "That is two. Untick one to choose something else."
+    : "";
 }
 
 /* ============================================================
@@ -1682,11 +1718,20 @@ function bad(qn, errId, msg){
   var e = $(errId);
   e.textContent = msg;
   e.classList.add("on");
+  /* A red border is no use to somebody who cannot see it. Mark the fields
+     invalid and point them at the message that says why. */
+  if (q) Array.prototype.forEach.call(q.querySelectorAll("input,select,textarea"), function(el){
+    el.setAttribute("aria-invalid", "true");
+    el.setAttribute("aria-describedby", errId);
+  });
 }
 function clearBad(){
   Array.prototype.forEach.call(form.querySelectorAll(".q.bad"), function(q){ q.classList.remove("bad"); });
-  Array.prototype.forEach.call(form.querySelectorAll(".err.on"), function(e){ e.classList.remove("on"); });
+  Array.prototype.forEach.call(form.querySelectorAll(".err.on"), function(e){ e.classList.remove("on"); e.textContent = ""; });
   Array.prototype.forEach.call(form.querySelectorAll(".in.bad"), function(e){ e.classList.remove("bad"); });
+  Array.prototype.forEach.call(form.querySelectorAll("[aria-invalid]"), function(el){
+    el.removeAttribute("aria-invalid"); el.removeAttribute("aria-describedby");
+  });
 }
 
 function validate(){
@@ -1725,10 +1770,13 @@ function finish(ref, token, uploadedInfo){
   $("refOut").textContent = ref;
   if (uploadedInfo){
     $("gotUpload").style.display = "";
-    var d = new Date(uploadedInfo.delete_after);
-    $("delLine").textContent = "Your export is stored and it is scheduled to be deleted on " +
-      d.toLocaleDateString("en-NZ", {day:"numeric", month:"long", year:"numeric"}) +
-      ", which is 90 days from the moment it landed.";
+    /* new Date(null) is 1 January 1970, and the server can legitimately return
+       null here, so never print a date we were not given. */
+    var when = niceDate(uploadedInfo.delete_after);
+    $("delLine").textContent = when
+      ? "Your export is stored and it is scheduled to be deleted on " + when +
+        ", which is 90 days from the moment it landed."
+      : "Your export is stored. It is scheduled to be deleted 90 days from now.";
   } else {
     $("needUpload").style.display = "";
     var link = "https://sleep.taylored.health/onboarding/?t=" + token;
@@ -1764,12 +1812,17 @@ form.addEventListener("submit", function(e){
     email:val("q1email"),
     device: radio("q2") === "WHOOP" ? "whoop" : "oura",
     answers:{ questions: readAll() },
+    /* ⛔ THESE WERE THREE HARDCODED `true`s. Caught in review 27 Sept 2026.
+       The consent record is the whole defence for holding somebody's health
+       data, and it was a constant that said "agreed" whether they ticked
+       anything or not. Read the boxes. The server re-checks all three and
+       stamps its own agreed_at, so neither side is trusted alone. */
     consent:{
-      not_medical_advice:true,
-      store_and_delete_within_90_days:true,
-      no_guarantee_refund_to_end_of_call:true,
-      agreed_at:new Date().toISOString()
+      not_medical_advice: form.querySelector('input[name="c1"]').checked,
+      store_and_delete_within_90_days: form.querySelector('input[name="c2"]').checked,
+      no_guarantee_refund_to_end_of_call: form.querySelector('input[name="c3"]').checked
     },
+    draft_id: draftId || undefined,
     safety_flag: flagged
   };
 
@@ -1827,11 +1880,13 @@ function tokenView(token){
       $("slotSend").disabled = true;
       $("slotSend").firstChild.textContent = "Uploading ";
       upload(token, f2, "slotProg", function(done){
-        var d = new Date(done.delete_after);
+        var when = niceDate(done.delete_after);
         $("slotLive").style.display = "none";
-        $("slotSub").textContent = "That is your export in. It is scheduled to be deleted on " +
-          d.toLocaleDateString("en-NZ", {day:"numeric", month:"long", year:"numeric"}) +
-          ", 90 days from now. Next step is to book your call.";
+        $("slotSub").textContent = when
+          ? "That is your export in. It is scheduled to be deleted on " + when +
+            ", 90 days from now. Next step is to book your call."
+          : "That is your export in. It is scheduled to be deleted 90 days from now. " +
+            "Next step is to book your call.";
         $("slotHead").textContent = "Your file is in";
       }).catch(function(err){
         $("slotSend").disabled = false;
@@ -1859,7 +1914,11 @@ $("q18out").textContent = $("q18n").value;
 
 form.addEventListener("input", function(){ queueSave(); paintProgress(); });
 form.addEventListener("change", function(){ queueSave(); paintProgress(); });
-$("q18n").addEventListener("input", function(){ $("q18out").textContent = this.value; });
+$("q18n").addEventListener("input", function(){
+  q18Touched = true;
+  $("q18out").textContent = this.value;
+  $("q18out").style.color = "var(--ink)";
+});
 form.querySelectorAll('input[name="q2"]').forEach(function(el){ el.addEventListener("change", paintGuide); });
 $("q5box").addEventListener("change", capTwo);
 $("q22box").addEventListener("change", paintGp);
