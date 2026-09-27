@@ -16,6 +16,29 @@ const ALLOWED = new Set([
   "https://www.taylored.health",
 ]);
 
+// The three consents the form must carry. Names are shared with the page.
+const CONSENT_KEYS = [
+  "not_medical_advice",
+  "store_and_delete_within_90_days",
+  "no_guarantee_refund_to_end_of_call",
+] as const;
+
+// Export formats we accept. Anything else cannot reach the bucket.
+const ALLOWED_EXT = new Set(["csv", "zip", "json", "txt", "xlsx"]);
+
+// Content types a browser renders inline on the storage origin. A stored
+// text/html is a scripting primitive against whoever opens the export.
+const INLINE_RENDERABLE = new Set([
+  "text/html",
+  "application/xhtml+xml",
+  "image/svg+xml",
+  "text/xml",
+  "application/xml",
+  "text/javascript",
+  "application/javascript",
+  "application/ecmascript",
+]);
+
 function cors(origin: string | null): Record<string, string> {
   const o = origin && ALLOWED.has(origin) ? origin : "*";
   return {
@@ -63,12 +86,35 @@ function sanitiseFilename(raw: unknown): string {
   if (!s) s = "export.zip";
   return s;
 }
+function extensionOf(name: string): string {
+  const m = /\.([A-Za-z0-9]{1,10})$/.exec(name);
+  return m ? m[1].toLowerCase() : "";
+}
 const isUuid = (v: unknown) =>
   typeof v === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 const isHex64 = (v: unknown) => typeof v === "string" && /^[0-9a-f]{64}$/.test(v);
 const isPlainObj = (v: unknown) =>
   typeof v === "object" && v !== null && !Array.isArray(v);
+
+// The link must not outlive the data it points at. delete_after is null until
+// the upload lands, so only a real past timestamp closes the row.
+const isExpired = (row: { delete_after?: string | null }) =>
+  !!row.delete_after && Date.parse(row.delete_after) <= Date.now();
+
+// Only ever greet someone by the first word of what they typed.
+const firstName = (v: unknown) =>
+  typeof v === "string" ? (v.trim().split(/\s+/)[0] ?? "") : "";
+
+// A single path segment under this row, nothing else. Rejecting ".." by
+// pattern is the point: Supabase Storage resolves it and would hand one
+// submitter a write of another submitter's export path.
+function pathBelongsToRow(path: string, rowId: string): boolean {
+  if (!isUuid(rowId)) return false;
+  if (!new RegExp("^" + rowId + "/[A-Za-z0-9._-]{1,120}$").test(path)) return false;
+  const seg = path.slice(rowId.length + 1);
+  return seg !== "." && seg !== "..";
+}
 
 // ---------- backend calls ----------
 async function pg(path: string, init: RequestInit & { prefer?: string } = {}) {
@@ -138,10 +184,58 @@ Deno.serve(async (req) => {
     }
     if (device !== "oura" && device !== "whoop") return bad("device must be oura or whoop", origin);
     const answers = isPlainObj(body.answers) ? body.answers : {};
-    const consent = isPlainObj(body.consent) ? body.consent : {};
     if (JSON.stringify(answers).length > 200000) return bad("answers too large", origin);
-    if (JSON.stringify(consent).length > 20000) return bad("consent too large", origin);
+
+    // Consent is the whole legal defence, so it cannot be whatever the client
+    // happened to send. Three keys, each strictly boolean true.
+    if (!isPlainObj(body.consent)) return bad("all three consents must be agreed", origin);
+    const rawConsent = body.consent as Record<string, unknown>;
+    if (JSON.stringify(rawConsent).length > 20000) return bad("consent too large", origin);
+    for (const k of CONSENT_KEYS) {
+      if (rawConsent[k] !== true) return bad("all three consents must be agreed", origin);
+    }
+    // agreed_at comes off the server clock, never the browser's.
+    const consent = { ...rawConsent, agreed_at: new Date().toISOString() };
+
     const safety_flag = body.safety_flag === true;
+
+    const draft_id = body.draft_id === undefined || body.draft_id === null
+      ? null
+      : isUuid(body.draft_id)
+      ? (body.draft_id as string)
+      : undefined;
+    if (draft_id === undefined) return bad("draft_id must be a uuid", origin);
+
+    // A lost response must not cost the person a second row, a second
+    // reference and a second 90-day clock.
+    async function existing(): Promise<{ ref: string; upload_token: string } | null> {
+      if (!draft_id) return null;
+      const r = await pg(
+        "sleep_submissions?draft_id=eq." + draft_id + "&select=ref,upload_token",
+      );
+      if (!r.ok) return null;
+      const rows = await r.json();
+      if (Array.isArray(rows) && rows.length === 1 && rows[0].upload_token) {
+        return { ref: rows[0].ref, upload_token: rows[0].upload_token };
+      }
+      return null;
+    }
+
+    // The drafts table holds the same named health record with the least
+    // consent behind it. Once the submission lands, the draft goes.
+    async function dropDraft() {
+      if (!draft_id) return;
+      await pg("sleep_partials?draft_id=eq." + draft_id, {
+        method: "DELETE",
+        prefer: "return=minimal",
+      });
+    }
+
+    const already = await existing();
+    if (already) {
+      await dropDraft();
+      return json({ ok: true, ...already }, 200, origin);
+    }
 
     for (let attempt = 0; attempt < 5; attempt++) {
       const ref = makeRef();
@@ -149,10 +243,31 @@ Deno.serve(async (req) => {
       const r = await pg("sleep_submissions", {
         method: "POST",
         prefer: "return=minimal",
-        body: JSON.stringify({ ref, name, email, device, answers, consent, safety_flag, upload_token }),
+        body: JSON.stringify({
+          ref,
+          name,
+          email,
+          device,
+          answers,
+          consent,
+          safety_flag,
+          upload_token,
+          draft_id,
+        }),
       });
-      if (r.ok) return json({ ok: true, ref, upload_token }, 200, origin);
+      if (r.ok) {
+        await dropDraft();
+        return json({ ok: true, ref, upload_token }, 200, origin);
+      }
       const txt = await r.text();
+      // Two submits raced on the same draft: hand back the row that won.
+      if (txt.includes("sleep_submissions_draft_id_key")) {
+        const won = await existing();
+        if (won) {
+          await dropDraft();
+          return json({ ok: true, ...won }, 200, origin);
+        }
+      }
       if (r.status === 409 || txt.includes("duplicate key")) continue;
       return json({ ok: false, error: "submit failed" }, 500, origin);
     }
@@ -163,7 +278,8 @@ Deno.serve(async (req) => {
   if (action === "upload-url") {
     if (!isHex64(body.upload_token)) return bad("bad upload_token", origin);
     const look = await pg(
-      "sleep_submissions?upload_token=eq." + body.upload_token + "&select=id,uploaded_at,deleted_at",
+      "sleep_submissions?upload_token=eq." + body.upload_token +
+        "&select=id,uploaded_at,deleted_at,delete_after",
     );
     if (!look.ok) return json({ ok: false, error: "lookup failed" }, 500, origin);
     const rows = await look.json();
@@ -171,10 +287,18 @@ Deno.serve(async (req) => {
       return json({ ok: false, error: "not found" }, 403, origin);
     }
     const row = rows[0];
-    if (row.uploaded_at || row.deleted_at) {
+    if (row.deleted_at || isExpired(row)) {
+      return json({ ok: false, error: "link expired" }, 403, origin);
+    }
+    if (row.uploaded_at) {
       return json({ ok: false, error: "already uploaded" }, 403, origin);
     }
-    const path = row.id + "/" + sanitiseFilename(body.filename);
+    const filename = sanitiseFilename(body.filename);
+    // accept= on the page is advisory. This is the check that holds.
+    if (!ALLOWED_EXT.has(extensionOf(filename))) {
+      return bad("file must be one of csv, zip, json, txt, xlsx", origin);
+    }
+    const path = row.id + "/" + filename;
     const s = await storage("object/upload/sign/" + BUCKET + "/" + path, {
       method: "POST",
       body: JSON.stringify({ expiresIn: 3600 }),
@@ -198,17 +322,43 @@ Deno.serve(async (req) => {
     if (!isHex64(body.upload_token)) return bad("bad upload_token", origin);
     if (typeof body.path !== "string" || body.path.length > 300) return bad("bad path", origin);
     const look = await pg(
-      "sleep_submissions?upload_token=eq." + body.upload_token + "&select=id,uploaded_at,deleted_at",
+      "sleep_submissions?upload_token=eq." + body.upload_token +
+        "&select=id,uploaded_at,deleted_at,delete_after",
     );
     if (!look.ok) return json({ ok: false, error: "lookup failed" }, 500, origin);
     const rows = await look.json();
     if (!Array.isArray(rows) || rows.length !== 1) return json({ ok: false, error: "not found" }, 403, origin);
     const row = rows[0];
-    if (row.deleted_at) return json({ ok: false, error: "not found" }, 403, origin);
-    if (!body.path.startsWith(row.id + "/")) return json({ ok: false, error: "path mismatch" }, 403, origin);
+    if (row.deleted_at || isExpired(row)) {
+      return json({ ok: false, error: "link expired" }, 403, origin);
+    }
+    if (!pathBelongsToRow(body.path, String(row.id))) {
+      return json({ ok: false, error: "path mismatch" }, 403, origin);
+    }
+    if (!ALLOWED_EXT.has(extensionOf(body.path))) {
+      return bad("file must be one of csv, zip, json, txt, xlsx", origin);
+    }
 
     const info = await storage("object/info/" + BUCKET + "/" + body.path, { method: "GET" });
     if (!info.ok) return json({ ok: false, error: "object not found in bucket" }, 400, origin);
+
+    // The browser picks the Content-Type on the signed PUT and Supabase keeps
+    // it, so a crafted client can park scripting content on the storage
+    // origin. Drop it rather than record it.
+    let stored: { content_type?: string } = {};
+    try {
+      stored = await info.json();
+    } catch { /* fall through, treated as unknown */ }
+    const ct = String(stored.content_type ?? "").split(";")[0].trim().toLowerCase();
+    if (INLINE_RENDERABLE.has(ct)) {
+      // The bulk form, because a single-object DELETE with this helper's JSON
+      // content type and no body is rejected by the storage API.
+      await storage("object/" + BUCKET, {
+        method: "DELETE",
+        body: JSON.stringify({ prefixes: [body.path] }),
+      });
+      return bad("file content type not accepted", origin);
+    }
 
     const upd = await pg("sleep_submissions?id=eq." + row.id + "&select=uploaded_at,delete_after", {
       method: "PATCH",
@@ -225,7 +375,7 @@ Deno.serve(async (req) => {
     if (!isHex64(body.upload_token)) return bad("bad upload_token", origin);
     const look = await pg(
       "sleep_submissions?upload_token=eq." + body.upload_token +
-        "&select=ref,name,device,uploaded_at,deleted_at",
+        "&select=ref,name,device,uploaded_at,deleted_at,delete_after",
     );
     if (!look.ok) return json({ ok: false, error: "lookup failed" }, 500, origin);
     const rows = await look.json();
@@ -233,12 +383,19 @@ Deno.serve(async (req) => {
       return json({ ok: false, error: "not found" }, 403, origin);
     }
     const r0 = rows[0];
+    if (isExpired(r0)) return json({ ok: false, error: "link expired" }, 403, origin);
+    // Once the upload has landed the link has done its job. It must not stay
+    // a working name lookup for the rest of the 90 days.
+    if (r0.uploaded_at) {
+      return json({ ok: true, ref: r0.ref, uploaded: true }, 200, origin);
+    }
+    // Before upload the page greets them, and a first name is enough for that.
     return json({
       ok: true,
       ref: r0.ref,
-      name: r0.name,
+      name: firstName(r0.name),
       device: r0.device,
-      uploaded: !!r0.uploaded_at,
+      uploaded: false,
     }, 200, origin);
   }
 
