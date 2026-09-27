@@ -1,0 +1,1857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sleep Score Review &middot; Onboarding</title>
+<meta name="description" content="Tell us how you sleep and upload your tracker export. It takes about ten minutes and it is where your review starts.">
+<link rel="canonical" href="https://sleep.taylored.health/onboarding/">
+<!-- A post-purchase intake form has no business in search results, and it
+     would compete with the sales page for the same words. -->
+<meta name="robots" content="noindex,follow">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sleep.taylored.health/onboarding/">
+<meta property="og:title" content="Sleep Score Review &middot; Onboarding">
+<meta property="og:description" content="Tell us how you sleep and upload your tracker export.">
+<meta property="og:image" content="https://sleep.taylored.health/assets/og-sleep.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23b8924a' stroke-width='4' stroke-dasharray='46 75' transform='rotate(-90 16 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- identical href to index.html and the wheel pages, so somebody arriving
+     from the sales page gets a cache hit and not a second font payload -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   Inherited verbatim from projects/capacity-score/field-guide so
+   this page and wheel.taylored.health read as one product.
+   ============================================================ */
+:root{
+  --navy:#1e3644; --navy-deep:#12202b; --navy-mid:#16242e;
+  --cream:#f3efe7; --cream-soft:#cdd8db; --cream-faint:#8a9aa1;
+  --gold:#b8924a; --gold-deep:#9a784b; --sage:#7fa07a;
+  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
+  --drag-l:#9fb0ba;
+  --rule-l:rgba(243,239,231,.16);
+  --measure:38rem;
+
+  --paper:#f0ede4;
+  --ink:#16222e;
+  --ink-soft:#41505c;   /* 7.3:1 on paper */
+  --ink-faint:#75838d;  /* 4.6:1 on paper */
+  --rule-d:rgba(22,34,46,.13);
+  --rule-d-soft:rgba(22,34,46,.07);
+
+  --clay:#c2795e;
+
+  /* ---- taylored.health site chrome, lifted from the live site 27 Sept 2026.
+     Eleven custom properties the nav and footer resolve against. Only --gold
+     overlaps with the tokens above and the value is identical. ---- */
+  --bg0:#0b1a2c;
+  --gold-soft:#cdaa6b; --gold-bright:#d9c08a;
+  --line:rgba(217,189,146,.16);
+  --hd:#f3f1ea; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
+  --label:'Josefin Sans',Verdana,sans-serif;
+  --pad:clamp(1.25rem,5vw,4.5rem);
+  --navh:4.6rem;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--navh) + 1rem);
+  -webkit-text-size-adjust:100%;
+}
+body{
+  font-family:Manrope,system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink-soft);
+  line-height:1.65;
+  font-size:1.0625rem;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+::selection{background:rgba(184,146,74,.28);color:var(--ink)}
+.s--navy ::selection,.s--deep ::selection{background:rgba(184,146,74,.4);color:var(--cream)}
+html{scrollbar-color:var(--gold-deep) var(--cream);scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--gold-deep);border:3px solid var(--cream);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+.s--navy :focus-visible,.s--deep :focus-visible{outline-color:var(--gold)}
+
+h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;font-weight:600;line-height:1.14;color:var(--ink);text-wrap:balance;letter-spacing:-.005em}
+.s--navy h1,.s--navy h2,.s--navy h3,.s--navy h4,
+.s--deep h1,.s--deep h2,.s--deep h3,.s--deep h4{color:var(--cream)}
+p{text-wrap:pretty}
+a{color:inherit}
+
+/* A display line must never split a sentence across two lines, so each
+   sentence is its own inline block. It wraps between sentences or not at all.
+   Checked at 320, 375 and 414. */
+.say{display:inline-block}
+
+/* ============================================================
+   SKIP LINK + STICKY BAR
+   ============================================================ */
+.skip{
+  position:absolute;left:.5rem;top:-4rem;z-index:60;
+  background:var(--gold);color:var(--navy-deep);font-weight:700;font-size:.9rem;
+  padding:.6rem 1rem;border-radius:3px;text-decoration:none;transition:top .18s
+}
+.skip:focus{top:.5rem}
+
+/* ============================================================
+   SITE CHROME
+   The nav and footer below are the taylored.health chrome, lifted from
+   the live site on 27 Sept 2026. The site runs WordPress + Divi, but
+   Divi's own header and footer are switched off there
+   (#main-header,...,.et-l--header,.et-l--footer{display:none!important})
+   and the chrome is hand-authored HTML, so it lifts cleanly onto a
+   static page. These rules are the served rules with the "#lcp " scope
+   prefix stripped and nothing else changed. Do not hand-edit them; if
+   the site nav changes, re-lift from live.
+   Shared copy: ~/hex/docs/site-chrome/taylored-chrome.html
+   ============================================================ */
+/* One rule that is NOT lifted. On the site the chrome inherits
+   #lcp's line-height:1.74; this page's body runs 1.65, which made the
+   footer 10px shorter than the live one. Re-asserted here so the two
+   measure the same. */
+.nav,.foot{line-height:1.74}
+
+.xos{color:#b8924a}
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--navh); display:flex;align-items:center;justify-content:space-between;gap:1rem; padding:0 clamp(1.1rem,3.5vw,2.6rem); background:transparent;border-bottom:1px solid transparent; transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
+.nav.scrolled{background:transparent;border-bottom:1px solid var(--line)}
+.nav::before{content:"";position:absolute;inset:0;z-index:-1;background:transparent; transition:background .3s ease,backdrop-filter .3s ease}
+.nav.scrolled::before{background:rgba(11,26,44,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;text-decoration:none;flex:none}
+.brand img{height:clamp(2.1rem,1.7rem + 1vw,2.6rem);width:auto}
+.nav .links{display:flex;align-items:center;gap:clamp(.85rem,1.8vw,1.6rem)}
+.nlink{font-family:var(--label);font-size:.72rem;font-weight:400;letter-spacing:.19em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.5em 0 .35em;border-bottom:1px solid transparent;white-space:nowrap}
+.nlink:hover{color:var(--gold-bright)}
+.pill{font-family:var(--label);font-size:.7rem;font-weight:600;letter-spacing:.16em!important;text-transform:uppercase!important; color:#0b1420;background:var(--gold);text-decoration:none;padding:.8em 1.45em .66em;border-radius:2px;white-space:nowrap}
+.pill:hover{background:var(--gold-soft)}
+.pill-ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(217,189,146,.5)}
+.pill-ghost:hover{background:rgba(217,189,146,.08);border-color:var(--gold-bright);color:var(--gold-bright)}
+.drop{position:relative;display:flex;align-items:center}
+.drop>.nlink::after{content:"";display:inline-block;width:.42em;height:.42em; border-right:1px solid var(--gold);border-bottom:1px solid var(--gold); transform:rotate(45deg);margin-left:.55em;vertical-align:.14em}
+.dmenu{position:absolute;top:100%;right:-1rem;min-width:15.5rem;padding:.7rem 0;margin-top:.4rem; background:rgba(11,26,44,.97);border:1px solid var(--line);border-top:2px solid var(--gold); opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .22s,transform .22s,visibility .22s}
+.drop:hover .dmenu, .drop:focus-within .dmenu{opacity:1;visibility:visible;transform:none}
+.dmenu a{display:block;font-family:var(--label);font-size:.72rem;letter-spacing:.16em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.78em 1.4em .6em}
+.dmenu a:hover{color:var(--gold-bright);background:rgba(217,189,146,.06)}
+.navtog{position:absolute;opacity:0;pointer-events:none}
+.navbtn{display:none;width:2.3rem;height:2.3rem;cursor:pointer;position:relative;z-index:62;flex:none}
+.navbtn span{position:absolute;left:.35rem;right:.35rem;height:2px;background:var(--hd);transition:transform .3s,opacity .3s}
+.navbtn span:nth-child(1){top:.82rem}
+.navbtn span:nth-child(2){top:1.4rem}
+@media (max-width:1080px){
+.navbtn{display:block}
+.nav .links{position:fixed;inset:0;top:0;padding-top:calc(var(--navh) + 1.2rem); flex-direction:column;justify-content:flex-start;gap:0;background:#091422; opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+.nlink{font-size:.95rem;padding:.95rem 0 .8rem;width:min(21rem,80vw);text-align:center; border-bottom:1px solid rgba(217,189,146,.13)}
+.drop{width:min(21rem,80vw);display:flex;flex-direction:column;align-items:center}
+.drop>.nlink{width:100%}
+.drop>.nlink::after{content:""}
+.dmenu{position:static;opacity:1;visibility:visible;transform:none;border:0;background:transparent; min-width:0;width:100%;padding:0;margin:0}
+.dmenu a{font-size:.83rem;color:var(--tx-dim);padding:.85em 0 .7em;text-align:center;border-bottom:1px solid rgba(217,189,146,.08)}
+.pill{margin:1.7rem 0 2.5rem;font-size:.82rem;padding:1em 2.1em .85em}
+.navtog:checked ~ .links{opacity:1;pointer-events:auto}
+.navtog:checked ~ .navbtn span:nth-child(1){transform:translateY(.29rem) rotate(45deg)}
+.navtog:checked ~ .navbtn span:nth-child(2){transform:translateY(-.29rem) rotate(-45deg)}
+}
+.foot{background:var(--bg0);color:var(--tx-dim);padding:clamp(3.2rem,6vh,4.8rem) var(--pad) 2.4rem; border-top:1px solid var(--line)}
+.foot-inner{max-width:71rem;margin:0 auto}
+.foot .brand img{height:2.2rem}
+.foot-pos{max-width:26rem;font-size:.93rem;line-height:1.7;margin:1.4rem 0 2.4rem;color:var(--tx-dim)}
+.foot-cols{display:flex;gap:clamp(2rem,6vw,5rem);flex-wrap:wrap;margin-bottom:2.6rem}
+.foot-col{min-width:11rem}
+.foot-h{font-family:var(--label);font-size:.68rem;font-weight:600;letter-spacing:.22em!important;text-transform:uppercase!important;color:var(--gold-soft);margin-bottom:1rem}
+.foot-col a{display:block;font-size:.91rem;color:var(--tx-dim);text-decoration:none;padding:.33em 0}
+.foot-col a:hover{color:var(--hd)}
+.foot-base{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap; border-top:1px solid var(--line);padding-top:1.6rem;font-size:.8rem;color:var(--tx-faint)}
+.foot-base a{color:var(--tx-faint);text-decoration:none}
+.foot-base a:hover{color:var(--gold-soft)}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.s{padding:clamp(3rem,8vw,5.5rem) clamp(1.25rem,5vw,2rem)}
+.s--paper{background:var(--paper)}
+.s--cream{background:var(--cream)}
+.s--navy{background:var(--navy-mid);color:var(--cream-soft)}
+.s--deep{background:var(--navy-deep);color:var(--cream-soft)}
+.s--navy p,.s--deep p{color:var(--cream-soft)}
+.s + .s--paper,.s--paper + .s--cream{border-top:1px solid var(--rule-d-soft)}
+
+.wrap{max-width:var(--measure);margin:0 auto}
+.wrap--wide{max-width:64rem;margin:0 auto}
+
+h2{font-size:clamp(1.55rem,4.6vw,2.3rem);margin:0 0 .9rem}
+h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
+.s p + p{margin-top:.9rem}
+.s h2 + p,.s h3 + p{margin-top:.6rem}
+.s p + h3{margin-top:2rem}
+.s p + h2,.s ul + h2,.s div + h2{margin-top:2.6rem}
+
+.deck{
+  font-family:"Playfair Display",Georgia,serif;font-style:italic;
+  font-size:clamp(1.12rem,2.9vw,1.35rem);line-height:1.45;
+  color:var(--gold-ink);margin:0 0 1.2rem
+}
+.s--navy .deck,.s--deep .deck{color:var(--gold)}
+
+/* her copy runs in short declarative lines. this keeps them as lines. */
+.lines p{margin:0 0 .45rem}
+.lines p:last-child{margin-bottom:0}
+
+.turn{font-size:1.05rem;color:var(--ink);font-weight:600;margin-top:1.4rem}
+.s--navy .turn,.s--deep .turn{color:var(--cream)}
+
+/* every tracked label on this page is capitals */
+.eyebrow{
+  font-family:Manrope,sans-serif;font-size:.74rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--cream-faint);
+  margin:0 0 .85rem
+}
+.s--paper .eyebrow,.s--cream .eyebrow{color:var(--ink-faint)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  background:var(--navy-deep);color:var(--cream-soft);
+  /* .nav is position:fixed and transparent until scrolled, so the hero
+     reserves its own room underneath it rather than being covered */
+  padding:calc(var(--navh) + clamp(1.6rem,5vw,3rem)) clamp(1.25rem,5vw,2rem) clamp(2.4rem,6vw,3.5rem);
+  position:relative;overflow:hidden
+}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60rem 28rem at 78% -12%,rgba(184,146,74,.16),transparent 62%);
+}
+.hero > *{position:relative}
+.hwrap{max-width:64rem;margin:0 auto;position:relative}
+.hero h1{
+  font-size:clamp(2rem,7.2vw,3.4rem);
+  margin:0 0 1rem
+}
+.hero .deck{max-width:30ch;margin-bottom:1.4rem}
+.hero .lines p{color:var(--cream-soft);max-width:var(--measure)}
+@media (min-width:960px){
+  .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15rem);
+    gap:0 clamp(2.5rem,5vw,4rem);align-items:start}
+  .hgrid .gaugecol{grid-row:1;grid-column:2}
+}
+
+/* the score gauge. 61 is not a good number, so it is not drawn in gold. */
+.gauge{
+  max-width:13rem;margin:2rem 0 0;
+  border:1px solid var(--rule-l);border-radius:5px;
+  padding:1.25rem 1.25rem 1.1rem;
+  background:rgba(243,239,231,.045);
+  text-align:center
+}
+@media (min-width:960px){.gauge{margin-top:.3rem}}
+.gauge svg{display:block;width:100%;height:auto}
+.gauge .num{
+  font-family:Manrope,sans-serif;font-weight:700;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-size:2.6rem;fill:var(--cream)
+}
+.gauge .track{fill:none;stroke:rgba(243,239,231,.14);stroke-width:7}
+.gauge .arc{
+  fill:none;stroke:var(--drag-l);stroke-width:7;stroke-linecap:round;
+  stroke-dasharray:314;stroke-dashoffset:314;
+  animation:sweep 1.4s cubic-bezier(.16,.9,.3,1) .3s forwards
+}
+@keyframes sweep{to{stroke-dashoffset:122}} /* 61 of 100 */
+
+/* ============================================================
+   SOUND FAMILIAR
+   ============================================================ */
+.ticks{list-style:none;margin:1.2rem 0 0}
+.ticks li{
+  display:flex;gap:.85rem;align-items:flex-start;
+  padding:.85rem 0;border-top:1px solid var(--rule-d-soft);
+  font-size:1rem;color:var(--ink-soft)
+}
+.ticks li:first-child{border-top:0;padding-top:0}
+.ticks li svg{width:15px;height:15px;flex:none;margin-top:.45rem;color:var(--gold-deep)}
+.s--navy .ticks li,.s--deep .ticks li{border-top-color:var(--rule-l);color:var(--cream-soft)}
+.s--navy .ticks li svg,.s--deep .ticks li svg{color:var(--gold)}
+
+.causes{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.3rem 0 1.4rem;list-style:none}
+.causes li{
+  font-size:.92rem;color:var(--ink-soft);
+  border:1px solid var(--rule-d);border-radius:2rem;padding:.35rem .95rem
+}
+.s--navy .causes li,.s--deep .causes li{color:var(--cream-soft);border-color:var(--rule-l)}
+
+.affirm{
+  margin-top:1.6rem;padding:1.15rem 1.3rem;
+  background:rgba(184,146,74,.1);border-radius:4px;
+  font-size:1.08rem;font-weight:600;color:var(--ink)
+}
+.s--navy .affirm,.s--deep .affirm{background:rgba(184,146,74,.14);color:var(--cream)}
+
+/* ============================================================
+   WHAT YOU GET
+   ============================================================ */
+.gets{list-style:none;counter-reset:got;margin:1.8rem 0 0;display:grid;gap:0}
+@media (min-width:820px){.gets{grid-template-columns:1fr 1fr;gap:0 2.5rem}}
+.gets li{
+  counter-increment:got;position:relative;
+  padding:1.2rem 0 1.2rem 3.4rem;border-top:1px solid var(--rule-d)
+}
+.gets li::before{
+  content:"0" counter(got);position:absolute;left:0;top:1.15rem;
+  font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;
+  color:var(--gold-ink);letter-spacing:.02em
+}
+.gets h3{font-family:Manrope,sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.3rem}
+.gets p{font-size:.96rem;margin:0}
+@media (min-width:820px){
+  .gets li:nth-child(1),.gets li:nth-child(2){border-top:1px solid var(--rule-d)}
+}
+
+.promise{
+  margin-top:2.2rem;padding:clamp(1.3rem,3.6vw,1.9rem);
+  background:var(--cream);border-radius:5px
+}
+.promise h3{margin-bottom:.6rem}
+.promise p + p{margin-top:.8rem}
+.promise .small{font-size:.92rem;color:var(--ink-faint)}
+
+/* ============================================================
+   THE OFFER
+   ============================================================ */
+.offer{
+  border:1px solid var(--rule-l);border-radius:6px;
+  background:linear-gradient(180deg,rgba(243,239,231,.06),rgba(243,239,231,.02));
+  padding:clamp(1.4rem,4vw,2.4rem);margin-top:2rem
+}
+.price{
+  /* Manrope, not Playfair: Playfair sets a small raised dollar sign that reads
+     as a footnote marker at display size */
+  font-family:Manrope,sans-serif;font-weight:700;letter-spacing:-.02em;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-size:clamp(2rem,6vw,2.6rem);line-height:1;color:var(--gold);
+  margin:0 0 1rem
+}
+.spec{list-style:none;display:grid;gap:.5rem;margin:0 0 1.4rem}
+@media (min-width:640px){.spec{grid-template-columns:1fr 1fr;gap:.5rem 1.6rem}}
+.spec li{
+  display:flex;gap:.65rem;align-items:flex-start;
+  font-size:.95rem;color:var(--cream-soft)
+}
+.spec li svg{width:14px;height:14px;flex:none;margin-top:.38rem;color:var(--gold)}
+.refund{
+  font-size:.92rem;color:var(--cream-faint);
+  padding-top:1.1rem;border-top:1px solid var(--rule-l)
+}
+.only{
+  font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);margin:0 0 1rem
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font:inherit;font-weight:700;font-size:1rem;
+  color:var(--navy-deep);background:var(--gold);
+  border:0;border-radius:3px;padding:.95rem 1.9rem;
+  text-decoration:none;letter-spacing:.01em;
+  box-shadow:0 2px 10px rgba(0,0,0,.28);
+  transition:background .2s,color .2s,transform .2s,box-shadow .2s
+}
+.btn:hover{background:var(--gold-deep);color:var(--cream);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.34)}
+.btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.btn svg{width:16px;height:16px}
+.btn .tag{font-weight:600;opacity:.75}
+.btnrow{margin:1.5rem 0 1.4rem}
+.byline{
+  margin-top:1.6rem;font-size:.92rem;color:var(--cream-faint)
+}
+.byline b{color:var(--cream-soft);font-weight:600}
+
+.reviewers{
+  margin:1.5rem 0;padding:1.2rem 1.3rem;
+  background:rgba(18,32,43,.45);border-radius:4px;
+  font-size:.95rem;color:var(--cream-soft)
+}
+.reviewers b{color:var(--cream)}
+.reviewers p + p{margin-top:.6rem}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.steps{list-style:none;counter-reset:step;margin:1.4rem 0 0}
+.steps li{
+  counter-increment:step;position:relative;
+  padding:1.1rem 0 1.1rem 3rem;border-top:1px solid var(--rule-d)
+}
+.steps li:first-child{border-top:0}
+.steps li::before{
+  content:counter(step);position:absolute;left:0;top:1.05rem;
+  width:1.9rem;height:1.9rem;border-radius:50%;
+  border:1px solid var(--gold-ink);color:var(--gold-ink);
+  font-family:"Playfair Display",Georgia,serif;font-size:.95rem;
+  display:grid;place-items:center
+}
+.steps h3{font-size:1.05rem;font-family:Manrope,sans-serif;font-weight:700;margin-bottom:.3rem}
+.steps p{font-size:.96rem}
+.s--deep .steps li,.s--navy .steps li{border-top-color:var(--rule-l)}
+.s--deep .steps li::before,.s--navy .steps li::before{border-color:var(--gold);color:var(--gold)}
+.s--deep .steps h3,.s--navy .steps h3{color:var(--cream)}
+
+/* ============================================================
+   DISCLOSURE / FAQ
+   ============================================================ */
+details{border-top:1px solid var(--rule-d)}
+details:last-of-type{border-bottom:1px solid var(--rule-d)}
+.s--navy details,.s--deep details{border-color:var(--rule-l)}
+summary{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:baseline;gap:1rem;
+  padding:1.15rem 0;
+  font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;font-weight:600;
+  color:var(--ink);transition:color .18s
+}
+.s--navy summary,.s--deep summary{color:var(--cream)}
+summary::-webkit-details-marker{display:none}
+summary:hover{color:var(--gold-ink)}
+.s--navy summary:hover,.s--deep summary:hover{color:var(--gold)}
+summary .chev{width:14px;height:14px;flex:none;margin-left:auto;align-self:center;
+  color:var(--gold-ink);transition:transform .25s ease}
+.s--navy summary .chev,.s--deep summary .chev{color:var(--gold)}
+details[open] summary .chev{transform:rotate(180deg)}
+.dbody{padding:0 0 1.6rem}
+.dbody > :first-child{margin-top:0}
+.dbody p + p{margin-top:.8rem}
+.dbody a{color:var(--gold-ink);text-decoration:underline;text-underline-offset:3px}
+.dbody a:hover{color:var(--ink)}
+.s--navy .dbody a,.s--deep .dbody a{color:var(--gold)}
+.dbody .dev{font-weight:700;color:var(--ink)}
+
+.disclaimer{
+  margin-top:2.2rem;font-size:.88rem;color:var(--ink-faint);
+  padding-top:1.2rem;border-top:1px solid var(--rule-d)
+}
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.001ms !important;animation-delay:0ms !important;transition-duration:.001ms !important}
+  .gauge .arc{stroke-dashoffset:122}
+}
+
+@media print{
+  .nav,.btnrow{display:none}
+  .foot{background:#fff !important;color:#000 !important;border-top:1px solid #ccc}
+  body{background:#fff;color:#000;font-size:11pt}
+  .s--navy,.s--deep,.hero,.offer,.gauge,.reviewers{background:#fff !important;color:#000 !important}
+  .s--navy h2,.s--deep h2,.hero h1{color:#000 !important}
+  details{border:0}
+  .dbody{padding-bottom:1rem}
+}
+
+/* ============================================================
+   ONBOARDING FORM
+   Everything above this comment is the site stylesheet, inherited
+   verbatim from index.html so the two pages cannot drift apart.
+   Everything below is the form and nothing else uses it.
+   ============================================================ */
+
+.intro{max-width:var(--measure);margin:0 auto}
+.form{max-width:var(--measure);margin:0 auto}
+
+/* ---- the sticky progress rail ---- */
+.rail{
+  position:sticky;top:var(--navh);z-index:40;
+  background:rgba(240,237,228,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule-d);
+  padding:.7rem clamp(1.25rem,5vw,2rem) .6rem
+}
+.rail-in{max-width:var(--measure);margin:0 auto;display:flex;align-items:center;gap:.9rem}
+.rail-lab{
+  font-family:Manrope,sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  white-space:nowrap;flex:none
+}
+.bar{flex:1;height:4px;background:var(--rule-d);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
+.rail-n{
+  font-family:Manrope,sans-serif;font-size:.8rem;font-weight:700;
+  font-variant-numeric:lining-nums tabular-nums;color:var(--ink-soft);
+  white-space:nowrap;flex:none
+}
+
+/* ---- the save indicator ---- */
+.saved{
+  font-family:Manrope,sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--sage);white-space:nowrap;flex:none;
+  opacity:0;transition:opacity .25s
+}
+.saved.on{opacity:1}
+.saved.warn{color:var(--clay)}
+
+/* ---- a section of questions ---- */
+.sect{
+  margin-top:2.6rem;padding-top:1.7rem;border-top:1px solid var(--rule-d)
+}
+.sect:first-of-type{margin-top:1.8rem}
+.sect > h2{
+  font-size:clamp(1.3rem,3.8vw,1.7rem);margin:0 0 .2rem
+}
+.sect-n{
+  font-family:Manrope,sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink);
+  margin:0 0 .5rem
+}
+.sect-note{font-size:.93rem;color:var(--ink-faint);margin:.35rem 0 0}
+
+/* ---- one question ---- */
+.q{margin-top:1.7rem}
+.q:first-of-type{margin-top:1.3rem}
+.q > .lab{
+  display:block;font-weight:700;color:var(--ink);font-size:1.02rem;
+  line-height:1.4;margin:0 0 .15rem
+}
+.opt-note{font-size:.88rem;color:var(--ink-faint);margin:0 0 .5rem}
+.req{color:var(--gold-ink);font-weight:700}
+.opt-tag{
+  font-family:Manrope,sans-serif;font-size:.64rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);
+  margin-left:.5rem;vertical-align:.1em;white-space:nowrap
+}
+
+/* Rachel's "commonly misunderstood" notes. Small, italic, set off by a
+   gold rule so they read as the reviewer talking and not as instructions. */
+.help{
+  font-family:"Playfair Display",Georgia,serif;font-style:italic;
+  font-size:.95rem;line-height:1.5;color:var(--gold-ink);
+  border-left:2px solid rgba(184,146,74,.34);
+  padding:.1rem 0 .1rem .85rem;margin:.55rem 0 .2rem
+}
+
+/* ---- inputs ---- */
+.in,textarea.in,select.in{
+  display:block;width:100%;font:inherit;font-size:1rem;
+  color:var(--ink);background:#fbfaf6;
+  border:1px solid var(--rule-d);border-radius:3px;
+  padding:.7rem .85rem;margin-top:.55rem;
+  transition:border-color .18s,box-shadow .18s
+}
+.in::placeholder{color:#9aa6ae}
+.in:hover{border-color:rgba(22,34,46,.24)}
+.in:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,146,74,.18)}
+textarea.in{min-height:5.2rem;resize:vertical;line-height:1.6}
+select.in{
+  appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:2.4rem;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M2 5.5 8 11l6-5.5' fill='none' stroke='%238f6f45' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .8rem center
+}
+.in.bad,select.in.bad,textarea.in.bad{border-color:var(--clay);background:#fdf6f3}
+
+/* a pair of fields on one row, stacked on the narrowest phones */
+.row2{display:grid;gap:.55rem;margin-top:.15rem}
+@media (min-width:26rem){.row2{grid-template-columns:1fr 1fr;gap:.55rem .9rem}}
+.row2 .sub{
+  font-family:Manrope,sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);
+  display:block;margin-top:.6rem
+}
+.row2 .in{margin-top:.3rem}
+
+/* ---- radio and checkbox sets, drawn as pills ---- */
+.opts{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.6rem;list-style:none}
+.opts.col{flex-direction:column;gap:.35rem}
+.opts label{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-size:.95rem;color:var(--ink-soft);cursor:pointer;
+  border:1px solid var(--rule-d);border-radius:2rem;
+  padding:.45rem 1rem .45rem .8rem;
+  background:#fbfaf6;transition:border-color .16s,background .16s,color .16s
+}
+.opts.col label{border-radius:4px;padding:.6rem .95rem;width:100%}
+.opts label:hover{border-color:var(--gold-ink);color:var(--ink)}
+.opts input{
+  appearance:none;-webkit-appearance:none;flex:none;
+  width:1.05rem;height:1.05rem;margin:0;cursor:pointer;
+  border:1px solid rgba(22,34,46,.32);background:#fff;
+  transition:border-color .16s,background .16s
+}
+.opts input[type=radio]{border-radius:50%}
+.opts input[type=checkbox]{border-radius:3px}
+.opts input:checked{border-color:var(--gold-deep);background:var(--gold)}
+.opts input[type=radio]:checked{box-shadow:inset 0 0 0 3px #fbfaf6}
+.opts input[type=checkbox]:checked{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.4 6.2 11.6 13 4.8' fill='none' stroke='%2312202b' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:.85rem;background-position:center;background-repeat:no-repeat
+}
+.opts label:has(input:checked){
+  border-color:var(--gold-deep);background:rgba(184,146,74,.11);color:var(--ink);font-weight:600
+}
+.opts input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.opts label.off{opacity:.45}
+.opts label.off:hover{border-color:var(--rule-d);color:var(--ink-soft)}
+
+/* the three consents, which are sentences and not pills */
+.consents{margin-top:.9rem;display:grid;gap:.1rem}
+.consents label{
+  display:flex;align-items:flex-start;gap:.75rem;
+  font-size:.96rem;line-height:1.55;color:var(--ink-soft);
+  cursor:pointer;padding:.7rem 0;border-top:1px solid var(--rule-d-soft)
+}
+.consents label:first-child{border-top:0}
+.consents input{
+  appearance:none;-webkit-appearance:none;flex:none;margin:.28rem 0 0;
+  width:1.1rem;height:1.1rem;border-radius:3px;cursor:pointer;
+  border:1px solid rgba(22,34,46,.32);background:#fff
+}
+.consents input:checked{
+  border-color:var(--gold-deep);background:var(--gold);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.4 6.2 11.6 13 4.8' fill='none' stroke='%2312202b' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:.88rem;background-position:center;background-repeat:no-repeat
+}
+.consents input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.consents label:has(input:checked){color:var(--ink)}
+
+/* ---- the stress slider ---- */
+.scale{display:flex;align-items:center;gap:.9rem;margin-top:.7rem}
+.scale input{flex:1;accent-color:var(--gold-deep);height:1.6rem;cursor:pointer}
+.scale output{
+  font-family:Manrope,sans-serif;font-weight:700;font-size:1.35rem;
+  font-variant-numeric:lining-nums tabular-nums;
+  color:var(--gold-ink);min-width:2.1rem;text-align:center;flex:none
+}
+.scale-ends{
+  display:flex;justify-content:space-between;
+  font-family:Manrope,sans-serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+  margin-top:.1rem;padding-right:3rem
+}
+
+/* ---- validation ---- */
+.err{
+  display:none;font-size:.9rem;color:#a8553a;font-weight:600;
+  margin-top:.45rem
+}
+.err.on{display:block}
+.q.bad > .lab{color:#a8553a}
+
+/* ---- the GP callout, shown only when a safety box is ticked ---- */
+.gp{
+  display:none;margin-top:1rem;padding:1.1rem 1.25rem;
+  background:rgba(194,121,94,.13);border-left:3px solid var(--clay);
+  border-radius:0 4px 4px 0
+}
+.gp.on{display:block}
+.gp b{display:block;color:var(--ink);font-size:1rem;margin-bottom:.3rem}
+.gp p{font-size:.95rem;margin:0}
+
+/* ---- the tracker-conditional export guide ---- */
+.guide{
+  display:none;margin-top:1rem;padding:1.2rem 1.35rem;
+  background:var(--cream);border-radius:5px
+}
+.guide.on{display:block}
+.guide h3{font-family:Manrope,sans-serif;font-size:1rem;font-weight:700;margin:0 0 .5rem}
+.guide ol{margin:0 0 .9rem 1.15rem;font-size:.95rem}
+.guide ol li{margin-bottom:.3rem}
+.guide .note{font-size:.9rem;color:var(--ink-faint);margin:.7rem 0 0}
+.guide a.gl{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.9rem;font-weight:700;color:var(--gold-ink);
+  text-decoration:underline;text-underline-offset:3px
+}
+.guide a.gl:hover{color:var(--ink)}
+.guide a.gl svg{width:13px;height:13px}
+
+/* ---- the file field ---- */
+.drop{
+  margin-top:.7rem;padding:1.4rem 1.2rem;text-align:center;
+  border:1px dashed rgba(22,34,46,.28);border-radius:5px;
+  background:#fbfaf6;cursor:pointer;transition:border-color .18s,background .18s
+}
+.drop:hover,.drop.hot{border-color:var(--gold);background:rgba(184,146,74,.07)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.drop .dlab{font-weight:700;color:var(--ink);font-size:.98rem}
+.drop .dsub{font-size:.88rem;color:var(--ink-faint);margin-top:.25rem}
+.drop.has{border-style:solid;border-color:var(--sage);background:rgba(127,160,122,.09)}
+.drop.has .dlab{color:var(--ink)}
+.prog{display:none;height:4px;background:var(--rule-d);border-radius:2px;margin-top:.7rem;overflow:hidden}
+.prog.on{display:block}
+.prog i{display:block;height:100%;width:0;background:var(--sage);transition:width .2s}
+
+/* ---- submit ---- */
+.send{margin-top:2.6rem;padding-top:1.8rem;border-top:1px solid var(--rule-d)}
+.send .btn{width:100%;justify-content:center;font-size:1.05rem;padding:1.05rem 1.9rem}
+.send .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.send .fine{font-size:.88rem;color:var(--ink-faint);margin-top:.9rem;text-align:center}
+.send .err{text-align:center}
+
+/* ---- the confirmation screen ---- */
+.done{display:none}
+.done.on{display:block}
+.form.off,.rail.off,.intro.off{display:none}
+.tick{
+  width:3.1rem;height:3.1rem;border-radius:50%;
+  background:rgba(127,160,122,.16);display:grid;place-items:center;
+  margin:0 0 1.2rem
+}
+.tick svg{width:1.5rem;height:1.5rem;color:#4e7048}
+.refbox{
+  margin:1.5rem 0;padding:1.25rem 1.4rem;
+  background:var(--cream);border-radius:5px;border-left:3px solid var(--gold)
+}
+.refbox .rl{
+  font-family:Manrope,sans-serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);
+  margin:0 0 .35rem
+}
+.refbox .rv{
+  font-family:Manrope,sans-serif;font-weight:700;font-size:1.5rem;
+  font-variant-numeric:lining-nums tabular-nums;letter-spacing:.03em;
+  color:var(--ink);word-break:break-all
+}
+.linkbox{
+  margin:1.4rem 0;padding:1.1rem 1.25rem;
+  background:#fbfaf6;border:1px solid var(--rule-d);border-radius:4px
+}
+.linkbox .rl{
+  font-family:Manrope,sans-serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);
+  margin:0 0 .45rem
+}
+.linkbox code{
+  display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.82rem;line-height:1.5;color:var(--ink);word-break:break-all
+}
+.copy{
+  margin-top:.75rem;font:inherit;font-size:.82rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gold-ink);background:transparent;cursor:pointer;
+  border:1px solid rgba(184,146,74,.5);border-radius:2px;padding:.45rem .9rem
+}
+.copy:hover{background:rgba(184,146,74,.1);color:var(--ink)}
+
+/* ---- the tokenised return visit ---- */
+.slot{display:none}
+.slot.on{display:block}
+
+@media (max-width:22.5rem){
+  .rail-lab{display:none}
+  .opts label{font-size:.9rem;padding:.42rem .85rem .42rem .7rem}
+  .scale-ends{padding-right:2.6rem}
+}
+</style>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TLRP9CF');</script>
+<!-- End Google Tag Manager -->
+
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLRP9CF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ============================================================
+     ICON SPRITE. Single 1.6 stroke weight, currentColor.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-check"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-chev"><path d="M2 5.5 8 11l6-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-arrow"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </defs>
+</svg>
+
+<a class="skip" href="#top">Skip to the page</a>
+
+<nav class="nav">
+  <a class="brand" href="https://taylored.health/" aria-label="Taylored Health home">
+    <img decoding="async" src="https://taylored.health/wp-content/uploads/2026/08/taylored-logo-400.png" alt="Taylored. Health &amp; Performance Technologies" width="400" height="124">
+  </a>
+  <input type="checkbox" id="navtog" class="navtog" aria-hidden="true">
+  <label for="navtog" class="navbtn" aria-label="Menu"><span></span><span></span></label>
+  <div class="links">
+    <a class="nlink" href="https://taylored.health/executive-audit/">The Audit</a>
+    <a class="nlink" href="https://taylored.health/private-advisory/">Advisory</a>
+    <a class="nlink" href="https://taylored.health/events/">Events</a>
+    <a class="nlink" href="https://taylored.health/beacon/">The Book</a>
+    <a class="nlink" href="https://taylored.health/execos/">Exec<span class="xos">OS</span></a>
+    <div class="drop">
+      <a class="nlink" href="https://taylored.health/about/">About</a>
+      <div class="dmenu">
+        <a href="https://taylored.health/about/">Who you work with</a>
+        <a href="https://taylored.health/results/">Results</a>
+        <a href="https://taylored.health/apply/">Apply</a>
+        <a href="https://taylored.health/leadership-capacity/">Leadership Capacity</a>
+      </div>
+    </div>
+    <a class="pill pill-ghost" href="https://wheel.taylored.health">The Capacity Wheel &rarr;</a>
+    <a class="pill" href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book a conversation</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     INTRO
+     ============================================================ -->
+<section class="s s--deep" id="top" style="padding-top:calc(var(--navh) + clamp(1.6rem,5vw,2.6rem))">
+  <div class="intro" id="intro">
+    <p class="eyebrow">STEP ONE OF THREE</p>
+    <h1 style="font-size:clamp(1.9rem,6vw,2.8rem);margin:0 0 .9rem">Before your review</h1>
+    <p class="deck">Your tracker knows what happened. It does not know why.</p>
+    <div class="lines">
+      <p><span class="say">These questions fill in the part the data cannot see.</span> <span class="say">About ten minutes, and you can stop and come back.</span></p>
+      <p><span class="say">Your answers save as you type.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     THE TOKENISED RETURN VISIT
+     Someone who left without uploading lands here from their own link.
+     ============================================================ -->
+<section class="s s--paper slot" id="slot">
+  <div class="form">
+    <p class="sect-n">YOUR UPLOAD</p>
+    <h2 id="slotHead">Picking up where you left off</h2>
+    <p id="slotSub" style="margin-top:.6rem">Checking your link.</p>
+
+    <div id="slotLive" style="display:none">
+      <div class="refbox">
+        <p class="rl">YOUR REFERENCE</p>
+        <div class="rv" id="slotRef">&nbsp;</div>
+      </div>
+      <div class="guide on" id="slotGuide"></div>
+      <div class="q">
+        <span class="lab">Your data export</span>
+        <label class="drop" id="slotDrop">
+          <input type="file" id="slotFile" accept=".csv,.zip,.json,.txt,.xlsx">
+          <span class="dlab" id="slotDlab">Choose your export file</span>
+          <span class="dsub" id="slotDsub">CSV, ZIP, JSON or XLSX, up to 50MB</span>
+        </label>
+        <div class="prog" id="slotProg"><i></i></div>
+        <p class="err" id="slotErr"></p>
+      </div>
+      <div class="send">
+        <button class="btn" type="button" id="slotSend" disabled>Upload my export <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROGRESS RAIL
+     ============================================================ -->
+<div class="rail" id="rail">
+  <div class="rail-in">
+    <span class="rail-lab">PROGRESS</span>
+    <span class="bar"><i id="barFill"></i></span>
+    <span class="rail-n" id="railN">0 of 23</span>
+    <span class="saved" id="savedFlag">SAVED</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     THE FORM
+     Every question below is Rachel's, in her order and her wording.
+     The italic notes under each are her "commonly misunderstood" lines.
+     ============================================================ -->
+<section class="s s--paper">
+<form class="form" id="f" novalidate autocomplete="on">
+
+  <!-- ---------- 1. About you ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 1</p>
+    <h2>About you</h2>
+
+    <div class="q" data-q="1">
+      <span class="lab">Name and email <span class="req">*</span></span>
+      <div class="row2">
+        <div>
+          <span class="sub">NAME</span>
+          <input class="in" type="text" id="q1name" name="q1name" autocomplete="name" placeholder="Your name">
+        </div>
+        <div>
+          <span class="sub">EMAIL</span>
+          <input class="in" type="email" id="q1email" name="q1email" autocomplete="email" inputmode="email" placeholder="you@example.com">
+        </div>
+      </div>
+      <p class="err" id="e1"></p>
+    </div>
+
+    <div class="q" data-q="2">
+      <span class="lab">Which device do you wear? <span class="req">*</span></span>
+      <div class="opts" role="radiogroup" aria-label="Which device do you wear">
+        <label><input type="radio" name="q2" value="&#332;ura"> &#332;ura</label>
+        <label><input type="radio" name="q2" value="WHOOP"> WHOOP</label>
+      </div>
+      <p class="opt-note">More devices are coming. For now the review reads &#332;ura and WHOOP exports.</p>
+      <p class="err" id="e2"></p>
+    </div>
+
+    <div class="q" data-q="3">
+      <span class="lab">How long have you worn it?</span>
+      <div class="opts" role="radiogroup" aria-label="How long have you worn it">
+        <label><input type="radio" name="q3" value="Under 1 month"> Under 1 month</label>
+        <label><input type="radio" name="q3" value="1 to 6 months"> 1 to 6 months</label>
+        <label><input type="radio" name="q3" value="6+ months"> 6+ months</label>
+      </div>
+    </div>
+
+    <div class="q" data-q="4">
+      <span class="lab">Which hand and finger do you wear it on, and how does it fit?</span>
+      <p class="help">Commonly missed: a loose or badly placed ring gives less reliable heart rate and temperature readings, so a &ldquo;bad score&rdquo; can be partly bad data.</p>
+      <input class="in" type="text" id="q4where" name="q4where" placeholder="Left index finger, or left wrist">
+      <div class="opts" role="radiogroup" aria-label="How does it fit">
+        <label><input type="radio" name="q4fit" value="Snug"> Snug</label>
+        <label><input type="radio" name="q4fit" value="Slightly loose"> Slightly loose</label>
+        <label><input type="radio" name="q4fit" value="Loose, it spins"> Loose, it spins</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 2. Your goal ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 2</p>
+    <h2>Your goal</h2>
+
+    <div class="q" data-q="5">
+      <span class="lab">What bothers you most? <span class="req">*</span></span>
+      <p class="opt-note">Pick up to 2.</p>
+      <div class="opts" id="q5box">
+        <label><input type="checkbox" name="q5" value="Low scores"> Low scores</label>
+        <label><input type="checkbox" name="q5" value="Waking up tired"> Waking up tired</label>
+        <label><input type="checkbox" name="q5" value="Trouble falling asleep"> Trouble falling asleep</label>
+        <label><input type="checkbox" name="q5" value="Waking in the night"> Waking in the night</label>
+        <label><input type="checkbox" name="q5" value="Waking too early"> Waking too early</label>
+        <label><input type="checkbox" name="q5" value="Low HRV or recovery"> Low HRV or recovery</label>
+      </div>
+      <p class="err" id="e5"></p>
+    </div>
+
+    <div class="q" data-q="6">
+      <span class="lab">What would a good result look like in a month?</span>
+      <textarea class="in" id="q6" name="q6" rows="3" placeholder="In your own words"></textarea>
+    </div>
+  </div>
+
+  <!-- ---------- 3. Timing and consistency ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 3</p>
+    <h2>Timing and consistency</h2>
+
+    <div class="q" data-q="7">
+      <span class="lab">What time do you usually go to bed and get up?</span>
+      <p class="help">Commonly misunderstood: sleeping in on weekends (&ldquo;social jet lag&rdquo;) shifts your body clock and makes Monday and Tuesday nights worse.</p>
+      <span class="sub">WEEKDAYS</span>
+      <div class="row2">
+        <div><span class="sub" style="margin-top:0">TO BED</span><input class="in" type="time" id="q7wdBed" name="q7wdBed"></div>
+        <div><span class="sub" style="margin-top:0">UP</span><input class="in" type="time" id="q7wdUp" name="q7wdUp"></div>
+      </div>
+      <span class="sub">WEEKENDS</span>
+      <div class="row2">
+        <div><span class="sub" style="margin-top:0">TO BED</span><input class="in" type="time" id="q7weBed" name="q7weBed"></div>
+        <div><span class="sub" style="margin-top:0">UP</span><input class="in" type="time" id="q7weUp" name="q7weUp"></div>
+      </div>
+    </div>
+
+    <div class="q" data-q="8">
+      <span class="lab">How long do you spend in bed awake, before sleep or in the night?</span>
+      <p class="help">Misunderstood: time in bed is not time asleep. Going to bed earlier to &ldquo;catch up&rdquo; often means more time lying awake.</p>
+      <div class="opts" role="radiogroup" aria-label="How long do you spend in bed awake">
+        <label><input type="radio" name="q8" value="Under 15 minutes"> Under 15 minutes</label>
+        <label><input type="radio" name="q8" value="15 to 30 minutes"> 15 to 30 minutes</label>
+        <label><input type="radio" name="q8" value="30 to 60 minutes"> 30 to 60 minutes</label>
+        <label><input type="radio" name="q8" value="Over an hour"> Over an hour</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 4. Light ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 4</p>
+    <h2>Light</h2>
+
+    <div class="q" data-q="9">
+      <span class="lab">How much time do you spend outdoors in daylight before midday?</span>
+      <p class="help">Often missed: morning light sets your body clock. Many indoor workers get almost none.</p>
+      <div class="opts" role="radiogroup" aria-label="Time outdoors before midday">
+        <label><input type="radio" name="q9" value="None"> None</label>
+        <label><input type="radio" name="q9" value="Under 10 minutes"> Under 10 minutes</label>
+        <label><input type="radio" name="q9" value="10 to 30 minutes"> 10 to 30 minutes</label>
+        <label><input type="radio" name="q9" value="30+ minutes"> 30+ minutes</label>
+      </div>
+    </div>
+
+    <div class="q" data-q="10">
+      <span class="lab">In the last hour before bed, what are you doing?</span>
+      <p class="opt-note">Tick all that apply.</p>
+      <p class="help">Misunderstood: bright room lighting matters too, not just phones.</p>
+      <div class="opts">
+        <label><input type="checkbox" name="q10" value="Phone"> Phone</label>
+        <label><input type="checkbox" name="q10" value="Laptop or work"> Laptop or work</label>
+        <label><input type="checkbox" name="q10" value="TV"> TV</label>
+        <label><input type="checkbox" name="q10" value="Bright overhead lights on"> Bright overhead lights on</label>
+        <label><input type="checkbox" name="q10" value="Reading"> Reading</label>
+        <label><input type="checkbox" name="q10" value="Other"> Other</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 5. Caffeine ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 5</p>
+    <h2>Caffeine</h2>
+
+    <div class="q" data-q="11">
+      <span class="lab">What caffeine do you have, and what time is your last one?</span>
+      <p class="opt-note">Tick all that apply, and add the time.</p>
+      <p class="help">Misunderstood: caffeine stays in your system for hours, so an afternoon coffee is still active at bedtime. Pre-workouts and some teas are hidden sources. &ldquo;I can drink coffee and still fall asleep&rdquo; does not mean it is not affecting deep sleep.</p>
+      <div class="opts">
+        <label><input type="checkbox" name="q11" value="Coffee"> Coffee</label>
+        <label><input type="checkbox" name="q11" value="Tea"> Tea</label>
+        <label><input type="checkbox" name="q11" value="Energy drinks"> Energy drinks</label>
+        <label><input type="checkbox" name="q11" value="Pre-workout"> Pre-workout</label>
+        <label><input type="checkbox" name="q11" value="Soda"> Soda</label>
+        <label><input type="checkbox" name="q11" value="Chocolate"> Chocolate</label>
+      </div>
+      <span class="sub">TIME OF YOUR LAST ONE</span>
+      <input class="in" type="time" id="q11time" name="q11time" style="max-width:11rem">
+    </div>
+  </div>
+
+  <!-- ---------- 6. Alcohol ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 6</p>
+    <h2>Alcohol</h2>
+
+    <div class="q" data-q="12">
+      <span class="lab">How many alcoholic drinks do you have a week, and when?</span>
+      <p class="help">The most misunderstood one: it helps you fall asleep, but it raises night-time heart rate, lowers HRV and breaks up sleep later in the night. It is often the clearest signal in ring data.</p>
+      <div class="opts" role="radiogroup" aria-label="Drinks a week">
+        <label><input type="radio" name="q12" value="0"> 0</label>
+        <label><input type="radio" name="q12" value="1 to 3"> 1 to 3</label>
+        <label><input type="radio" name="q12" value="4 to 7"> 4 to 7</label>
+        <label><input type="radio" name="q12" value="8+"> 8+</label>
+      </div>
+      <span class="sub">USUAL TIMING</span>
+      <div class="opts" role="radiogroup" aria-label="Usual timing">
+        <label><input type="radio" name="q12when" value="With dinner"> With dinner</label>
+        <label><input type="radio" name="q12when" value="Evening"> Evening</label>
+        <label><input type="radio" name="q12when" value="Close to bed"> Close to bed</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 7. Food and drink ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 7</p>
+    <h2>Food and drink</h2>
+
+    <div class="q" data-q="13">
+      <span class="lab">What time is your last meal, and is dinner your biggest meal?</span>
+      <div class="row2">
+        <div><span class="sub" style="margin-top:0">LAST MEAL</span><input class="in" type="time" id="q13time" name="q13time"></div>
+        <div>
+          <span class="sub" style="margin-top:0">BIGGEST MEAL OF THE DAY</span>
+          <select class="in" id="q13big" name="q13big">
+            <option value="">Choose one</option>
+            <option>Yes, dinner is my biggest</option>
+            <option>No, lunch is my biggest</option>
+            <option>No, breakfast is my biggest</option>
+            <option>They are about the same</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="q" data-q="14">
+      <span class="lab">Do you snack or drink much fluid within 2 hours of bed?</span>
+      <p class="help">Commonly missed: late fluids mean bathroom trips, and big late meals raise night-time heart rate.</p>
+      <div class="opts" role="radiogroup" aria-label="Snacks or fluid within 2 hours of bed">
+        <label><input type="radio" name="q14" value="No"> No</label>
+        <label><input type="radio" name="q14" value="Snack"> Snack</label>
+        <label><input type="radio" name="q14" value="Fluids"> Fluids</label>
+        <label><input type="radio" name="q14" value="Both"> Both</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 8. Exercise ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 8</p>
+    <h2>Exercise</h2>
+
+    <div class="q" data-q="15">
+      <span class="lab">What exercise do you do, and at what time of day?</span>
+      <p class="help">Misunderstood: exercise helps sleep, but hard sessions late in the evening can keep heart rate up and HRV down overnight.</p>
+      <span class="sub">TYPE</span>
+      <input class="in" type="text" id="q15type" name="q15type" placeholder="Running, lifting, cycling, classes">
+      <div class="row2">
+        <div>
+          <span class="sub" style="margin-top:0">DAYS PER WEEK</span>
+          <select class="in" id="q15days" name="q15days">
+            <option value="">Choose one</option>
+            <option>0</option><option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option><option>7</option>
+          </select>
+        </div>
+        <div><span class="sub" style="margin-top:0">TYPICAL TIME</span><input class="in" type="time" id="q15time" name="q15time"></div>
+      </div>
+      <span class="sub">INTENSITY</span>
+      <div class="opts" role="radiogroup" aria-label="Intensity">
+        <label><input type="radio" name="q15int" value="Easy"> Easy</label>
+        <label><input type="radio" name="q15int" value="Moderate"> Moderate</label>
+        <label><input type="radio" name="q15int" value="Hard"> Hard</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 9. Your bedroom ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 9</p>
+    <h2>Your bedroom</h2>
+
+    <div class="q" data-q="16">
+      <span class="lab">Describe your bedroom at night</span>
+      <p class="help">Commonly missed: a warm room is one of the most common and easily fixed causes of restless sleep.</p>
+      <span class="sub">TEMPERATURE</span>
+      <div class="opts" role="radiogroup" aria-label="Temperature">
+        <label><input type="radio" name="q16temp" value="Cool"> Cool</label>
+        <label><input type="radio" name="q16temp" value="Comfortable"> Comfortable</label>
+        <label><input type="radio" name="q16temp" value="Warm"> Warm</label>
+      </div>
+      <span class="sub">DARKNESS</span>
+      <div class="opts" role="radiogroup" aria-label="Darkness">
+        <label><input type="radio" name="q16dark" value="Pitch black"> Pitch black</label>
+        <label><input type="radio" name="q16dark" value="Some light"> Some light</label>
+        <label><input type="radio" name="q16dark" value="Fairly light"> Fairly light</label>
+      </div>
+      <span class="sub">NOISE</span>
+      <div class="opts" role="radiogroup" aria-label="Noise">
+        <label><input type="radio" name="q16noise" value="Quiet"> Quiet</label>
+        <label><input type="radio" name="q16noise" value="Some"> Some</label>
+        <label><input type="radio" name="q16noise" value="Noisy"> Noisy</label>
+      </div>
+    </div>
+
+    <div class="q" data-q="17">
+      <span class="lab">Who or what else sleeps in the room?</span>
+      <p class="help">Often overlooked: a partner&rsquo;s snoring, a pet on the bed or a child waking can explain waking in the night on its own.</p>
+      <div class="opts" id="q17box">
+        <label><input type="checkbox" name="q17" value="Partner"> Partner</label>
+        <label><input type="checkbox" name="q17" value="Children"> Children</label>
+        <label><input type="checkbox" name="q17" value="Pets"> Pets</label>
+        <label><input type="checkbox" name="q17" value="Nobody" data-solo="1"> Nobody</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 10. Mind and stress ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 10</p>
+    <h2>Mind and stress</h2>
+
+    <div class="q" data-q="18">
+      <span class="lab">How stressed have you been over the last month, and what is the main source?</span>
+      <div class="scale">
+        <input type="range" id="q18n" name="q18n" min="1" max="10" step="1" value="5" aria-label="Stress, 1 to 10">
+        <output for="q18n" id="q18out">5</output>
+      </div>
+      <div class="scale-ends"><span>1 NOT AT ALL</span><span>10 FLAT OUT</span></div>
+      <span class="sub">MAIN SOURCE</span>
+      <input class="in" type="text" id="q18src" name="q18src" placeholder="Work, family, health, money, something else">
+    </div>
+
+    <div class="q" data-q="19">
+      <span class="lab">Do you lie in bed thinking about work or problems?</span>
+      <p class="help">Misunderstood: people often treat this as a sleep problem when it is a wind-down problem.</p>
+      <div class="opts" role="radiogroup" aria-label="Lying in bed thinking">
+        <label><input type="radio" name="q19" value="Rarely"> Rarely</label>
+        <label><input type="radio" name="q19" value="Sometimes"> Sometimes</label>
+        <label><input type="radio" name="q19" value="Most nights"> Most nights</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- 11. Things that change your data ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 11</p>
+    <h2>Things that change your data</h2>
+    <p class="sect-note">Both of these are optional. Skip either one if you would rather not say.</p>
+
+    <div class="q" data-q="20">
+      <span class="lab">Does anything here apply to you? <span class="opt-tag">OPTIONAL</span></span>
+      <p class="opt-note">Tick all that apply.</p>
+      <p class="help">Commonly missed: hormonal changes shift temperature and HRV readings, and travel or illness can make a whole month look bad.</p>
+      <div class="opts col">
+        <label><input type="checkbox" name="q20" value="Menstrual cycle tracking"> Menstrual cycle tracking</label>
+        <label><input type="checkbox" name="q20" value="Perimenopause or menopause"> Perimenopause or menopause</label>
+        <label><input type="checkbox" name="q20" value="Shift work"> Shift work</label>
+        <label><input type="checkbox" name="q20" value="Frequent travel across time zones"> Frequent travel across time zones</label>
+        <label><input type="checkbox" name="q20" value="Young children waking at night"> Young children waking at night</label>
+        <label><input type="checkbox" name="q20" value="Recent illness"> Recent illness</label>
+      </div>
+    </div>
+
+    <div class="q" data-q="21">
+      <span class="lab">Any medications or supplements, and when do you take them? <span class="opt-tag">OPTIONAL</span></span>
+      <p class="help">Some medications change heart rate and HRV directly, and supplement timing often matters more than people think.</p>
+      <textarea class="in" id="q21" name="q21" rows="3" placeholder="Including melatonin, magnesium and sleep aids"></textarea>
+    </div>
+  </div>
+
+  <!-- ---------- 12. Safety check ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 12</p>
+    <h2>Safety check</h2>
+
+    <div class="q" data-q="22">
+      <span class="lab">Do any of these apply? <span class="req">*</span></span>
+      <div class="opts col" id="q22box">
+        <label><input type="checkbox" name="q22" value="I snore loudly" data-flag="1"> I snore loudly</label>
+        <label><input type="checkbox" name="q22" value="Someone has noticed me stop breathing while asleep" data-flag="1"> Someone has noticed me stop breathing while asleep</label>
+        <label><input type="checkbox" name="q22" value="I regularly nod off during the day" data-flag="1"> I regularly nod off during the day</label>
+        <label><input type="checkbox" name="q22" value="None of these" data-solo="1"> None of these</label>
+      </div>
+      <div class="gp" id="gp">
+        <b>Please speak with your GP before your review.</b>
+        <p>These need a proper medical check.</p>
+      </div>
+      <p class="err" id="e22"></p>
+    </div>
+  </div>
+
+  <!-- ---------- 13. Your data and consent ---------- -->
+  <div class="sect">
+    <p class="sect-n">SECTION 13</p>
+    <h2>Your data and consent</h2>
+
+    <div class="q" data-q="23">
+      <span class="lab">Upload your data export <span class="req">*</span></span>
+      <p class="opt-note" id="pickFirst">Pick your device in section 1 and the export steps for it will appear here.</p>
+
+      <!-- tracker-conditional export guide, both links open in a new tab -->
+      <div class="guide" id="gOura">
+        <h3>How to export your &#332;ura data</h3>
+        <ol>
+          <li>Sign in to &#332;ura on the web with your &#332;ura account.</li>
+          <li>Choose Trends in the left-hand menu, then set the date range at the top.</li>
+          <li>Download the CSV.</li>
+        </ol>
+        <a class="gl" href="https://support.ouraring.com/hc/en-us/articles/360025441594-Export-Share-Your-Oura-Data" target="_blank" rel="noopener">&#332;ura&rsquo;s own export guide <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <p class="note">Use as long a date range as you have. Three months is ideal, one month is the minimum worth reading. A full &#332;ura data request can take up to 10 days to arrive, so start it now if you are going that route.</p>
+      </div>
+
+      <div class="guide" id="gWhoop">
+        <h3>How to export your WHOOP data</h3>
+        <ol>
+          <li>Open the WHOOP app and tap the menu icon at the bottom right.</li>
+          <li>Scroll down, choose Data Export, and pick your date range.</li>
+          <li>Tap Export. WHOOP emails you a link to the CSV files.</li>
+        </ol>
+        <a class="gl" href="https://support.whoop.com/s/article/How-to-Export-Your-Data" target="_blank" rel="noopener">WHOOP&rsquo;s own export guide <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <p class="note">Most exports arrive within 24 hours and the download link expires after 7 days, so save the file as soon as it lands. Use as long a date range as you have. Three months is ideal.</p>
+      </div>
+
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".csv,.zip,.json,.txt,.xlsx">
+        <span class="dlab" id="dlab">Choose your export file</span>
+        <span class="dsub" id="dsub">CSV, ZIP, JSON or XLSX, up to 50MB</span>
+      </label>
+      <div class="prog" id="prog"><i></i></div>
+      <div class="opts col" style="margin-top:.7rem">
+        <label><input type="checkbox" id="later" name="later"> I do not have the file here. Send me my own upload link.</label>
+      </div>
+      <p class="err" id="e23"></p>
+    </div>
+
+    <div class="q" data-q="24">
+      <span class="lab">Please confirm <span class="req">*</span></span>
+      <div class="consents">
+        <label><input type="checkbox" name="c1"> I understand this is a sleep and recovery data review, not medical advice.</label>
+        <label><input type="checkbox" name="c2"> I am happy for you to store my data for this review and delete it within 90 days.</label>
+        <label><input type="checkbox" name="c3"> I understand this review cannot guarantee specific results, and refunds are available up to the end of my call.</label>
+      </div>
+      <p class="err" id="ec"></p>
+    </div>
+  </div>
+
+  <!-- ---------- submit ---------- -->
+  <div class="send">
+    <button class="btn" type="submit" id="go">Send my answers <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    <p class="err" id="eTop"></p>
+    <p class="fine">The 90 days starts the moment your file lands, not from your call.</p>
+  </div>
+</form>
+</section>
+
+<!-- ============================================================
+     CONFIRMATION
+     ============================================================ -->
+<section class="s s--paper done" id="done">
+  <div class="form">
+    <div class="tick"><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg></div>
+    <p class="sect-n">STEP ONE DONE</p>
+    <h2 id="doneHead">Your answers are in</h2>
+    <p class="deck" id="doneDeck">That is the part only you could do.</p>
+
+    <div class="refbox">
+      <p class="rl">YOUR REFERENCE</p>
+      <div class="rv" id="refOut">&nbsp;</div>
+    </div>
+
+    <div id="needUpload" style="display:none">
+      <h3 style="margin-top:2rem">One thing left</h3>
+      <p style="margin-top:.5rem">Your export file has not arrived yet. Open this link on the device that has the file and upload it there. The link is yours alone and it stops working when your data is deleted.</p>
+      <div class="linkbox">
+        <p class="rl">YOUR UPLOAD LINK</p>
+        <code id="tokLink">&nbsp;</code>
+        <button class="copy" type="button" id="copyBtn">COPY LINK</button>
+      </div>
+    </div>
+
+    <div id="gotUpload" style="display:none">
+      <h3 style="margin-top:2rem">Your file is in</h3>
+      <p style="margin-top:.5rem" id="delLine">&nbsp;</p>
+    </div>
+
+    <h3 style="margin-top:2rem">Now choose a time for your 30-minute call</h3>
+    <p style="margin-top:.5rem">Pick the slot that suits you. Leave at least 7 days after your upload so there is time to read your data properly.</p>
+    <div class="btnrow">
+      <a class="btn" href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book my call <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <p class="disclaimer">Keep your reference number. If you need to reach us, quote it in an email to <a href="mailto:hello@taylored.health" style="color:var(--gold-ink)">hello@taylored.health</a>.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <a class="brand" href="https://taylored.health/" aria-label="Taylored Health home">
+      <img decoding="async" src="https://taylored.health/wp-content/uploads/2026/08/taylored-logo-400.png" alt="Taylored. Health &amp; Performance Technologies" width="400" height="124" loading="lazy">
+    </a>
+    <p class="foot-pos">Executive capacity advisory. We measure what the role takes out of you, then build the capacity to carry it.</p>
+    <div class="foot-cols">
+      <div class="foot-col"><div class="foot-h">Work with us</div><a href="https://taylored.health/metabolic-audit/">Metabolic Audit</a><a href="https://taylored.health/executive-audit/">Executive Capacity Audit</a><a href="https://taylored.health/private-advisory/">The Private Advisory</a><a href="https://taylored.health/execos/">Exec<span class="xos">OS</span></a><a href="https://taylored.health/events/">Event consultancy</a><a href="https://taylored.health/apply/">Apply</a></div>
+      <div class="foot-col"><div class="foot-h">The thinking</div><a href="https://taylored.health/beacon/">Beacon, the book</a><a href="https://taylored.health/journal/">Journal</a><a href="https://taylored.health/results/">Results</a><a href="https://taylored.health/about/">Who you work with</a><a href="https://taylored.health/leadership-capacity/">Leadership Capacity</a></div>
+      <div class="foot-col"><div class="foot-h">Contact</div><a href="mailto:hello@taylored.health">hello@taylored.health</a><a href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book a conversation</a><a href="https://www.instagram.com/tayloredhealthhq/">Instagram</a><a href="https://www.youtube.com/@TayloredLifePodcast">YouTube</a></div>
+    </div>
+    <div class="foot-base">
+      <span>&copy; Taylored Health 2026</span>
+      <span><a href="https://taylored.health/privacy-policy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="https://taylored.health/terms-of-service/">Terms</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* The site's own nav script, verbatim from taylored.health. Adds .scrolled
+   past 40px, which is what fills the transparent bar in. */
+(function(){var n=document.querySelector('.nav');if(!n)return;var f=function(){n.classList.toggle('scrolled',(window.scrollY||document.documentElement.scrollTop)>40);};f();window.addEventListener('scroll',f,{passive:true});})();
+</script>
+
+<script>
+/* ============================================================
+   THE FORM
+   One endpoint, no key. Every secret sits in the Edge Function, which
+   is the only reason this can be a static page at all.
+   ============================================================ */
+(function(){
+"use strict";
+
+var API = "https://gdsdtawkigzpyseavkqp.supabase.co/functions/v1/sleep-intake";
+var DRAFT_KEY = "ssr_draft_v1";
+var MAX_BYTES = 50 * 1024 * 1024;
+
+var $ = function(id){ return document.getElementById(id); };
+var form = $("f");
+
+/* ---- the 23 questions, in Rachel's order and her wording. The labels
+   travel with the answers so the stored row and Rachel's copy both read
+   as themselves and not as q1, q2, q3. ---- */
+var QS = [
+  {n:1,  q:"Name and email", f:["q1name","q1email"], sub:["Name","Email"]},
+  {n:2,  q:"Which device do you wear?", r:"q2"},
+  {n:3,  q:"How long have you worn it?", r:"q3"},
+  {n:4,  q:"Which hand and finger do you wear it on, and how does it fit?", f:["q4where"], sub:["Where"], r:"q4fit", rsub:"Fit"},
+  {n:5,  q:"What bothers you most?", c:"q5"},
+  {n:6,  q:"What would a good result look like in a month?", f:["q6"]},
+  {n:7,  q:"What time do you usually go to bed and get up?", f:["q7wdBed","q7wdUp","q7weBed","q7weUp"], sub:["Weekday bed","Weekday up","Weekend bed","Weekend up"]},
+  {n:8,  q:"How long do you spend in bed awake, before sleep or in the night?", r:"q8"},
+  {n:9,  q:"How much time do you spend outdoors in daylight before midday?", r:"q9"},
+  {n:10, q:"In the last hour before bed, what are you doing?", c:"q10"},
+  {n:11, q:"What caffeine do you have, and what time is your last one?", c:"q11", f:["q11time"], sub:["Last one at"]},
+  {n:12, q:"How many alcoholic drinks do you have a week, and when?", r:"q12", rsub:"Drinks a week", r2:"q12when", r2sub:"Usual timing"},
+  {n:13, q:"What time is your last meal, and is dinner your biggest meal?", f:["q13time","q13big"], sub:["Last meal","Biggest meal"]},
+  {n:14, q:"Do you snack or drink much fluid within 2 hours of bed?", r:"q14"},
+  {n:15, q:"What exercise do you do, and at what time of day?", f:["q15type","q15days","q15time"], sub:["Type","Days per week","Typical time"], r:"q15int", rsub:"Intensity"},
+  {n:16, q:"Describe your bedroom at night", r:"q16temp", rsub:"Temperature", r2:"q16dark", r2sub:"Darkness", r3:"q16noise", r3sub:"Noise"},
+  {n:17, q:"Who or what else sleeps in the room?", c:"q17"},
+  {n:18, q:"How stressed have you been over the last month, and what is the main source?", f:["q18n","q18src"], sub:["Stress, 1 to 10","Main source"]},
+  {n:19, q:"Do you lie in bed thinking about work or problems?", r:"q19"},
+  {n:20, q:"Does anything here apply to you?", c:"q20", optional:true},
+  {n:21, q:"Any medications or supplements, and when do you take them?", f:["q21"], optional:true},
+  {n:22, q:"Do any of these apply?", c:"q22"},
+  {n:23, q:"Upload your data export", upload:true}
+];
+
+/* ---- reading the form ---- */
+function radio(name){ var el = form.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ""; }
+function checks(name){
+  return Array.prototype.map.call(form.querySelectorAll('input[name="'+name+'"]:checked'), function(el){ return el.value; });
+}
+function val(id){ var el = $(id); return el ? String(el.value || "").trim() : ""; }
+
+function readAll(){
+  var out = [];
+  QS.forEach(function(Q){
+    if (Q.upload) return;
+    var parts = [];
+    if (Q.c){ var cs = checks(Q.c); if (cs.length) parts.push({label:null, value:cs}); }
+    if (Q.f) Q.f.forEach(function(id,i){
+      var v = val(id);
+      if (id === "q18n" && v === "5" && !$("q18touched")) { /* still the default */ }
+      if (v) parts.push({label:(Q.sub && Q.sub[i]) || null, value:v});
+    });
+    if (Q.r){ var rv = radio(Q.r); if (rv) parts.push({label:Q.rsub || null, value:rv}); }
+    if (Q.r2){ var r2 = radio(Q.r2); if (r2) parts.push({label:Q.r2sub || null, value:r2}); }
+    if (Q.r3){ var r3 = radio(Q.r3); if (r3) parts.push({label:Q.r3sub || null, value:r3}); }
+    if (parts.length) out.push({n:Q.n, q:Q.q, parts:parts});
+  });
+  return out;
+}
+
+/* a question counts as answered if it has any value at all */
+function answeredCount(){
+  var done = 0;
+  QS.forEach(function(Q){
+    if (Q.upload){
+      if ($("file").files.length || $("later").checked) done++;
+      return;
+    }
+    var any = false;
+    if (Q.c && checks(Q.c).length) any = true;
+    if (Q.f) Q.f.forEach(function(id){ if (val(id)) any = true; });
+    if (Q.r && radio(Q.r)) any = true;
+    if (Q.r2 && radio(Q.r2)) any = true;
+    if (Q.r3 && radio(Q.r3)) any = true;
+    if (any) done++;
+  });
+  return done;
+}
+
+function paintProgress(){
+  var n = answeredCount();
+  $("railN").textContent = n + " of 23";
+  $("barFill").style.width = Math.round((n / 23) * 100) + "%";
+}
+
+/* ============================================================
+   SAVE AS YOU TYPE
+   localStorage is immediate so a crash or a reload loses nothing even
+   with no network. The server copy is the one that survives a new
+   device, and a failed POST only dims the flag, it never blocks typing.
+   ============================================================ */
+var draftId = null;
+try {
+  draftId = localStorage.getItem("ssr_draft_id");
+  if (!draftId){
+    draftId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2));
+    localStorage.setItem("ssr_draft_id", draftId);
+  }
+} catch(e){ draftId = null; }
+
+function snapshot(){
+  var o = {r:{}, c:{}, v:{}};
+  Array.prototype.forEach.call(form.querySelectorAll("input,select,textarea"), function(el){
+    if (el.type === "file") return;
+    if (el.type === "radio"){ if (el.checked) o.r[el.name] = el.value; }
+    else if (el.type === "checkbox"){ if (el.checked){ (o.c[el.name] = o.c[el.name] || []).push(el.value); } }
+    else if (el.id){ if (el.value) o.v[el.id] = el.value; }
+  });
+  return o;
+}
+
+function restore(){
+  var raw = null;
+  try { raw = localStorage.getItem(DRAFT_KEY); } catch(e){}
+  if (!raw) return;
+  var o;
+  try { o = JSON.parse(raw); } catch(e){ return; }
+  if (!o) return;
+  Object.keys(o.r || {}).forEach(function(name){
+    var el = form.querySelector('input[name="'+name+'"][value="'+String(o.r[name]).replace(/"/g,'&quot;')+'"]');
+    if (el) el.checked = true;
+  });
+  Object.keys(o.c || {}).forEach(function(name){
+    (o.c[name] || []).forEach(function(v){
+      var els = form.querySelectorAll('input[name="'+name+'"]');
+      Array.prototype.forEach.call(els, function(el){ if (el.value === v) el.checked = true; });
+    });
+  });
+  Object.keys(o.v || {}).forEach(function(id){ var el = $(id); if (el) el.value = o.v[id]; });
+}
+
+var saveTimer = null, flagTimer = null;
+function flag(text, warn){
+  var f = $("savedFlag");
+  f.textContent = text;
+  f.classList.toggle("warn", !!warn);
+  f.classList.add("on");
+  clearTimeout(flagTimer);
+  flagTimer = setTimeout(function(){ f.classList.remove("on"); }, 2200);
+}
+
+function queueSave(){
+  var snap = snapshot();
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(snap)); } catch(e){}
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    if (!draftId) return;
+    post({action:"draft", draft_id:draftId, payload:snap})
+      .then(function(){ flag("SAVED", false); })
+      .catch(function(){ flag("SAVED ON THIS DEVICE", true); });
+  }, 900);
+}
+
+function post(body){
+  return fetch(API, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    return r.json().catch(function(){ return {ok:false, error:"Server sent something we could not read."}; })
+      .then(function(j){
+        if (!r.ok || !j.ok) throw new Error(j.error || ("Request failed, status " + r.status));
+        return j;
+      });
+  });
+}
+
+/* ============================================================
+   THE CONDITIONAL BITS
+   ============================================================ */
+function paintGuide(){
+  var d = radio("q2");
+  $("gOura").classList.toggle("on", d === "Ōura");
+  $("gWhoop").classList.toggle("on", d === "WHOOP");
+  $("pickFirst").style.display = d ? "none" : "";
+}
+
+function paintGp(){
+  var flagged = Array.prototype.some.call(
+    form.querySelectorAll('#q22box input[data-flag]'), function(el){ return el.checked; });
+  $("gp").classList.toggle("on", flagged);
+}
+
+/* "None of these" and "Nobody" cannot be true at the same time as anything else */
+function soloRules(box){
+  var els = box.querySelectorAll('input[type=checkbox]');
+  Array.prototype.forEach.call(els, function(el){
+    el.addEventListener("change", function(){
+      if (el.dataset.solo && el.checked){
+        Array.prototype.forEach.call(els, function(o){ if (o !== el) o.checked = false; });
+      } else if (!el.dataset.solo && el.checked){
+        Array.prototype.forEach.call(els, function(o){ if (o.dataset.solo) o.checked = false; });
+      }
+    });
+  });
+}
+
+/* Q5 is "pick up to 2", so the rest go dim once two are in */
+function capTwo(){
+  var box = $("q5box");
+  var els = box.querySelectorAll('input[type=checkbox]');
+  var n = 0;
+  Array.prototype.forEach.call(els, function(el){ if (el.checked) n++; });
+  Array.prototype.forEach.call(els, function(el){
+    var off = (n >= 2 && !el.checked);
+    el.disabled = off;
+    el.parentNode.classList.toggle("off", off);
+  });
+}
+
+/* ============================================================
+   THE FILE FIELD
+   ============================================================ */
+var picked = null;
+function bindFile(inputId, dropId, labId, subId, errId, onPick){
+  var input = $(inputId), drop = $(dropId);
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("hot"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("hot"); });
+  });
+  drop.addEventListener("drop", function(e){
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+      input.files = e.dataTransfer.files;
+      input.dispatchEvent(new Event("change"));
+    }
+  });
+  input.addEventListener("change", function(){
+    var f = input.files[0];
+    $(errId).classList.remove("on");
+    if (!f){ drop.classList.remove("has"); $(labId).textContent = "Choose your export file"; onPick(null); return; }
+    if (f.size > MAX_BYTES){
+      input.value = "";
+      drop.classList.remove("has");
+      $(errId).textContent = "That file is over 50MB. Export a shorter date range, or email us and we will find another way.";
+      $(errId).classList.add("on");
+      onPick(null);
+      return;
+    }
+    drop.classList.add("has");
+    $(labId).textContent = f.name;
+    $(subId).textContent = (f.size / 1048576).toFixed(1) + "MB, ready to send";
+    onPick(f);
+  });
+}
+
+function upload(token, file, progId, onDone){
+  var bar = $(progId);
+  bar.classList.add("on");
+  bar.firstChild.style.width = "8%";
+  return post({action:"upload-url", upload_token:token, filename:file.name})
+    .then(function(j){
+      bar.firstChild.style.width = "25%";
+      return new Promise(function(res, rej){
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", j.url, true);
+        xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+        xhr.upload.onprogress = function(e){
+          if (e.lengthComputable) bar.firstChild.style.width = (25 + Math.round((e.loaded / e.total) * 65)) + "%";
+        };
+        xhr.onload = function(){ (xhr.status >= 200 && xhr.status < 300) ? res(j.path) : rej(new Error("Upload failed, status " + xhr.status)); };
+        xhr.onerror = function(){ rej(new Error("The upload dropped. Check your connection and try again.")); };
+        xhr.send(file);
+      });
+    })
+    .then(function(path){
+      bar.firstChild.style.width = "95%";
+      return post({action:"upload-done", upload_token:token, path:path});
+    })
+    .then(function(j){
+      bar.firstChild.style.width = "100%";
+      onDone(j);
+      return j;
+    });
+}
+
+/* ============================================================
+   VALIDATION
+   ============================================================ */
+function bad(qn, errId, msg){
+  var q = form.querySelector('[data-q="'+qn+'"]');
+  if (q) q.classList.add("bad");
+  var e = $(errId);
+  e.textContent = msg;
+  e.classList.add("on");
+}
+function clearBad(){
+  Array.prototype.forEach.call(form.querySelectorAll(".q.bad"), function(q){ q.classList.remove("bad"); });
+  Array.prototype.forEach.call(form.querySelectorAll(".err.on"), function(e){ e.classList.remove("on"); });
+  Array.prototype.forEach.call(form.querySelectorAll(".in.bad"), function(e){ e.classList.remove("bad"); });
+}
+
+function validate(){
+  clearBad();
+  var first = null;
+  function fail(qn, errId, msg){ bad(qn, errId, msg); if (!first) first = form.querySelector('[data-q="'+qn+'"]'); }
+
+  if (!val("q1name")){ $("q1name").classList.add("bad"); fail(1, "e1", "We need a name to put on your review."); }
+  else if (!val("q1email") || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val("q1email"))){
+    $("q1email").classList.add("bad");
+    fail(1, "e1", "We need an email that works, because that is where your review goes.");
+  }
+  if (!radio("q2")) fail(2, "e2", "Pick the device you wear so we know which export to read.");
+  var b = checks("q5");
+  if (!b.length) fail(5, "e5", "Pick at least one, up to two.");
+  if (!checks("q22").length) fail(22, "e22", "Pick one. If none of them apply, tick the last box.");
+  if (!$("file").files.length && !$("later").checked){
+    fail(23, "e23", "Add your export file, or tick the box and we will send you your own upload link.");
+  }
+  var cs = ["c1","c2","c3"].filter(function(n){ return form.querySelector('input[name="'+n+'"]').checked; });
+  if (cs.length < 3) fail(24, "ec", "Please tick all three.");
+
+  if (first){
+    var y = first.getBoundingClientRect().top + window.scrollY - 140;
+    window.scrollTo({top:y, behavior:"smooth"});
+  }
+  return !first;
+}
+
+/* ============================================================
+   SUBMIT
+   ============================================================ */
+function show(id){ $(id).classList.add("on"); }
+
+function finish(ref, token, uploadedInfo){
+  $("refOut").textContent = ref;
+  if (uploadedInfo){
+    $("gotUpload").style.display = "";
+    var d = new Date(uploadedInfo.delete_after);
+    $("delLine").textContent = "Your export is stored and it is scheduled to be deleted on " +
+      d.toLocaleDateString("en-NZ", {day:"numeric", month:"long", year:"numeric"}) +
+      ", which is 90 days from the moment it landed.";
+  } else {
+    $("needUpload").style.display = "";
+    var link = "https://sleep.taylored.health/onboarding/?t=" + token;
+    $("tokLink").textContent = link;
+    $("copyBtn").addEventListener("click", function(){
+      if (navigator.clipboard) navigator.clipboard.writeText(link).then(function(){ $("copyBtn").textContent = "COPIED"; });
+    });
+  }
+  $("intro").classList.add("off");
+  $("rail").classList.add("off");
+  form.parentNode.style.display = "none";
+  show("done");
+  try { localStorage.removeItem(DRAFT_KEY); localStorage.removeItem("ssr_draft_id"); } catch(e){}
+  window.scrollTo({top:0, behavior:"auto"});
+}
+
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  if (!validate()) return;
+
+  var btn = $("go");
+  btn.disabled = true;
+  var label = btn.firstChild;
+  var wasText = label.textContent;
+  label.textContent = "Sending your answers ";
+
+  var flagged = Array.prototype.some.call(
+    form.querySelectorAll('#q22box input[data-flag]'), function(el){ return el.checked; });
+
+  var body = {
+    action:"submit",
+    name:val("q1name"),
+    email:val("q1email"),
+    device: radio("q2") === "WHOOP" ? "whoop" : "oura",
+    answers:{ questions: readAll() },
+    consent:{
+      not_medical_advice:true,
+      store_and_delete_within_90_days:true,
+      no_guarantee_refund_to_end_of_call:true,
+      agreed_at:new Date().toISOString()
+    },
+    safety_flag: flagged
+  };
+
+  post(body).then(function(j){
+    var f = picked;
+    if (!f) { finish(j.ref, j.upload_token, null); return; }
+    label.textContent = "Uploading your export ";
+    return upload(j.upload_token, f, "prog", function(){}).then(function(done){
+      finish(j.ref, j.upload_token, done);
+    }).catch(function(err){
+      /* the answers are already saved, so the upload falling over is not a
+         lost submission. Hand them their link and say so. */
+      finish(j.ref, j.upload_token, null);
+      $("needUpload").insertAdjacentHTML("afterbegin",
+        '<p class="err on">Your answers are saved, but the file did not make it. ' +
+        String(err.message || "").replace(/[<>]/g, "") + ' Use the link below to send it.</p>');
+    });
+  }).catch(function(err){
+    btn.disabled = false;
+    label.textContent = wasText;
+    $("eTop").textContent = (err && err.message) ? err.message : "That did not go through. Check your connection and try again.";
+    $("eTop").classList.add("on");
+  });
+});
+
+/* ============================================================
+   THE TOKENISED RETURN VISIT
+   The token identifies nothing about the person. The email never leaves
+   the server, so a guessed address reaches nobody's slot.
+   ============================================================ */
+function tokenView(token){
+  $("intro").classList.add("off");
+  $("rail").classList.add("off");
+  form.parentNode.style.display = "none";
+  show("slot");
+
+  post({action:"status", upload_token:token}).then(function(j){
+    $("slotHead").textContent = "Hello " + j.name;
+    if (j.uploaded){
+      $("slotSub").textContent = "Your export is already in. There is nothing left to do here.";
+      return;
+    }
+    $("slotSub").textContent = "Your answers are saved. All that is left is the export file.";
+    $("slotLive").style.display = "";
+    $("slotRef").textContent = j.ref;
+    $("slotGuide").innerHTML = $(j.device === "whoop" ? "gWhoop" : "gOura").innerHTML;
+
+    var f2 = null;
+    bindFile("slotFile", "slotDrop", "slotDlab", "slotDsub", "slotErr", function(f){
+      f2 = f;
+      $("slotSend").disabled = !f;
+    });
+    $("slotSend").addEventListener("click", function(){
+      if (!f2) return;
+      $("slotSend").disabled = true;
+      $("slotSend").firstChild.textContent = "Uploading ";
+      upload(token, f2, "slotProg", function(done){
+        var d = new Date(done.delete_after);
+        $("slotLive").style.display = "none";
+        $("slotSub").textContent = "That is your export in. It is scheduled to be deleted on " +
+          d.toLocaleDateString("en-NZ", {day:"numeric", month:"long", year:"numeric"}) +
+          ", 90 days from now. Next step is to book your call.";
+        $("slotHead").textContent = "Your file is in";
+      }).catch(function(err){
+        $("slotSend").disabled = false;
+        $("slotSend").firstChild.textContent = "Upload my export ";
+        $("slotErr").textContent = (err && err.message) || "That did not go through. Try again.";
+        $("slotErr").classList.add("on");
+      });
+    });
+  }).catch(function(){
+    $("slotHead").textContent = "That link is not live";
+    $("slotSub").textContent = "It may have already been used, or the 90 days may have passed and the data deleted. Email hello@taylored.health and we will sort it out.";
+  });
+}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+restore();
+soloRules($("q17box"));
+soloRules($("q22box"));
+capTwo();
+paintGuide();
+paintGp();
+$("q18out").textContent = $("q18n").value;
+
+form.addEventListener("input", function(){ queueSave(); paintProgress(); });
+form.addEventListener("change", function(){ queueSave(); paintProgress(); });
+$("q18n").addEventListener("input", function(){ $("q18out").textContent = this.value; });
+form.querySelectorAll('input[name="q2"]').forEach(function(el){ el.addEventListener("change", paintGuide); });
+$("q5box").addEventListener("change", capTwo);
+$("q22box").addEventListener("change", paintGp);
+$("later").addEventListener("change", function(){ paintProgress(); });
+
+bindFile("file", "drop", "dlab", "dsub", "e23", function(f){
+  picked = f;
+  if (f) $("later").checked = false;
+  paintProgress();
+});
+
+paintProgress();
+
+var t = new URLSearchParams(location.search).get("t");
+if (t && /^[0-9a-f]{64}$/.test(t)) tokenView(t);
+
+})();
+</script>
+</body>
+</html>
