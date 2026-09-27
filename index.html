@@ -318,12 +318,19 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   font-size:clamp(2rem,7.2vw,3.4rem);
   margin:0 0 1rem
 }
-.hero .deck{max-width:30ch;margin-bottom:1.4rem}
+/* 46ch keeps "Stuck in the 70s, no matter what you try?" on one line
+   from about 900px up. Below that the two .say spans decide where it
+   breaks, so it never orphans "you try?" on a line of its own.
+   Playfair italic sets oldstyle figures by default, which makes the
+   0 in "70s" sit low and read as a letter, so the deck asks for
+   lining figures. */
+.hero .deck{max-width:46ch;margin-bottom:1.4rem;font-variant-numeric:lining-nums}
 .hero .lines p{color:var(--cream-soft);max-width:34rem}
 
 /* ------------------------------------------------------------
    THE PANEL
-   Our own reading of a 61, in our own palette and type. See the
+   Our own reading of a stuck fortnight, in our own palette and
+   type. See the
    note on the markup for why this is not a screenshot.
 
    It runs off the bottom edge of the band on purpose: the cut is
@@ -360,10 +367,16 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 .p-of{font-size:.95rem;font-weight:600;letter-spacing:0;color:var(--cream-faint);margin-left:.2rem}
 
 .p-chart{display:block;width:100%;height:auto;margin:1.5rem 0 .55rem;overflow:visible}
-/* 61 is not a good number, so it is not drawn in gold, and it is not
-   an emergency either, so it is not drawn in red. */
+/* A 74 is not a good number and it is not an alarming one either, so
+   the bars are drawn in neither gold nor red. The decade strip behind
+   them is what carries the meaning: every night lands inside it. */
 .p-chart .bars rect{fill:var(--drag-l);opacity:.34}
 .p-chart .bars rect.now{opacity:1}
+/* the seventies. Neutral rather than gold, because this is the zone
+   the reader is stuck in and gold reads as the good news on this
+   palette. */
+.p-chart .decade{fill:var(--hd);opacity:.07}
+.p-chart .edge{stroke:var(--hd);stroke-width:.5;opacity:.22}
 @media (prefers-reduced-motion:no-preference){
   .p-chart .bars rect{transform-origin:50% 88px;animation:rise .7s cubic-bezier(.16,.9,.3,1) both}
   .p-chart .bars rect:nth-child(n+2){animation-delay:.04s}
@@ -774,7 +787,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
    <div class="hcopy">
     <p class="eyebrow">SLEEP SCORE REVIEW</p>
     <h1><span class="say">8 hours in bed.</span> <span class="say">Still tired.</span></h1>
-    <p class="deck">You slept 8 hours. Your ring says 61. And you feel like it.</p>
+    <p class="deck"><span class="say">Stuck in the 70s,</span> <span class="say">no matter what you try?</span></p>
     <div class="lines">
       <p>You have the data, but not the answer.</p>
       <p>We&rsquo;ll look at what your ring has been recording and how you actually live, then show you what to change first.</p>
@@ -784,9 +797,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         THE PANEL
         Rachel's first hero was the &#332;ura Today screen. Her own second
         note, 28 Sept, is the reason it is not here: both reference
-        shots show GOOD scores (69/61/81/94 and 88/84/91, "Go get
-        'em!"), and a hero arguing that the reader's sleep is fine
-        argues against the thing this page sells.
+        shots show GOOD scores, one of them over "Go get 'em!", and a
+        hero arguing that the reader's sleep is fine argues against
+        the thing this page sells.
 
         So this is ours, not theirs. Our palette, our type, our chart,
         no other company's interface reproduced on a page that sells a
@@ -795,33 +808,41 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         already gives them, but the fortnight of scores underneath it
         and the fact that the reason is not in there.
 
-        61 is the number the rest of the page uses. The bars are drawn
-        in --drag-l rather than gold or red, because 61 is not a good
-        number and it is not an emergency either.
+        The number is 74 and the fortnight never leaves the seventies,
+        which is Rachel's ruling of 28 Sept: a bad night is an event
+        the reader explains away, but being stuck in the seventies is
+        a pattern they recognise, and a pattern is the thing a review
+        of their data can actually do something about.
         ============================================================ -->
    <figure class="panel">
      <figcaption class="p-head">
        <p class="eyebrow">SLEEP SCORE</p>
-       <p class="p-num">61<span class="p-of">/100</span></p>
+       <p class="p-num">74<span class="p-of">/100</span></p>
      </figcaption>
 
      <svg class="p-chart" viewBox="0 0 272 88" role="img"
-          aria-label="Fourteen nights of sleep scores, every one of them between 54 and 66, ending on 61.">
+          aria-label="Fourteen nights of sleep scores. Every one of them lands in the seventies, and the last one is 74.">
+       <!-- the seventies, marked. y=17.6 is 80 and y=26.4 is 70 on a
+            0 to 100 scale, so every bar top in the set falls inside
+            this strip. That is the whole point of the picture. -->
+       <rect class="decade" x="-6" y="17.6" width="284" height="8.8"/>
+       <line class="edge" x1="-6" y1="17.6" x2="278" y2="17.6"/>
+       <line class="edge" x1="-6" y1="26.4" x2="278" y2="26.4"/>
        <g class="bars">
-         <rect x="0" y="37.0" width="12" height="51.0" rx="3"/>
-         <rect x="20" y="31.7" width="12" height="56.3" rx="3"/>
-         <rect x="40" y="39.6" width="12" height="48.4" rx="3"/>
-         <rect x="60" y="33.4" width="12" height="54.6" rx="3"/>
-         <rect x="80" y="36.1" width="12" height="51.9" rx="3"/>
-         <rect x="100" y="29.9" width="12" height="58.1" rx="3"/>
-         <rect x="120" y="37.8" width="12" height="50.2" rx="3"/>
-         <rect x="140" y="35.2" width="12" height="52.8" rx="3"/>
-         <rect x="160" y="32.6" width="12" height="55.4" rx="3"/>
-         <rect x="180" y="40.5" width="12" height="47.5" rx="3"/>
-         <rect x="200" y="34.3" width="12" height="53.7" rx="3"/>
-         <rect x="220" y="37.0" width="12" height="51.0" rx="3"/>
-         <rect x="240" y="30.8" width="12" height="57.2" rx="3"/>
-         <rect class="now" x="260" y="34.3" width="12" height="53.7" rx="3"/>
+         <rect x="0" y="24.6" width="12" height="63.4" rx="3"/>
+         <rect x="20" y="21.1" width="12" height="66.9" rx="3"/>
+         <rect x="40" y="25.5" width="12" height="62.5" rx="3"/>
+         <rect x="60" y="22.0" width="12" height="66.0" rx="3"/>
+         <rect x="80" y="23.8" width="12" height="64.2" rx="3"/>
+         <rect x="100" y="19.4" width="12" height="68.6" rx="3"/>
+         <rect x="120" y="26.4" width="12" height="61.6" rx="3"/>
+         <rect x="140" y="22.9" width="12" height="65.1" rx="3"/>
+         <rect x="160" y="20.2" width="12" height="67.8" rx="3"/>
+         <rect x="180" y="25.5" width="12" height="62.5" rx="3"/>
+         <rect x="200" y="22.0" width="12" height="66.0" rx="3"/>
+         <rect x="220" y="24.6" width="12" height="63.4" rx="3"/>
+         <rect x="240" y="21.1" width="12" height="66.9" rx="3"/>
+         <rect class="now" x="260" y="22.9" width="12" height="65.1" rx="3"/>
        </g>
      </svg>
      <p class="p-axis"><span>14 NIGHTS AGO</span><span>LAST NIGHT</span></p>
@@ -852,7 +873,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="lede">
       <ul class="ticks">
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Your score is low again most mornings</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Your score sits in the 70s again most mornings</li>
         <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;re in bed for 8 hours and still wake up tired</li>
         <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;ve tried magnesium, earlier nights and no screens</li>
         <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You have months of data and no idea what it&rsquo;s telling you</li>
