@@ -27,35 +27,41 @@
 <style>
 /* ============================================================
    TOKENS
-   Inherited verbatim from projects/capacity-score/field-guide so
-   this page and wheel.taylored.health read as one product.
+   The dark family, the golds, the paper and the ink are read off
+   what taylored.health actually serves in its own :root, fetched
+   28 Sept 2026. The page-local names this sheet already used are
+   kept below as aliases onto them, so the palette has one place
+   to change and the other 1200 lines stay untouched.
+
+   What moved: the dark family was this form's own (#1e3644 /
+   #12202b / #16242e), lighter and greener than anything the site
+   serves. It now resolves to --band, --bg1 and --bg2. --cream was
+   #f3efe7 against the site's --hd #f3f1ea. --paper, --ink and the
+   golds already matched.
    ============================================================ */
 :root{
-  --navy:#1e3644; --navy-deep:#12202b; --navy-mid:#16242e;
-  --cream:#f3efe7; --cream-soft:#cdd8db; --cream-faint:#8a9aa1;
-  --gold:#b8924a; --gold-deep:#9a784b; --sage:#7fa07a;
-  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
-  --drag-l:#9fb0ba;
-  --rule-l:rgba(243,239,231,.16);
-  --measure:38rem;
+  /* ---- served by taylored.health, verbatim ---- */
+  --bg0:#0b1a2c; --bg1:#10243a; --bg2:#143049; --band:#0e2136;
+  --hd:#f3f1ea; --tx:#c3ced6; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
+  --line:rgba(217,189,146,.16); --line-soft:rgba(217,189,146,.28);
+  --gold:#b8924a; --gold-soft:#cdaa6b; --gold-bright:#d9c08a; --gold-deep:#9a784b;
+  --paper:#f0ede4; --paper-line:#d9d3c4;
+  --ink:#16222e; --ink-soft:#41505c; --ink-faint:#75838d;
+  --label:'Josefin Sans',Verdana,sans-serif;
 
-  --paper:#f0ede4;
-  --ink:#16222e;
-  --ink-soft:#41505c;   /* 7.3:1 on paper */
-  --ink-faint:#75838d;  /* 4.6:1 on paper */
+  /* ---- page-local names, aliased onto the served tokens ---- */
+  --navy:var(--bg2); --navy-deep:var(--band); --navy-mid:var(--bg1);
+  --cream:var(--hd); --cream-soft:var(--tx); --cream-faint:var(--tx-faint);
+  --rule-l:var(--line);
+  --drag-l:var(--tx-dim);
+
+  /* ---- this form's own, no site equivalent ---- */
+  --gold-ink:#8f6f45;   /* gold for small text on paper: 4.1:1 measured */
+  --sage:#7fa07a;       /* saved, and a good upload */
+  --clay:#c2795e;       /* a field that needs another look */
   --rule-d:rgba(22,34,46,.13);
   --rule-d-soft:rgba(22,34,46,.07);
-
-  --clay:#c2795e;
-
-  /* ---- taylored.health site chrome, lifted from the live site 27 Sept 2026.
-     Eleven custom properties the nav and footer resolve against. Only --gold
-     overlaps with the tokens above and the value is identical. ---- */
-  --bg0:#0b1a2c;
-  --gold-soft:#cdaa6b; --gold-bright:#d9c08a;
-  --line:rgba(217,189,146,.16);
-  --hd:#f3f1ea; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
-  --label:'Josefin Sans',Verdana,sans-serif;
+  --measure:38rem;
   --pad:clamp(1.25rem,5vw,4.5rem);
   --navh:4.6rem;
 }
@@ -253,7 +259,7 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   max-width:13rem;margin:2rem 0 0;
   border:1px solid var(--rule-l);border-radius:5px;
   padding:1.25rem 1.25rem 1.1rem;
-  background:rgba(243,239,231,.045);
+  background:rgba(243,241,234,.045);
   text-align:center
 }
 @media (min-width:960px){.gauge{margin-top:.3rem}}
@@ -263,7 +269,7 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   font-variant-numeric:lining-nums tabular-nums;
   font-size:2.6rem;fill:var(--cream)
 }
-.gauge .track{fill:none;stroke:rgba(243,239,231,.14);stroke-width:7}
+.gauge .track{fill:none;stroke:rgba(243,241,234,.14);stroke-width:7}
 .gauge .arc{
   fill:none;stroke:var(--drag-l);stroke-width:7;stroke-linecap:round;
   stroke-dasharray:314;stroke-dashoffset:314;
@@ -332,7 +338,7 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
    ============================================================ */
 .offer{
   border:1px solid var(--rule-l);border-radius:6px;
-  background:linear-gradient(180deg,rgba(243,239,231,.06),rgba(243,239,231,.02));
+  background:linear-gradient(180deg,rgba(243,241,234,.06),rgba(243,241,234,.02));
   padding:clamp(1.4rem,4vw,2.4rem);margin-top:2rem
 }
 .price{
@@ -667,30 +673,55 @@ select.in{
   background:var(--cream);border-radius:5px
 }
 .guide.on{display:block}
-.guide h3{font-family:Manrope,sans-serif;font-size:1rem;font-weight:700;margin:0 0 .5rem}
+.guide h3{font-family:Manrope,sans-serif;font-size:1rem;font-weight:700;margin:0 0 .35rem}
+/* the export route these steps are for. Oura lists four and people pick
+   the wrong one, so the option name is a label, not a line of prose. */
+.guide .route{
+  font-family:Manrope,sans-serif;font-size:.66rem;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--gold-ink);
+  margin:0 0 .5rem;line-height:1.5
+}
+.guide .lede{font-size:.93rem;color:var(--ink-soft);margin:0 0 .75rem}
 .guide ol{margin:0 0 .9rem 1.15rem;font-size:.95rem}
 .guide ol li{margin-bottom:.3rem}
+.guide ol li b{font-weight:700;color:var(--ink)}
 .guide .note{font-size:.9rem;color:var(--ink-faint);margin:.7rem 0 0}
+/* two links, stacked. Side by side they collide under 375. */
+.guide .glinks{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem}
 .guide a.gl{
-  display:inline-flex;align-items:center;gap:.5rem;
   font-size:.9rem;font-weight:700;color:var(--gold-ink);
   text-decoration:underline;text-underline-offset:3px
 }
 .guide a.gl:hover{color:var(--ink)}
-.guide a.gl svg{width:13px;height:13px}
+/* inline, not a flex child: when the phrase wraps at 320 the arrow has to
+   follow the last word, not sit centred out in the gutter. */
+.guide a.gl svg{
+  width:13px;height:13px;margin-left:.4rem;vertical-align:-1px;
+  text-decoration:none
+}
+/* the last word and the arrow break as one unit, or at 320 the arrow
+   drops onto a line of its own. */
+.guide a.gl .nb{white-space:nowrap}
 
 /* ---- the file field ---- */
-.drop{
+/* .updrop, not .drop. The nav chrome lifted from taylored.health already
+   owns .drop for the ABOUT dropdown, and this block sits later in the
+   sheet at the same specificity, so it was painting the ABOUT item with
+   this cream background, this padding and this dashed border. The nav CSS
+   has to stay byte-identical to the site, so the form's name gives way.
+   The "hot" and "has" state classes and the element ids are unchanged, so
+   the drag-and-drop handlers in bindFile() need no edit. */
+.updrop{
   margin-top:.7rem;padding:1.4rem 1.2rem;text-align:center;
   border:1px dashed rgba(22,34,46,.28);border-radius:5px;
   background:#fbfaf6;cursor:pointer;transition:border-color .18s,background .18s
 }
-.drop:hover,.drop.hot{border-color:var(--gold);background:rgba(184,146,74,.07)}
-.drop input{position:absolute;width:1px;height:1px;opacity:0}
-.drop .dlab{font-weight:700;color:var(--ink);font-size:.98rem}
-.drop .dsub{font-size:.88rem;color:var(--ink-faint);margin-top:.25rem}
-.drop.has{border-style:solid;border-color:var(--sage);background:rgba(127,160,122,.09)}
-.drop.has .dlab{color:var(--ink)}
+.updrop:hover,.updrop.hot{border-color:var(--gold);background:rgba(184,146,74,.07)}
+.updrop input{position:absolute;width:1px;height:1px;opacity:0}
+.updrop .dlab{font-weight:700;color:var(--ink);font-size:.98rem}
+.updrop .dsub{font-size:.88rem;color:var(--ink-faint);margin-top:.25rem}
+.updrop.has{border-style:solid;border-color:var(--sage);background:rgba(127,160,122,.09)}
+.updrop.has .dlab{color:var(--ink)}
 .prog{display:none;height:4px;background:var(--rule-d);border-radius:2px;margin-top:.7rem;overflow:hidden}
 .prog.on{display:block}
 .prog i{display:block;height:100%;width:0;background:var(--sage);transition:width .2s}
@@ -866,7 +897,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="guide on" id="slotGuide"></div>
       <div class="q">
         <span class="lab">Your data export</span>
-        <label class="drop" id="slotDrop">
+        <label class="updrop" id="slotDrop">
           <input type="file" id="slotFile" accept=".csv,.zip,.json,.txt,.xlsx" aria-label="Choose your tracker export file">
           <span class="dlab" id="slotDlab">Choose your export file</span>
           <span class="dsub" id="slotDsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
@@ -1280,13 +1311,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- tracker-conditional export guide, both links open in a new tab -->
       <div class="guide" id="gOura">
         <h3>How to export your &#332;ura data</h3>
+        <p class="route">DOWNLOAD FROM MEMBERSHIP HUB</p>
+        <p class="lede">&#332;ura lists four export routes and they do not give you the same thing. These steps are only for &ldquo;Download from Membership Hub&rdquo;. &#332;ura closes &#332;ura on the Web on 5 October 2026, so the Trends download is not the one to start.</p>
         <ol>
-          <li>Sign in to &#332;ura on the web with your &#332;ura account.</li>
-          <li>Choose Trends in the left-hand menu, then set the date range at the top.</li>
-          <li>Download the CSV.</li>
+          <li>Log in to the &#332;ura Membership Hub with your &#332;ura account details.</li>
+          <li>Select <b>Export data</b>.</li>
+          <li>Select <b>Request your data</b>.</li>
+          <li>&#332;ura emails you when it is ready. Go back to the Membership Hub and tap the export to download it.</li>
         </ol>
-        <a class="gl" href="https://support.ouraring.com/hc/en-us/articles/360025441594-Export-Share-Your-Oura-Data" target="_blank" rel="noopener">&#332;ura&rsquo;s own export guide <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <p class="note">Use as long a date range as you have. Three months is ideal, one month is the minimum worth reading. A full &#332;ura data request can take up to 10 days to arrive, so start it now if you are going that route.</p>
+        <div class="glinks">
+          <a class="gl" href="https://membership.ouraring.com/data-export" target="_blank" rel="noopener">Open the Membership Hub export <span class="nb">page <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="gl" href="https://support.ouraring.com/hc/en-us/articles/360025441594-Export-Share-Your-Oura-Data#h_01GWJF30GDB5ZCYCDG0845Y236" target="_blank" rel="noopener">&#332;ura&rsquo;s own steps for this <span class="nb">option <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        </div>
+        <p class="note">The Hub export covers your whole history, so there is no date range to set. Three months of wear is ideal, one month is the minimum worth reading. &#332;ura says the file can take up to 10 days to arrive, so request it now and tick the box below to get your own upload link.</p>
       </div>
 
       <div class="guide" id="gWhoop">
@@ -1300,7 +1337,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="note">Most exports arrive within 24 hours and the download link expires after 7 days, so save the file as soon as it lands. Use as long a date range as you have. Three months is ideal.</p>
       </div>
 
-      <label class="drop" id="drop">
+      <label class="updrop" id="drop">
         <input type="file" id="file" accept=".csv,.zip,.json,.txt,.xlsx" aria-label="Choose your tracker export file">
         <span class="dlab" id="dlab">Choose your export file</span>
         <span class="dsub" id="dsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
