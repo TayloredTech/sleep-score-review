@@ -29,37 +29,45 @@
 <style>
 /* ============================================================
    TOKENS
-   Inherited verbatim from projects/capacity-score/field-guide so
-   this page and wheel.taylored.health read as one product.
+   The taylored.health palette, read off the served :root on the live
+   site on 28 Sept 2026 rather than reproduced from memory. This page
+   used to carry its own dark family (#1e3644 / #12202b / #16242e),
+   which is lighter and greener than the site's and read as a different
+   blue the moment it sat under the site's own nav. The page-local
+   names below are now aliases onto the served values, so the rest of
+   the sheet is untouched and there is one place to change.
+   Same approach as projects/capacity-score/field-guide.
    ============================================================ */
 :root{
-  --navy:#1e3644; --navy-deep:#12202b; --navy-mid:#16242e;
-  --cream:#f3efe7; --cream-soft:#cdd8db; --cream-faint:#8a9aa1;
-  --gold:#b8924a; --gold-deep:#9a784b; --sage:#7fa07a;
-  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
-  --drag-l:#9fb0ba;
-  --rule-l:rgba(243,239,231,.16);
-  --measure:38rem;
-
-  --paper:#f0ede4;
-  --ink:#16222e;
-  --ink-soft:#41505c;   /* 7.3:1 on paper */
-  --ink-faint:#75838d;  /* 4.6:1 on paper */
-  --rule-d:rgba(22,34,46,.13);
-  --rule-d-soft:rgba(22,34,46,.07);
-
-  --clay:#c2795e;
-
-  /* ---- taylored.health site chrome, lifted from the live site 27 Sept 2026.
-     Eleven custom properties the nav and footer resolve against. Only --gold
-     overlaps with the tokens above and the value is identical. ---- */
-  --bg0:#0b1a2c;
-  --gold-soft:#cdaa6b; --gold-bright:#d9c08a;
-  --line:rgba(217,189,146,.16);
-  --hd:#f3f1ea; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
+  /* ---- served by taylored.health ---- */
+  --bg0:#0b1a2c; --bg1:#10243a; --bg2:#143049; --band:#0e2136;
+  --hd:#f3f1ea; --tx:#c3ced6; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
+  --line:rgba(217,189,146,.16); --line-soft:rgba(217,189,146,.28);
+  --gold:#b8924a; --gold-soft:#cdaa6b; --gold-bright:#d9c08a; --gold-deep:#9a784b;
+  --paper:#f0ede4; --paper-line:#d9d3c4;
+  --ink:#16222e; --ink-soft:#41505c; --ink-faint:#75838d;
   --label:'Josefin Sans',Verdana,sans-serif;
   --pad:clamp(1.25rem,5vw,4.5rem);
   --navh:4.6rem;
+
+  /* ---- page-local aliases onto that palette ---- */
+  --navy:var(--bg2); --navy-deep:var(--band); --navy-mid:var(--bg1);
+  --cream:var(--hd); --cream-soft:var(--tx); --cream-faint:var(--tx-faint);
+  --rule-l:var(--line);
+  --sage:#7fa07a;
+  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
+  --drag-l:#9fb0ba;
+  --rule-d:rgba(22,34,46,.13);
+  --rule-d-soft:rgba(22,34,46,.07);
+  --clay:#c2795e;
+
+  /* ---- measure and vertical rhythm ----
+     Three step sizes, not one. A page where every band is padded the
+     same is the thing that reads as repetitive. */
+  --measure:38rem;
+  --gap-s:clamp(2.2rem,5vw,3.2rem);
+  --gap-m:clamp(3.4rem,8vw,5.5rem);
+  --gap-l:clamp(4.6rem,11vw,7.5rem);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -79,18 +87,24 @@ body{
 }
 
 ::selection{background:rgba(184,146,74,.28);color:var(--ink)}
-.s--navy ::selection,.s--deep ::selection{background:rgba(184,146,74,.4);color:var(--cream)}
+.dark ::selection{background:rgba(184,146,74,.4);color:var(--cream)}
 html{scrollbar-color:var(--gold-deep) var(--cream);scrollbar-width:thin}
 ::-webkit-scrollbar{width:11px;height:11px}
 ::-webkit-scrollbar-track{background:var(--cream)}
 ::-webkit-scrollbar-thumb{background:var(--gold-deep);border:3px solid var(--cream);border-radius:6px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
-.s--navy :focus-visible,.s--deep :focus-visible{outline-color:var(--gold)}
+.dark :focus-visible{outline-color:var(--gold)}
 
 h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;font-weight:600;line-height:1.14;color:var(--ink);text-wrap:balance;letter-spacing:-.005em}
-.s--navy h1,.s--navy h2,.s--navy h3,.s--navy h4,
-.s--deep h1,.s--deep h2,.s--deep h3,.s--deep h4{color:var(--cream)}
+/* ONE class marks a dark surface: .dark. The .s--navy / .s--mid /
+   .s--deep classes only choose which navy. Every rule that inverts
+   text for a dark background hangs off .dark and nothing else.
+   This used to be a list of .s--navy and .s--deep selectors repeated
+   fifteen times, and adding a third dark band immediately left the
+   hero h1 at --ink on navy, invisible. One hook, one place to add a
+   band, no way to half-cover a surface. */
+.dark h1,.dark h2,.dark h3,.dark h4{color:var(--cream)}
 p{text-wrap:pretty}
 a{color:inherit}
 
@@ -182,16 +196,53 @@ a{color:inherit}
 /* ============================================================
    SECTIONS
    ============================================================ */
-.s{padding:clamp(3rem,8vw,5.5rem) clamp(1.25rem,5vw,2rem)}
+/* ------------------------------------------------------------
+   BANDS
+   Four surfaces, not two. The page alternates paper, cream and
+   three distinct darks (--bg1, --bg2, --band) so consecutive
+   sections are told apart by tone as well as by spacing.
+   ------------------------------------------------------------ */
+.s{padding:var(--gap-m) clamp(1.25rem,5vw,2rem)}
+.s--tight{padding-top:var(--gap-s);padding-bottom:var(--gap-s)}
+.s--tall{padding-top:var(--gap-l);padding-bottom:var(--gap-l)}
 .s--paper{background:var(--paper)}
 .s--cream{background:var(--cream)}
-.s--navy{background:var(--navy-mid);color:var(--cream-soft)}
+.s--navy{background:var(--navy);color:var(--cream-soft)}
+.s--mid{background:var(--navy-mid);color:var(--cream-soft)}
 .s--deep{background:var(--navy-deep);color:var(--cream-soft)}
-.s--navy p,.s--deep p{color:var(--cream-soft)}
+.dark p{color:var(--cream-soft)}
 .s + .s--paper,.s--paper + .s--cream{border-top:1px solid var(--rule-d-soft)}
 
+.hold{max-width:66rem;margin:0 auto}
 .wrap{max-width:var(--measure);margin:0 auto}
-.wrap--wide{max-width:64rem;margin:0 auto}
+.wrap--wide{max-width:66rem;margin:0 auto}
+
+/* ------------------------------------------------------------
+   THE SPLIT
+   The page used to be one narrow column repeated down the middle.
+   This is the replacement: a heading rail on one side and the prose
+   on the other, at a generous measure, left-aligned. Alternating
+   .split and .split--r side to side is what gives the scroll its
+   asymmetry. Below 900px it collapses to one column, in source order.
+   ------------------------------------------------------------ */
+.split{display:grid;gap:1.4rem 0}
+.split .lede{max-width:var(--measure)}
+@media (min-width:900px){
+  .split{
+    grid-template-columns:minmax(0,17rem) minmax(0,1fr);
+    gap:0 clamp(2.5rem,6vw,5rem);align-items:start
+  }
+  .split--r{grid-template-columns:minmax(0,1fr) minmax(0,17rem)}
+  .split--r > .rail{grid-column:2;grid-row:1}
+  .split--r > .lede{grid-column:1;grid-row:1}
+  .rail{position:sticky;top:calc(var(--navh) + 1.6rem)}
+  .rail h2{margin-bottom:.7rem}
+}
+/* a hairline that starts the rail, so the two columns share a baseline */
+@media (min-width:900px){
+  .split--ruled > .lede{padding-top:.5rem;border-top:1px solid var(--rule-d)}
+  .dark .split--ruled > .lede{border-top-color:var(--rule-l)}
+}
 
 h2{font-size:clamp(1.55rem,4.6vw,2.3rem);margin:0 0 .9rem}
 h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
@@ -205,14 +256,14 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   font-size:clamp(1.12rem,2.9vw,1.35rem);line-height:1.45;
   color:var(--gold-ink);margin:0 0 1.2rem
 }
-.s--navy .deck,.s--deep .deck{color:var(--gold)}
+.dark .deck{color:var(--gold)}
 
 /* her copy runs in short declarative lines. this keeps them as lines. */
 .lines p{margin:0 0 .45rem}
 .lines p:last-child{margin-bottom:0}
 
 .turn{font-size:1.05rem;color:var(--ink);font-weight:600;margin-top:1.4rem}
-.s--navy .turn,.s--deep .turn{color:var(--cream)}
+.dark .turn{color:var(--cream)}
 
 /* every tracked label on this page is capitals */
 .eyebrow{
@@ -226,7 +277,8 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
    HERO
    ============================================================ */
 .hero{
-  background:var(--navy-deep);color:var(--cream-soft);
+  background:linear-gradient(168deg,var(--bg0) 0%,var(--bg1) 46%,var(--band) 100%);
+  color:var(--cream-soft);
   /* .nav is position:fixed and transparent until scrolled, so the hero
      reserves its own room underneath it rather than being covered */
   padding:calc(var(--navh) + clamp(1.6rem,5vw,3rem)) clamp(1.25rem,5vw,2rem) clamp(2.4rem,6vw,3.5rem);
@@ -237,41 +289,44 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   background:radial-gradient(60rem 28rem at 78% -12%,rgba(184,146,74,.16),transparent 62%);
 }
 .hero > *{position:relative}
-.hwrap{max-width:64rem;margin:0 auto;position:relative}
+.hwrap{max-width:66rem;margin:0 auto;position:relative}
 .hero h1{
   font-size:clamp(2rem,7.2vw,3.4rem);
   margin:0 0 1rem
 }
 .hero .deck{max-width:30ch;margin-bottom:1.4rem}
-.hero .lines p{color:var(--cream-soft);max-width:var(--measure)}
-@media (min-width:960px){
-  .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15rem);
-    gap:0 clamp(2.5rem,5vw,4rem);align-items:start}
-  .hgrid .gaugecol{grid-row:1;grid-column:2}
-}
+.hero .lines p{color:var(--cream-soft);max-width:34rem}
 
-/* the score gauge. 61 is not a good number, so it is not drawn in gold. */
-.gauge{
-  max-width:13rem;margin:2rem 0 0;
-  border:1px solid var(--rule-l);border-radius:5px;
-  padding:1.25rem 1.25rem 1.1rem;
-  background:rgba(243,239,231,.045);
-  text-align:center
+/* ------------------------------------------------------------
+   THE DEVICE
+   The hero image is the app this service reads, not a drawing of
+   it. It runs off the bottom edge of the band on purpose: the cut
+   is what stops the hero reading as another centred block.
+
+   The bleed is a negative margin-bottom on a grid item, so the row
+   stops short of the image and .hero's overflow:hidden does the
+   cropping. Deterministic at every width, because the amount of
+   bleed is stated rather than left to whichever column is taller.
+   ------------------------------------------------------------ */
+.phone{
+  width:min(15.5rem,58vw);margin:2.2rem auto 0;
+  margin-bottom:calc(-1 * (var(--gap-m) + 1.5rem));
+  filter:drop-shadow(0 24px 48px rgba(0,0,0,.45))
 }
-@media (min-width:960px){.gauge{margin-top:.3rem}}
-.gauge svg{display:block;width:100%;height:auto}
-.gauge .num{
-  font-family:Manrope,sans-serif;font-weight:700;
-  font-variant-numeric:lining-nums tabular-nums;
-  font-size:2.6rem;fill:var(--cream)
+.phone img{display:block;width:100%;height:auto}
+@media (min-width:900px){
+  .hgrid{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    gap:0 clamp(2rem,5vw,4rem);align-items:start
+  }
+  .hcopy{padding-top:clamp(.5rem,3vw,2.2rem)}
+  .phone{width:clamp(14rem,23vw,18.5rem);margin-top:0;margin-left:0;margin-right:0}
 }
-.gauge .track{fill:none;stroke:rgba(243,239,231,.14);stroke-width:7}
-.gauge .arc{
-  fill:none;stroke:var(--drag-l);stroke-width:7;stroke-linecap:round;
-  stroke-dasharray:314;stroke-dashoffset:314;
-  animation:sweep 1.4s cubic-bezier(.16,.9,.3,1) .3s forwards
+@media (min-width:1180px){
+  /* past this width the copy has all the measure it needs, so the
+     spare space goes to the image rather than to the line length */
+  .phone{width:20rem}
 }
-@keyframes sweep{to{stroke-dashoffset:122}} /* 61 of 100 */
 
 /* ============================================================
    SOUND FAMILIAR
@@ -284,22 +339,15 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 }
 .ticks li:first-child{border-top:0;padding-top:0}
 .ticks li svg{width:15px;height:15px;flex:none;margin-top:.45rem;color:var(--gold-deep)}
-.s--navy .ticks li,.s--deep .ticks li{border-top-color:var(--rule-l);color:var(--cream-soft)}
-.s--navy .ticks li svg,.s--deep .ticks li svg{color:var(--gold)}
+.dark .ticks li{border-top-color:var(--rule-l);color:var(--cream-soft)}
+.dark .ticks li svg{color:var(--gold)}
 
 .causes{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.3rem 0 1.4rem;list-style:none}
 .causes li{
   font-size:.92rem;color:var(--ink-soft);
   border:1px solid var(--rule-d);border-radius:2rem;padding:.35rem .95rem
 }
-.s--navy .causes li,.s--deep .causes li{color:var(--cream-soft);border-color:var(--rule-l)}
-
-.affirm{
-  margin-top:1.6rem;padding:1.15rem 1.3rem;
-  background:rgba(184,146,74,.1);border-radius:4px;
-  font-size:1.08rem;font-weight:600;color:var(--ink)
-}
-.s--navy .affirm,.s--deep .affirm{background:rgba(184,146,74,.14);color:var(--cream)}
+.dark .causes li{color:var(--cream-soft);border-color:var(--rule-l)}
 
 /* ============================================================
    WHAT YOU GET
@@ -343,7 +391,12 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
   font-family:Manrope,sans-serif;font-weight:700;letter-spacing:-.02em;
   font-variant-numeric:lining-nums tabular-nums;
   font-size:clamp(2rem,6vw,2.6rem);line-height:1;color:var(--gold);
-  margin:0 0 1rem
+  margin:0 0 .45rem
+}
+.incl{
+  font-family:Manrope,sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cream-faint);margin:0 0 1.2rem
 }
 .spec{list-style:none;display:grid;gap:.5rem;margin:0 0 1.4rem}
 @media (min-width:640px){.spec{grid-template-columns:1fr 1fr;gap:.5rem 1.6rem}}
@@ -379,14 +432,6 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 }
 .byline b{color:var(--cream-soft);font-weight:600}
 
-.reviewers{
-  margin:1.5rem 0;padding:1.2rem 1.3rem;
-  background:rgba(18,32,43,.45);border-radius:4px;
-  font-size:.95rem;color:var(--cream-soft)
-}
-.reviewers b{color:var(--cream)}
-.reviewers p + p{margin-top:.6rem}
-
 /* ============================================================
    HOW IT WORKS
    ============================================================ */
@@ -405,16 +450,16 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 }
 .steps h3{font-size:1.05rem;font-family:Manrope,sans-serif;font-weight:700;margin-bottom:.3rem}
 .steps p{font-size:.96rem}
-.s--deep .steps li,.s--navy .steps li{border-top-color:var(--rule-l)}
-.s--deep .steps li::before,.s--navy .steps li::before{border-color:var(--gold);color:var(--gold)}
-.s--deep .steps h3,.s--navy .steps h3{color:var(--cream)}
+.dark .steps li{border-top-color:var(--rule-l)}
+.dark .steps li::before{border-color:var(--gold);color:var(--gold)}
+.dark .steps h3{color:var(--cream)}
 
 /* ============================================================
    DISCLOSURE / FAQ
    ============================================================ */
 details{border-top:1px solid var(--rule-d)}
 details:last-of-type{border-bottom:1px solid var(--rule-d)}
-.s--navy details,.s--deep details{border-color:var(--rule-l)}
+.dark details{border-color:var(--rule-l)}
 summary{
   list-style:none;cursor:pointer;
   display:flex;align-items:baseline;gap:1rem;
@@ -422,20 +467,20 @@ summary{
   font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;font-weight:600;
   color:var(--ink);transition:color .18s
 }
-.s--navy summary,.s--deep summary{color:var(--cream)}
+.dark summary{color:var(--cream)}
 summary::-webkit-details-marker{display:none}
 summary:hover{color:var(--gold-ink)}
-.s--navy summary:hover,.s--deep summary:hover{color:var(--gold)}
+.dark summary:hover{color:var(--gold)}
 summary .chev{width:14px;height:14px;flex:none;margin-left:auto;align-self:center;
   color:var(--gold-ink);transition:transform .25s ease}
-.s--navy summary .chev,.s--deep summary .chev{color:var(--gold)}
+.dark summary .chev{color:var(--gold)}
 details[open] summary .chev{transform:rotate(180deg)}
 .dbody{padding:0 0 1.6rem}
 .dbody > :first-child{margin-top:0}
 .dbody p + p{margin-top:.8rem}
 .dbody a{color:var(--gold-ink);text-decoration:underline;text-underline-offset:3px}
 .dbody a:hover{color:var(--ink)}
-.s--navy .dbody a,.s--deep .dbody a{color:var(--gold)}
+.dark .dbody a{color:var(--gold)}
 .dbody .dev{font-weight:700;color:var(--ink)}
 
 .disclaimer{
@@ -443,20 +488,145 @@ details[open] summary .chev{transform:rotate(180deg)}
   padding-top:1.2rem;border-top:1px solid var(--rule-d)
 }
 
+/* ------------------------------------------------------------
+   SECTION HEADER, TWO PARTS
+   A heading on the left and one line of orientation on the right,
+   sharing a baseline. Used where a rail would leave the body too
+   narrow for a two-column list underneath it.
+   ------------------------------------------------------------ */
+.heads{display:grid;gap:.55rem 0}
+.heads h2{margin-bottom:0}
+.aside{max-width:36ch;color:var(--ink-faint);font-size:.98rem;margin:0}
+.dark .aside{color:var(--cream-faint)}
+@media (min-width:820px){
+  .heads{
+    grid-template-columns:minmax(0,1fr) minmax(0,21rem);
+    gap:0 clamp(2rem,5vw,4rem);align-items:end
+  }
+  .heads .aside{padding-bottom:.4rem}
+}
+
+/* the promise sits under the right-hand half of the list above it,
+   rather than spanning the band like everything else */
+@media (min-width:900px){
+  .promise{margin-left:auto;max-width:38rem;margin-top:2.8rem}
+}
+
+/* ============================================================
+   THE BREAK BAND
+   One section in the scroll that does not behave like the others:
+   full width, no rail, the causes laid out across and the line that
+   turns the argument set large and offset to the right. It is the
+   thing the eye lands on between two paper sections.
+   ============================================================ */
+.break{position:relative;overflow:hidden}
+.break::after{
+  content:"";position:absolute;inset:auto -6rem -8rem auto;
+  width:26rem;height:26rem;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(184,146,74,.13),transparent 66%)
+}
+.break > *{position:relative}
+.break h2{max-width:22ch}
+.break .causes{margin:1.8rem 0 1.6rem}
+.break .causes li{font-size:.95rem;padding:.42rem 1.05rem}
+.break p{max-width:var(--measure)}
+.pull{
+  margin:2.6rem 0 0;padding:1.6rem 0 0;
+  border-top:1px solid var(--line-soft);
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:clamp(1.3rem,3.4vw,1.85rem);line-height:1.3;
+  color:var(--cream);max-width:24ch
+}
+@media (min-width:900px){
+  /* offset, so the band is not one more left-aligned stack either */
+  .pull{margin-left:auto;margin-right:0;text-align:right;max-width:26ch}
+}
+
+/* ============================================================
+   THE OFFER, OFF CENTRE
+   ============================================================ */
+.buygrid{display:grid;gap:1.8rem 0}
+@media (min-width:900px){
+  .buygrid{
+    grid-template-columns:minmax(0,1fr) minmax(0,26rem);
+    gap:0 clamp(2.5rem,6vw,5rem);align-items:center
+  }
+}
+.buygrid .said h2{max-width:14ch}
+.buygrid .said .deck{max-width:26ch;margin-bottom:0}
+.offer{margin-top:0}
+/* the card is 26rem wide here, so the spec stays in one column
+   whatever the viewport media query would otherwise do */
+@media (min-width:900px){.buygrid .spec{grid-template-columns:1fr}}
+
+/* the one secondary restatement, far down the page. A line and a
+   link, deliberately not a second copy of the offer card. */
+.tail{
+  display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:.6rem clamp(1.2rem,4vw,2.6rem);
+  max-width:66rem;margin:0 auto
+}
+.tail h2{font-size:clamp(1.35rem,3.4vw,1.85rem);margin:0;flex:1 1 18rem}
+.tail .again{
+  font-weight:700;color:var(--gold);text-decoration:none;
+  border-bottom:1px solid rgba(184,146,74,.45);padding-bottom:.15rem;
+  transition:color .18s,border-color .18s
+}
+/* The link is allowed to wrap at 320, because nowrap on the whole
+   phrase overflows the moment Manrope fails to load and a wider
+   fallback comes up. Only the price and the arrow are held together. */
+.tail .again .amt{white-space:nowrap}
+.tail .again:hover{color:var(--gold-bright);border-bottom-color:var(--gold-bright)}
+.tail .note{flex:1 1 100%;font-size:.9rem;color:var(--cream-faint);margin:.4rem 0 0}
+
+/* ============================================================
+   HOW IT WORKS, ACROSS RATHER THAN DOWN
+   ============================================================ */
+@media (min-width:860px){
+  .steps--row{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(1.6rem,4vw,3rem)}
+  .steps--row li{
+    padding:2.6rem 0 0;border-top:1px solid var(--rule-d)
+  }
+  .steps--row li:first-child{border-top:1px solid var(--rule-d)}
+  .steps--row li::before{top:0}
+}
+
+/* ============================================================
+   WHO IS LOOKING
+   ============================================================ */
+.people{display:grid;gap:1.4rem;margin:0}
+@media (min-width:720px){.people{grid-template-columns:1fr 1fr;gap:0 clamp(2rem,5vw,3.4rem)}}
+.person{padding-top:1.1rem;border-top:1px solid var(--rule-l)}
+.person .nm{
+  font-family:"Playfair Display",Georgia,serif;font-size:1.2rem;
+  font-weight:600;color:var(--cream);margin:0 0 .35rem
+}
+.person .role{
+  font-family:Manrope,sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  margin:0 0 .6rem
+}
+.person p{font-size:.96rem;margin:0}
+.together{
+  margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid var(--rule-l);
+  font-size:.96rem;color:var(--cream-soft);max-width:var(--measure)
+}
+
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *{animation-duration:.001ms !important;animation-delay:0ms !important;transition-duration:.001ms !important}
-  .gauge .arc{stroke-dashoffset:122}
 }
 
 @media print{
-  .nav,.btnrow{display:none}
+  .nav,.btnrow,.phone{display:none}
   .foot{background:#fff !important;color:#000 !important;border-top:1px solid #ccc}
   body{background:#fff;color:#000;font-size:11pt}
-  .s--navy,.s--deep,.hero,.offer,.gauge,.reviewers{background:#fff !important;color:#000 !important}
-  .s--navy h2,.s--deep h2,.hero h1{color:#000 !important}
+  .dark,.offer,.person,.break::after{background:#fff !important;color:#000 !important}
+  .dark h1,.dark h2,.pull,.person .nm{color:#000 !important}
+  .rail{position:static !important}
+  .split,.split--r,.buygrid,.steps--row,.people{display:block !important}
   details{border:0}
   .dbody{padding-bottom:1rem}
 }
@@ -517,10 +687,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      HERO
      ============================================================ -->
-<section class="hero s--deep" id="top">
+<section class="hero dark" id="top">
  <div class="hwrap">
   <div class="hgrid">
-   <div>
+   <div class="hcopy">
+    <p class="eyebrow">SLEEP SCORE REVIEW</p>
     <h1><span class="say">8 hours in bed.</span> <span class="say">Still tired.</span></h1>
     <p class="deck">You slept 8 hours. Your ring says 61. And you feel like it.</p>
     <div class="lines">
@@ -528,15 +699,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>We&rsquo;ll look at what your ring has been recording and how you actually live, then show you what to change first.</p>
     </div>
    </div>
-   <div class="gaugecol">
-     <div class="gauge">
-       <svg viewBox="0 0 120 120" role="img" aria-label="A sleep score of 61 out of 100.">
-         <circle class="track" cx="60" cy="60" r="50"/>
-         <circle class="arc" cx="60" cy="60" r="50" transform="rotate(-90 60 60)"/>
-         <text class="num" x="60" y="60" dominant-baseline="central" text-anchor="middle">61</text>
-       </svg>
-       <p class="eyebrow" style="margin:.7rem 0 0">SLEEP SCORE</p>
-     </div>
+   <!-- The screen Rachel sent on 28 Sept. It is the app this service
+        reads, so it goes in whole rather than redrawn. WebP first, the
+        PNG only for browsers that cannot take it. -->
+   <div class="phone">
+     <picture>
+       <source srcset="assets/oura-today.webp" type="image/webp">
+       <img src="assets/oura-today.png" width="678" height="1398"
+            alt="A phone showing the &#332;ura app: Readiness 69, Sleep 61, Activity 81, Heart rate 94."
+            fetchpriority="high" decoding="async">
+     </picture>
    </div>
   </div>
  </div>
@@ -545,23 +717,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      SOUND FAMILIAR
      ============================================================ -->
-<section class="s s--paper" id="familiar">
-  <div class="wrap">
-    <h2>Sound familiar?</h2>
-    <ul class="ticks">
-      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Your score is low again most mornings</li>
-      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;re in bed for 8 hours and still wake up tired</li>
-      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;ve tried magnesium, earlier nights and no screens</li>
-      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You have months of data and no idea what it&rsquo;s telling you</li>
-    </ul>
+<section class="s s--paper s--tight" id="familiar">
+  <div class="hold split split--ruled">
+    <div class="rail">
+      <p class="eyebrow">WHERE THIS USUALLY STARTS</p>
+      <h2>Sound familiar?</h2>
+    </div>
+    <div class="lede">
+      <ul class="ticks">
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Your score is low again most mornings</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;re in bed for 8 hours and still wake up tired</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;ve tried magnesium, earlier nights and no screens</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You have months of data and no idea what it&rsquo;s telling you</li>
+      </ul>
+    </div>
   </div>
 </section>
 
 <!-- ============================================================
      WHY THE RING CANNOT ANSWER IT
      ============================================================ -->
-<section class="s s--navy" id="why">
-  <div class="wrap">
+<section class="s s--tall s--mid dark break" id="why">
+  <div class="hold">
     <h2><span class="say">Your ring shows what happened.</span> <span class="say">It can&rsquo;t tell you why.</span></h2>
 
     <ul class="causes" aria-label="Things that can move a sleep score">
@@ -575,7 +752,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p>One of these on its own may not matter much. A few together can.</p>
     <p>So most people change five things at once, keep waking up tired, and never find out what actually worked.</p>
 
-    <div class="affirm">The answer is often already sitting in your data.</div>
+    <p class="pull">The answer is often already sitting in your data.</p>
   </div>
 </section>
 
@@ -583,8 +760,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      WHAT YOU GET
      ============================================================ -->
 <section class="s s--paper" id="what-you-get">
-  <div class="wrap--wide">
-    <h2>What you get</h2>
+  <div class="hold">
+   <div class="heads">
+    <div>
+      <p class="eyebrow">THE REVIEW</p>
+      <h2>What you get</h2>
+    </div>
+    <p class="aside">Four things, over about three weeks. None of them is a long report you then have to read.</p>
+   </div>
     <ol class="gets">
       <li>
         <h3>We go through your data</h3>
@@ -615,22 +798,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      THE OFFER
      ⚠ PRICE. Rachel set AUD$299 on 27 Sept 2026 and named this
-     destination herself. Verified the same day: the OSleeve product
-     page charges 119.00 USD (compare-at 179.00), which presents as
-     AUD$173 to an Australian visitor and NZD$211 to a New Zealand one,
-     under the label "OSleeve customer price". A reader sent from
-     AUD$299 pays less than this page quoted. Flagged to her and to
-     Luke; the same note sits on the two field guide CTAs. It ships
-     because a dead button on a live funnel is worse than a working
-     one, and it changes the moment they rule on the price.
+     destination herself. Do not point this button anywhere else.
+     In particular, never at the OSleeve store's own page for this
+     same review. That page charges the same visitor AUD$173 for the
+     same thing and Rachel ruled it out on 28 Sept.
+
+     ⚠ CTA COUNT. Rachel's note of 28 Sept: one primary buy CTA, one
+     secondary restatement far down the page. This is the primary. The
+     only other buy link on the page is the text link in #closing. Do
+     not add a third.
      ============================================================ -->
-<section class="s s--deep" id="book">
-  <div class="wrap">
+
+<section class="s s--deep dark" id="book">
+  <div class="hold buygrid">
+   <div class="said">
+    <p class="eyebrow">ONE PRICE, NOTHING AFTER IT</p>
     <h2>You already have the data.</h2>
     <p class="deck">Now find out what to do with it.</p>
-
+   </div>
     <div class="offer">
       <p class="price">AUD$299</p>
+      <p class="incl">INCLUDING GST</p>
       <ul class="spec">
         <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30 days of &#332;ura or WHOOP data</li>
         <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Personal data review</li>
@@ -653,11 +841,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      HOW IT WORKS
      ============================================================ -->
-<section class="s s--cream" id="how-it-works">
-  <div class="wrap">
-    <h2>How it works</h2>
-    <p class="deck">It takes about 10 minutes to get started.</p>
-    <ol class="steps">
+<section class="s s--cream s--tight" id="how-it-works">
+  <div class="hold">
+   <div class="heads">
+    <div>
+      <p class="eyebrow">AFTER YOU BOOK</p>
+      <h2>How it works</h2>
+    </div>
+    <p class="aside">It takes about 10 minutes to get started.</p>
+   </div>
+    <ol class="steps steps--row">
       <li>
         <h3>Book your review</h3>
         <p>Answer a few questions and upload your data. We&rsquo;ll show you how.</p>
@@ -677,13 +870,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      WHO IS LOOKING AT YOUR DATA
      ============================================================ -->
-<section class="s s--navy" id="who">
-  <div class="wrap">
-    <h2>Who&rsquo;s looking at your data</h2>
-    <div class="reviewers">
-      <p><b>Rachel Taylor MSc(Hons)</b> has a science background in biochemistry, genetics and toxicology.</p>
-      <p><b>Luke Taylor PGDip SpSciHP</b> specialises in human performance and physiology.</p>
-      <p>Together we run Taylored Health and co-founded OSleeve. We personally review every person&rsquo;s data.</p>
+<section class="s s--navy dark" id="who">
+  <div class="hold split split--r split--ruled">
+    <div class="rail">
+      <p class="eyebrow">NOT A MODEL, NOT AN ALGORITHM</p>
+      <h2>Who&rsquo;s looking at your data</h2>
+    </div>
+    <div class="lede">
+      <div class="people">
+        <div class="person">
+          <p class="nm">Rachel Taylor MSc(Hons)</p>
+          <p class="role">BIOCHEMISTRY AND GENETICS</p>
+          <p>A science background in biochemistry, genetics and toxicology.</p>
+        </div>
+        <div class="person">
+          <p class="nm">Luke Taylor PGDip SpSciHP</p>
+          <p class="role">HUMAN PERFORMANCE</p>
+          <p>Specialises in human performance and physiology.</p>
+        </div>
+      </div>
+      <p class="together">Together we run Taylored Health and co-founded OSleeve. We personally review every person&rsquo;s data.</p>
     </div>
   </div>
 </section>
@@ -693,9 +899,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      All nine questions carried across from the OSleeve product page.
      Wording is theirs. The one exception is noted inline.
      ============================================================ -->
-<section class="s s--paper" id="faq">
-  <div class="wrap">
+<section class="s s--tall s--paper" id="faq">
+  <div class="hold split">
+   <div class="rail">
+    <p class="eyebrow">BEFORE YOU BOOK</p>
     <h2>Frequently asked questions</h2>
+   </div>
+   <div class="lede">
 
     <details>
       <summary>Which rings and trackers can you review?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
@@ -766,35 +976,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </details>
 
     <p class="disclaimer">The Sleep Score Review is a tool for reflection and performance guidance, not medical diagnosis or treatment.</p>
+   </div>
   </div>
 </section>
 
 <!-- ============================================================
      CLOSING
+     The secondary restatement, and the only other buy link on the
+     page. It used to be a second copy of the offer card with a
+     second gold button, which is the repetition Rachel called out on
+     28 Sept. It is now one line and one text link, and it is short on
+     purpose so the page does not end on another full-height block.
+     ⚠ Do not turn this back into a button or a card.
      ============================================================ -->
-<section class="s s--deep" id="closing">
-  <div class="wrap">
+<section class="s s--tight s--deep dark" id="closing">
+  <div class="tail">
     <h2><span class="say">You already have the data.</span></h2>
-    <p class="turn">Now find out what to do with it.</p>
-
-    <div class="offer">
-      <p class="only">&#332;URA AND WHOOP ONLY</p>
-      <ul class="spec">
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30 days of data</li>
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Personal review</li>
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30-minute call</li>
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Three changes</li>
-        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Two-week check-in</li>
-      </ul>
-      <div class="btnrow">
-        <!-- ⚠ Same price note as the offer section above. -->
-        <a class="btn" href="https://buy.stripe.com/dRm6oH5Vx5LV8Zo6EH18c02" target="_blank" rel="noopener">
-          Buy now <span class="tag">AUD$299</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg>
-        </a>
-      </div>
-      <p class="refund">If we can&rsquo;t find at least one thing worth changing, you can ask for a full refund any time up to the end of your call.</p>
-    </div>
+    <a class="again" href="https://buy.stripe.com/dRm6oH5Vx5LV8Zo6EH18c02" target="_blank" rel="noopener">Book the review, <span class="amt">AUD$299 &rarr;</span></a>
+    <p class="note">&#332;ura and WHOOP only. Full refund any time up to the end of your call if we can&rsquo;t find anything in your data worth changing.</p>
   </div>
 </section>
 
