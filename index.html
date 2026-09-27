@@ -23,6 +23,9 @@
 <!-- identical href to the wheel pages, so a visitor arriving from the field
      guide gets a cache hit and not a second font payload -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Josefin Sans is the site's label face. The nav and footer labels are set
+     in it on taylored.health, so the chrome needs it to match. -->
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    TOKENS
@@ -46,13 +49,23 @@
   --rule-d-soft:rgba(22,34,46,.07);
 
   --clay:#c2795e;
-  --bar-h:3.25rem;
+
+  /* ---- taylored.health site chrome, lifted from the live site 27 Sept 2026.
+     Eleven custom properties the nav and footer resolve against. Only --gold
+     overlaps with the tokens above and the value is identical. ---- */
+  --bg0:#0b1a2c;
+  --gold-soft:#cdaa6b; --gold-bright:#d9c08a;
+  --line:rgba(217,189,146,.16);
+  --hd:#f3f1ea; --tx-dim:#9fb1bc; --tx-faint:#7c8f9b;
+  --label:'Josefin Sans',Verdana,sans-serif;
+  --pad:clamp(1.25rem,5vw,4.5rem);
+  --navh:4.6rem;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{
   scroll-behavior:smooth;
-  scroll-padding-top:calc(var(--bar-h) + 1rem);
+  scroll-padding-top:calc(var(--navh) + 1rem);
   -webkit-text-size-adjust:100%;
 }
 body{
@@ -96,39 +109,69 @@ a{color:inherit}
 }
 .skip:focus{top:.5rem}
 
-.topbar{
-  position:sticky;top:0;z-index:50;
-  height:var(--bar-h);
-  background:rgba(18,32,43,.94);
-  backdrop-filter:saturate(1.4) blur(10px);
-  border-bottom:1px solid var(--rule-l);
-  display:flex;align-items:center;gap:1rem;
-  padding:0 clamp(.9rem,4vw,2rem);
+/* ============================================================
+   SITE CHROME
+   The nav and footer below are the taylored.health chrome, lifted from
+   the live site on 27 Sept 2026. The site runs WordPress + Divi, but
+   Divi's own header and footer are switched off there
+   (#main-header,...,.et-l--header,.et-l--footer{display:none!important})
+   and the chrome is hand-authored HTML, so it lifts cleanly onto a
+   static page. These rules are the served rules with the "#lcp " scope
+   prefix stripped and nothing else changed. Do not hand-edit them; if
+   the site nav changes, re-lift from live.
+   Shared copy: ~/hex/docs/site-chrome/taylored-chrome.html
+   ============================================================ */
+.xos{color:#b8924a}
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--navh); display:flex;align-items:center;justify-content:space-between;gap:1rem; padding:0 clamp(1.1rem,3.5vw,2.6rem); background:transparent;border-bottom:1px solid transparent; transition:background .3s ease,backdrop-filter .3s ease,border-color .3s ease}
+.nav.scrolled{background:transparent;border-bottom:1px solid var(--line)}
+.nav::before{content:"";position:absolute;inset:0;z-index:-1;background:transparent; transition:background .3s ease,backdrop-filter .3s ease}
+.nav.scrolled::before{background:rgba(11,26,44,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;text-decoration:none;flex:none}
+.brand img{height:clamp(2.1rem,1.7rem + 1vw,2.6rem);width:auto}
+.nav .links{display:flex;align-items:center;gap:clamp(.85rem,1.8vw,1.6rem)}
+.nlink{font-family:var(--label);font-size:.72rem;font-weight:400;letter-spacing:.19em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.5em 0 .35em;border-bottom:1px solid transparent;white-space:nowrap}
+.nlink:hover{color:var(--gold-bright)}
+.pill{font-family:var(--label);font-size:.7rem;font-weight:600;letter-spacing:.16em!important;text-transform:uppercase!important; color:#0b1420;background:var(--gold);text-decoration:none;padding:.8em 1.45em .66em;border-radius:2px;white-space:nowrap}
+.pill:hover{background:var(--gold-soft)}
+.pill-ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(217,189,146,.5)}
+.pill-ghost:hover{background:rgba(217,189,146,.08);border-color:var(--gold-bright);color:var(--gold-bright)}
+.drop{position:relative;display:flex;align-items:center}
+.drop>.nlink::after{content:"";display:inline-block;width:.42em;height:.42em; border-right:1px solid var(--gold);border-bottom:1px solid var(--gold); transform:rotate(45deg);margin-left:.55em;vertical-align:.14em}
+.dmenu{position:absolute;top:100%;right:-1rem;min-width:15.5rem;padding:.7rem 0;margin-top:.4rem; background:rgba(11,26,44,.97);border:1px solid var(--line);border-top:2px solid var(--gold); opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .22s,transform .22s,visibility .22s}
+.drop:hover .dmenu, .drop:focus-within .dmenu{opacity:1;visibility:visible;transform:none}
+.dmenu a{display:block;font-family:var(--label);font-size:.72rem;letter-spacing:.16em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.78em 1.4em .6em}
+.dmenu a:hover{color:var(--gold-bright);background:rgba(217,189,146,.06)}
+.navtog{position:absolute;opacity:0;pointer-events:none}
+.navbtn{display:none;width:2.3rem;height:2.3rem;cursor:pointer;position:relative;z-index:62;flex:none}
+.navbtn span{position:absolute;left:.35rem;right:.35rem;height:2px;background:var(--hd);transition:transform .3s,opacity .3s}
+.navbtn span:nth-child(1){top:.82rem}
+.navbtn span:nth-child(2){top:1.4rem}
+@media (max-width:1080px){
+.navbtn{display:block}
+.nav .links{position:fixed;inset:0;top:0;padding-top:calc(var(--navh) + 1.2rem); flex-direction:column;justify-content:flex-start;gap:0;background:#091422; opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+.nlink{font-size:.95rem;padding:.95rem 0 .8rem;width:min(21rem,80vw);text-align:center; border-bottom:1px solid rgba(217,189,146,.13)}
+.drop{width:min(21rem,80vw);display:flex;flex-direction:column;align-items:center}
+.drop>.nlink{width:100%}
+.drop>.nlink::after{content:""}
+.dmenu{position:static;opacity:1;visibility:visible;transform:none;border:0;background:transparent; min-width:0;width:100%;padding:0;margin:0}
+.dmenu a{font-size:.83rem;color:var(--tx-dim);padding:.85em 0 .7em;text-align:center;border-bottom:1px solid rgba(217,189,146,.08)}
+.pill{margin:1.7rem 0 2.5rem;font-size:.82rem;padding:1em 2.1em .85em}
+.navtog:checked ~ .links{opacity:1;pointer-events:auto}
+.navtog:checked ~ .navbtn span:nth-child(1){transform:translateY(.29rem) rotate(45deg)}
+.navtog:checked ~ .navbtn span:nth-child(2){transform:translateY(-.29rem) rotate(-45deg)}
 }
-.topbar .mark{
-  font-family:"Playfair Display",Georgia,serif;font-size:1rem;font-weight:600;
-  color:var(--cream);text-decoration:none;white-space:nowrap;flex:none
-}
-.topbar .mark em{font-style:italic;color:var(--gold)}
-.topnav{
-  margin-left:auto;display:flex;gap:.2rem;align-items:center;min-width:0;
-  overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none
-}
-.topnav::-webkit-scrollbar{display:none}
-.topnav a{
-  font-size:.82rem;font-weight:600;color:var(--cream-soft);text-decoration:none;
-  white-space:nowrap;padding:.4rem .6rem;border-radius:3px;
-  transition:color .18s,background .18s
-}
-.topnav a:hover{color:var(--cream);background:rgba(243,239,231,.07)}
-.topnav a.now{color:var(--gold)}
-.topnav a.cta{color:var(--gold)}
-@media (max-width:640px){
-  .topbar .mark{display:none}
-  .topnav{margin-left:0;width:100%;
-    -webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);
-    mask-image:linear-gradient(90deg,#000 90%,transparent)}
-}
+.foot{background:var(--bg0);color:var(--tx-dim);padding:clamp(3.2rem,6vh,4.8rem) var(--pad) 2.4rem; border-top:1px solid var(--line)}
+.foot-inner{max-width:71rem;margin:0 auto}
+.foot .brand img{height:2.2rem}
+.foot-pos{max-width:26rem;font-size:.93rem;line-height:1.7;margin:1.4rem 0 2.4rem;color:var(--tx-dim)}
+.foot-cols{display:flex;gap:clamp(2rem,6vw,5rem);flex-wrap:wrap;margin-bottom:2.6rem}
+.foot-col{min-width:11rem}
+.foot-h{font-family:var(--label);font-size:.68rem;font-weight:600;letter-spacing:.22em!important;text-transform:uppercase!important;color:var(--gold-soft);margin-bottom:1rem}
+.foot-col a{display:block;font-size:.91rem;color:var(--tx-dim);text-decoration:none;padding:.33em 0}
+.foot-col a:hover{color:var(--hd)}
+.foot-base{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap; border-top:1px solid var(--line);padding-top:1.6rem;font-size:.8rem;color:var(--tx-faint)}
+.foot-base a{color:var(--tx-faint);text-decoration:none}
+.foot-base a:hover{color:var(--gold-soft)}
 
 /* ============================================================
    SECTIONS
@@ -178,7 +221,9 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
    ============================================================ */
 .hero{
   background:var(--navy-deep);color:var(--cream-soft);
-  padding:clamp(2.6rem,7vw,4.5rem) clamp(1.25rem,5vw,2rem) clamp(2.4rem,6vw,3.5rem);
+  /* .nav is position:fixed and transparent until scrolled, so the hero
+     reserves its own room underneath it rather than being covered */
+  padding:calc(var(--navh) + clamp(1.6rem,5vw,3rem)) clamp(1.25rem,5vw,2rem) clamp(2.4rem,6vw,3.5rem);
   position:relative;overflow:hidden
 }
 .hero::before{
@@ -392,21 +437,6 @@ details[open] summary .chev{transform:rotate(180deg)}
   padding-top:1.2rem;border-top:1px solid var(--rule-d)
 }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.foot{
-  background:var(--navy-deep);color:var(--cream-faint);
-  padding:2.4rem clamp(1.25rem,5vw,2rem);text-align:center;font-size:.86rem
-}
-.foot .fmark{
-  font-family:"Playfair Display",Georgia,serif;font-size:1.05rem;color:var(--cream);
-  display:block;margin-bottom:.4rem
-}
-.foot .fmark em{font-style:italic;color:var(--gold)}
-.foot a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
-.foot a:hover{color:var(--cream)}
-
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 @media (prefers-reduced-motion:reduce){
@@ -416,7 +446,8 @@ details[open] summary .chev{transform:rotate(180deg)}
 }
 
 @media print{
-  .topbar,.btnrow{display:none}
+  .nav,.btnrow{display:none}
+  .foot{background:#fff !important;color:#000 !important;border-top:1px solid #ccc}
   body{background:#fff;color:#000;font-size:11pt}
   .s--navy,.s--deep,.hero,.offer,.gauge,.reviewers{background:#fff !important;color:#000 !important}
   .s--navy h2,.s--deep h2,.hero h1{color:#000 !important}
@@ -451,17 +482,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <a class="skip" href="#top">Skip to the page</a>
 
-<header class="topbar">
-  <a class="mark" href="#top">Sleep Score <em>Review</em></a>
-  <nav class="topnav" aria-label="Sections of this page">
-    <a href="#familiar">Sound familiar</a>
-    <a href="#what-you-get">What you get</a>
-    <a href="#how-it-works">How it works</a>
-    <a href="#who">Who reviews it</a>
-    <a href="#faq">FAQ</a>
-    <a class="cta" href="#book">AUD$299</a>
-  </nav>
-</header>
+<nav class="nav">
+  <a class="brand" href="https://taylored.health/" aria-label="Taylored Health home">
+    <img decoding="async" src="https://taylored.health/wp-content/uploads/2026/08/taylored-logo-400.png" alt="Taylored. Health &amp; Performance Technologies" width="400" height="124">
+  </a>
+  <input type="checkbox" id="navtog" class="navtog" aria-hidden="true">
+  <label for="navtog" class="navbtn" aria-label="Menu"><span></span><span></span></label>
+  <div class="links">
+    <a class="nlink" href="https://taylored.health/executive-audit/">The Audit</a>
+    <a class="nlink" href="https://taylored.health/private-advisory/">Advisory</a>
+    <a class="nlink" href="https://taylored.health/events/">Events</a>
+    <a class="nlink" href="https://taylored.health/beacon/">The Book</a>
+    <a class="nlink" href="https://taylored.health/execos/">Exec<span class="xos">OS</span></a>
+    <div class="drop">
+      <a class="nlink" href="https://taylored.health/about/">About</a>
+      <div class="dmenu">
+        <a href="https://taylored.health/about/">Who you work with</a>
+        <a href="https://taylored.health/results/">Results</a>
+        <a href="https://taylored.health/apply/">Apply</a>
+        <a href="https://taylored.health/leadership-capacity/">Leadership Capacity</a>
+      </div>
+    </div>
+    <a class="pill pill-ghost" href="https://wheel.taylored.health">The Capacity Wheel &rarr;</a>
+    <a class="pill" href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book a conversation</a>
+  </div>
+</nav>
 
 <!-- ============================================================
      HERO
@@ -748,14 +793,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <footer class="foot">
-  <span class="fmark">The <em>Biology</em> of Leadership</span>
-  <a href="https://wheel.taylored.health/">Take the Capacity Wheel</a>
+  <div class="foot-inner">
+    <a class="brand" href="https://taylored.health/" aria-label="Taylored Health home">
+      <img decoding="async" src="https://taylored.health/wp-content/uploads/2026/08/taylored-logo-400.png" alt="Taylored. Health &amp; Performance Technologies" width="400" height="124" loading="lazy">
+    </a>
+    <p class="foot-pos">Executive capacity advisory. We measure what the role takes out of you, then build the capacity to carry it.</p>
+    <div class="foot-cols">
+      <div class="foot-col"><div class="foot-h">Work with us</div><a href="https://taylored.health/metabolic-audit/">Metabolic Audit</a><a href="https://taylored.health/executive-audit/">Executive Capacity Audit</a><a href="https://taylored.health/private-advisory/">The Private Advisory</a><a href="https://taylored.health/execos/">Exec<span class="xos">OS</span></a><a href="https://taylored.health/events/">Event consultancy</a><a href="https://taylored.health/apply/">Apply</a></div>
+      <div class="foot-col"><div class="foot-h">The thinking</div><a href="https://taylored.health/beacon/">Beacon, the book</a><a href="https://taylored.health/journal/">Journal</a><a href="https://taylored.health/results/">Results</a><a href="https://taylored.health/about/">Who you work with</a><a href="https://taylored.health/leadership-capacity/">Leadership Capacity</a></div>
+      <div class="foot-col"><div class="foot-h">Contact</div><a href="mailto:hello@taylored.health">hello@taylored.health</a><a href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book a conversation</a><a href="https://www.instagram.com/tayloredhealthhq/">Instagram</a><a href="https://www.youtube.com/@TayloredLifePodcast">YouTube</a></div>
+    </div>
+    <div class="foot-base">
+      <span>&copy; Taylored Health 2026</span>
+      <span><a href="https://taylored.health/privacy-policy/">Privacy</a> &nbsp;&middot;&nbsp; <a href="https://taylored.health/terms-of-service/">Terms</a></span>
+    </div>
+  </div>
 </footer>
 
 <script>
-/* Two small jobs, no dependencies.
-   1. A deep link into a collapsed FAQ has to open it, or the link is broken.
-   2. The sticky nav marks the section you are actually in. */
+/* The site's own nav script, verbatim from taylored.health. Adds .scrolled
+   past 40px, which is what fills the transparent bar in. */
+(function(){var n=document.querySelector('.nav');if(!n)return;var f=function(){n.classList.toggle('scrolled',(window.scrollY||document.documentElement.scrollTop)>40);};f();window.addEventListener('scroll',f,{passive:true});})();
+</script>
+
+<script>
+/* One job. A deep link into a collapsed FAQ has to open it, or the link
+   is broken. The section-highlight code that used to live here went with
+   the page's own sticky bar; the site nav has no section links. */
 (function(){
   function openTarget(){
     var el = location.hash && document.querySelector(location.hash);
@@ -765,20 +829,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   window.addEventListener('hashchange', openTarget);
   openTarget();
-
-  var links = [].slice.call(document.querySelectorAll('.topnav a[href^="#"]'));
-  var targets = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
-  if (!('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (!e.isIntersecting) return;
-      var i = targets.indexOf(e.target);
-      if (i < 0) return;
-      links.forEach(function(a){ a.classList.remove('now'); });
-      links[i].classList.add('now');
-    });
-  }, { rootMargin: '-45% 0px -50% 0px' });
-  targets.forEach(function(t){ if (t) io.observe(t); });
 })();
 </script>
 </body>
