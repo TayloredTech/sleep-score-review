@@ -1307,7 +1307,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </label>
       <div class="prog" id="prog"><i></i></div>
       <div class="opts col" style="margin-top:.7rem">
-        <label><input type="checkbox" id="later" name="later"> I do not have the file here. Send me my own upload link.</label>
+        <label><input type="checkbox" id="later" name="later"> I do not have the file here. Show me my own upload link so I can come back to it.</label>
       </div>
       <p class="err" id="e23" role="alert" aria-live="assertive"></p>
     </div>
@@ -1354,7 +1354,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div id="needUpload" style="display:none">
       <h3 style="margin-top:2rem">One thing left</h3>
-      <p style="margin-top:.5rem">Your export file has not arrived yet. Open this link on the device that has the file and upload it there. The link is yours alone and it stops working when your data is deleted.</p>
+      <p style="margin-top:.5rem">Your export file has not arrived yet. Open this link on the device that has the file and upload it there. The link is yours alone, nobody can guess it, and it stops working when your data is deleted.</p>
+      <p style="margin-top:.5rem"><b>Save it somewhere now.</b> We do not email it to you. This browser will remember it if you come back on this device, but a different phone or laptop will not.</p>
       <div class="linkbox">
         <p class="rl">YOUR UPLOAD LINK</p>
         <code id="tokLink">&nbsp;</code>
@@ -1782,6 +1783,11 @@ function finish(ref, token, uploadedInfo){
   } else {
     $("needUpload").style.display = "";
     var link = "https://sleep.taylored.health/onboarding/?t=" + token;
+    /* Closing this tab used to strand the submission: the token lived only in
+       this DOM and nothing emails it. Keeping it here does not help them on a
+       second device, and the copy above says so, but it does mean the common
+       case of "I closed it by accident" is recoverable. */
+    try { localStorage.setItem("ssr_last_link", link); } catch (e) {}
     $("tokLink").textContent = link;
     $("copyBtn").addEventListener("click", function(){
       if (navigator.clipboard) navigator.clipboard.writeText(link).then(function(){ $("copyBtn").textContent = "COPIED"; });
@@ -1882,6 +1888,7 @@ function tokenView(token){
       $("slotSend").disabled = true;
       $("slotSend").firstChild.textContent = "Uploading ";
       upload(token, f2, "slotProg", function(done){
+        try { localStorage.removeItem("ssr_last_link"); } catch (e) {}
         var when = niceDate(done.delete_after);
         $("slotLive").style.display = "none";
         $("slotSub").textContent = when
@@ -1939,6 +1946,24 @@ $("go").disabled = false;
 $("go").removeAttribute("aria-describedby");
 
 paintProgress();
+
+/* Somebody who submitted on this device and closed the tab gets their link
+   back rather than a form they have already filled in. */
+(function(){
+  var saved = null;
+  try { saved = localStorage.getItem("ssr_last_link"); } catch (e) {}
+  if (!saved || location.search.indexOf("t=") > -1 || window.__ssrToken) return;
+  var bar = document.createElement("div");
+  bar.className = "linkbox";
+  bar.style.margin = "0 auto 1.4rem";
+  bar.style.maxWidth = "38rem";
+  bar.innerHTML = '<p class="rl">YOUR UPLOAD LINK, SAVED ON THIS DEVICE</p>' +
+    '<code></code><button class="copy" type="button">OPEN IT</button>';
+  bar.querySelector("code").textContent = saved;
+  bar.querySelector("button").addEventListener("click", function(){ location.href = saved; });
+  var host = $("rail");
+  host.parentNode.insertBefore(bar, host);
+})();
 
 /* The token was lifted out of the URL by the inline script in <head>, before
    GTM loaded. The URLSearchParams read is the fallback for the case where that
