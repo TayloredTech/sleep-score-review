@@ -711,15 +711,29 @@ select.in{
    has to stay byte-identical to the site, so the form's name gives way.
    The "hot" and "has" state classes and the element ids are unchanged, so
    the drag-and-drop handlers in bindFile() need no edit. */
+/* display:block is load-bearing, not tidying. A <label> is inline by
+   default, so this box shrank to the width of its own text (477px inside a
+   608px column at 1440) and sat short of the guide box above it and the
+   checkbox below it, both of which run the full column. Worse, vertical
+   padding on an inline box paints outside the line box without reserving
+   height, so the dashed border rode up over the cream guide box. That
+   overlap plus the short right edge is the "misaligned to the section".
+   The two spans were inline for the same reason, so the label and the
+   file-type hint ran together on ONE line and .dsub's margin-top was inert.
+   Block on all three: the box now shares its left and right edge with
+   every other box in the section, and the hint sits under the label. */
 .updrop{
-  margin-top:.7rem;padding:1.4rem 1.2rem;text-align:center;
+  display:block;position:relative;
+  margin-top:1rem;padding:1.35rem;text-align:left;
   border:1px dashed rgba(22,34,46,.28);border-radius:5px;
   background:#fbfaf6;cursor:pointer;transition:border-color .18s,background .18s
 }
 .updrop:hover,.updrop.hot{border-color:var(--gold);background:rgba(184,146,74,.07)}
 .updrop input{position:absolute;width:1px;height:1px;opacity:0}
-.updrop .dlab{font-weight:700;color:var(--ink);font-size:.98rem}
-.updrop .dsub{font-size:.88rem;color:var(--ink-faint);margin-top:.25rem}
+/* .has swaps this text for the chosen filename, and an Oura export name is
+   long and punctuated rather than spaced, so it needs somewhere to break. */
+.updrop .dlab{display:block;font-weight:700;color:var(--ink);font-size:.98rem;overflow-wrap:anywhere}
+.updrop .dsub{display:block;font-size:.88rem;color:var(--ink-faint);margin-top:.3rem}
 .updrop.has{border-style:solid;border-color:var(--sage);background:rgba(127,160,122,.09)}
 .updrop.has .dlab{color:var(--ink)}
 .prog{display:none;height:4px;background:var(--rule-d);border-radius:2px;margin-top:.7rem;overflow:hidden}
@@ -1343,7 +1357,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="dsub" id="dsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
       </label>
       <div class="prog" id="prog"><i></i></div>
-      <div class="opts col" style="margin-top:.7rem">
+      <div class="opts col" style="margin-top:.9rem">
         <label><input type="checkbox" id="later" name="later"> I do not have the file here. Show me my own upload link so I can come back to it.</label>
       </div>
       <p class="err" id="e23" role="alert" aria-live="assertive"></p>
@@ -1408,7 +1422,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h3 style="margin-top:2rem">Now choose a time for your 30-minute call</h3>
     <p style="margin-top:.5rem">Pick the slot that suits you. Leave at least 7 days after your upload so there is time to read your data properly.</p>
     <div class="btnrow">
-      <a class="btn" href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book my call <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <!-- Rachel's Sleep Score Review booking page, given 28 Sept 2026. This is NOT
+           the general rbkUhUneDWnEKRQv9 "Book a conversation" schedule that the nav
+           and footer use, and it was wrong here until now. Two different Google
+           appointment schedules: fCGESrA… resolves to AcZssZ3WItbl…, rbkUhUne…
+           resolves to AcZssZ1hviQM…. Do not let the footer link be copied up here. -->
+      <a class="btn" href="https://calendar.app.google/fCGESrAbvRYCCNN47" target="_blank" rel="noopener">Book my call <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
     <p class="disclaimer">Keep your reference number. If you need to reach us, quote it in an email to <a href="mailto:hello@taylored.health" style="color:var(--gold-ink)">hello@taylored.health</a>.</p>
   </div>
