@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sleep Score Review</title>
+<meta name="description" content="You have months of sleep and recovery data and still wake up tired. We read what your ring has already recorded, then tell you what to change first.">
+<link rel="canonical" href="https://sleep.taylored.health/">
+<meta property="og:type" content="product">
+<meta property="og:url" content="https://sleep.taylored.health/">
+<meta property="og:title" content="Sleep Score Review">
+<meta property="og:description" content="8 hours in bed. Still tired. You have the data, but not the answer.">
+<meta property="og:image" content="https://sleep.taylored.health/assets/og-sleep.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sleep Score Review">
+<meta name="twitter:description" content="8 hours in bed. Still tired. You have the data, but not the answer.">
+<meta name="twitter:image" content="https://sleep.taylored.health/assets/og-sleep.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23b8924a' stroke-width='4' stroke-dasharray='46 75' transform='rotate(-90 16 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- identical href to the wheel pages, so a visitor arriving from the field
+     guide gets a cache hit and not a second font payload -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   Inherited verbatim from projects/capacity-score/field-guide so
+   this page and wheel.taylored.health read as one product.
+   ============================================================ */
+:root{
+  --navy:#1e3644; --navy-deep:#12202b; --navy-mid:#16242e;
+  --cream:#f3efe7; --cream-soft:#cdd8db; --cream-faint:#8a9aa1;
+  --gold:#b8924a; --gold-deep:#9a784b; --sage:#7fa07a;
+  --gold-ink:#8f6f45;  /* gold for small text on paper: 4.8:1 */
+  --drag-l:#9fb0ba;
+  --rule-l:rgba(243,239,231,.16);
+  --measure:38rem;
+
+  --paper:#fbf8f1;
+  --ink:#16222e;
+  --ink-soft:#42545e;   /* 7.3:1 on paper */
+  --ink-faint:#6e7d86;  /* 4.6:1 on paper */
+  --rule-d:rgba(22,34,46,.13);
+  --rule-d-soft:rgba(22,34,46,.07);
+
+  --clay:#c2795e;
+  --bar-h:3.25rem;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--bar-h) + 1rem);
+  -webkit-text-size-adjust:100%;
+}
+body{
+  font-family:Manrope,system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink-soft);
+  line-height:1.65;
+  font-size:1.0625rem;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+::selection{background:rgba(184,146,74,.28);color:var(--ink)}
+.s--navy ::selection,.s--deep ::selection{background:rgba(184,146,74,.4);color:var(--cream)}
+html{scrollbar-color:var(--gold-deep) var(--cream);scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--gold-deep);border:3px solid var(--cream);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+.s--navy :focus-visible,.s--deep :focus-visible{outline-color:var(--gold)}
+
+h1,h2,h3,h4{font-family:"Playfair Display",Georgia,serif;font-weight:600;line-height:1.14;color:var(--ink);text-wrap:balance;letter-spacing:-.005em}
+.s--navy h1,.s--navy h2,.s--navy h3,.s--navy h4,
+.s--deep h1,.s--deep h2,.s--deep h3,.s--deep h4{color:var(--cream)}
+p{text-wrap:pretty}
+a{color:inherit}
+
+/* A display line must never split a sentence across two lines, so each
+   sentence is its own inline block. It wraps between sentences or not at all.
+   Checked at 320, 375 and 414. */
+.say{display:inline-block}
+
+/* ============================================================
+   SKIP LINK + STICKY BAR
+   ============================================================ */
+.skip{
+  position:absolute;left:.5rem;top:-4rem;z-index:60;
+  background:var(--gold);color:var(--navy-deep);font-weight:700;font-size:.9rem;
+  padding:.6rem 1rem;border-radius:3px;text-decoration:none;transition:top .18s
+}
+.skip:focus{top:.5rem}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  height:var(--bar-h);
+  background:rgba(18,32,43,.94);
+  backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--rule-l);
+  display:flex;align-items:center;gap:1rem;
+  padding:0 clamp(.9rem,4vw,2rem);
+}
+.topbar .mark{
+  font-family:"Playfair Display",Georgia,serif;font-size:1rem;font-weight:600;
+  color:var(--cream);text-decoration:none;white-space:nowrap;flex:none
+}
+.topbar .mark em{font-style:italic;color:var(--gold)}
+.topnav{
+  margin-left:auto;display:flex;gap:.2rem;align-items:center;min-width:0;
+  overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none
+}
+.topnav::-webkit-scrollbar{display:none}
+.topnav a{
+  font-size:.82rem;font-weight:600;color:var(--cream-soft);text-decoration:none;
+  white-space:nowrap;padding:.4rem .6rem;border-radius:3px;
+  transition:color .18s,background .18s
+}
+.topnav a:hover{color:var(--cream);background:rgba(243,239,231,.07)}
+.topnav a.now{color:var(--gold)}
+.topnav a.cta{color:var(--gold)}
+@media (max-width:640px){
+  .topbar .mark{display:none}
+  .topnav{margin-left:0;width:100%;
+    -webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);
+    mask-image:linear-gradient(90deg,#000 90%,transparent)}
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.s{padding:clamp(3rem,8vw,5.5rem) clamp(1.25rem,5vw,2rem)}
+.s--paper{background:var(--paper)}
+.s--cream{background:var(--cream)}
+.s--navy{background:var(--navy-mid);color:var(--cream-soft)}
+.s--deep{background:var(--navy-deep);color:var(--cream-soft)}
+.s--navy p,.s--deep p{color:var(--cream-soft)}
+.s + .s--paper,.s--paper + .s--cream{border-top:1px solid var(--rule-d-soft)}
+
+.wrap{max-width:var(--measure);margin:0 auto}
+.wrap--wide{max-width:64rem;margin:0 auto}
+
+h2{font-size:clamp(1.55rem,4.6vw,2.3rem);margin:0 0 .9rem}
+h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
+.s p + p{margin-top:.9rem}
+.s h2 + p,.s h3 + p{margin-top:.6rem}
+.s p + h3{margin-top:2rem}
+.s p + h2,.s ul + h2,.s div + h2{margin-top:2.6rem}
+
+.deck{
+  font-family:"Playfair Display",Georgia,serif;font-style:italic;
+  font-size:clamp(1.12rem,2.9vw,1.35rem);line-height:1.45;
+  color:var(--gold-ink);margin:0 0 1.2rem
+}
+.s--navy .deck,.s--deep .deck{color:var(--gold)}
+
+/* her copy runs in short declarative lines. this keeps them as lines. */
+.lines p{margin:0 0 .45rem}
+.lines p:last-child{margin-bottom:0}
+
+.turn{font-size:1.05rem;color:var(--ink);font-weight:600;margin-top:1.4rem}
+.s--navy .turn,.s--deep .turn{color:var(--cream)}
+
+/* every tracked label on this page is capitals */
+.eyebrow{
+  font-family:Manrope,sans-serif;font-size:.74rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--cream-faint);
+  margin:0 0 .85rem
+}
+.s--paper .eyebrow,.s--cream .eyebrow{color:var(--ink-faint)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  background:var(--navy-deep);color:var(--cream-soft);
+  padding:clamp(2.6rem,7vw,4.5rem) clamp(1.25rem,5vw,2rem) clamp(2.4rem,6vw,3.5rem);
+  position:relative;overflow:hidden
+}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60rem 28rem at 78% -12%,rgba(184,146,74,.16),transparent 62%);
+}
+.hero > *{position:relative}
+.hwrap{max-width:64rem;margin:0 auto;position:relative}
+.hero h1{
+  font-size:clamp(2rem,7.2vw,3.4rem);
+  margin:0 0 1rem
+}
+.hero .deck{max-width:30ch;margin-bottom:1.4rem}
+.hero .lines p{color:var(--cream-soft);max-width:var(--measure)}
+@media (min-width:960px){
+  .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,15rem);
+    gap:0 clamp(2.5rem,5vw,4rem);align-items:start}
+  .hgrid .gaugecol{grid-row:1;grid-column:2}
+}
+
+/* the score gauge. 61 is not a good number, so it is not drawn in gold. */
+.gauge{
+  max-width:13rem;margin:2rem 0 0;
+  border:1px solid var(--rule-l);border-radius:5px;
+  padding:1.25rem 1.25rem 1.1rem;
+  background:rgba(243,239,231,.045);
+  text-align:center
+}
+@media (min-width:960px){.gauge{margin-top:.3rem}}
+.gauge svg{display:block;width:100%;height:auto}
+.gauge .num{
+  font-family:Manrope,sans-serif;font-weight:700;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-size:2.6rem;fill:var(--cream)
+}
+.gauge .track{fill:none;stroke:rgba(243,239,231,.14);stroke-width:7}
+.gauge .arc{
+  fill:none;stroke:var(--drag-l);stroke-width:7;stroke-linecap:round;
+  stroke-dasharray:314;stroke-dashoffset:314;
+  animation:sweep 1.4s cubic-bezier(.16,.9,.3,1) .3s forwards
+}
+@keyframes sweep{to{stroke-dashoffset:122}} /* 61 of 100 */
+.gauge .cap{
+  margin-top:.65rem;font-size:.82rem;color:var(--cream-faint);line-height:1.45
+}
+
+/* ============================================================
+   SOUND FAMILIAR
+   ============================================================ */
+.ticks{list-style:none;margin:1.2rem 0 0}
+.ticks li{
+  display:flex;gap:.85rem;align-items:flex-start;
+  padding:.85rem 0;border-top:1px solid var(--rule-d-soft);
+  font-size:1rem;color:var(--ink-soft)
+}
+.ticks li:first-child{border-top:0;padding-top:0}
+.ticks li svg{width:15px;height:15px;flex:none;margin-top:.45rem;color:var(--gold-deep)}
+.s--navy .ticks li,.s--deep .ticks li{border-top-color:var(--rule-l);color:var(--cream-soft)}
+.s--navy .ticks li svg,.s--deep .ticks li svg{color:var(--gold)}
+
+.causes{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.3rem 0 1.4rem;list-style:none}
+.causes li{
+  font-size:.92rem;color:var(--ink-soft);
+  border:1px solid var(--rule-d);border-radius:2rem;padding:.35rem .95rem
+}
+.s--navy .causes li,.s--deep .causes li{color:var(--cream-soft);border-color:var(--rule-l)}
+
+.affirm{
+  margin-top:1.6rem;padding:1.15rem 1.3rem;
+  background:rgba(184,146,74,.1);border-radius:4px;
+  font-size:1.08rem;font-weight:600;color:var(--ink)
+}
+.s--navy .affirm,.s--deep .affirm{background:rgba(184,146,74,.14);color:var(--cream)}
+
+/* ============================================================
+   WHAT YOU GET
+   ============================================================ */
+.gets{list-style:none;counter-reset:got;margin:1.8rem 0 0;display:grid;gap:0}
+@media (min-width:820px){.gets{grid-template-columns:1fr 1fr;gap:0 2.5rem}}
+.gets li{
+  counter-increment:got;position:relative;
+  padding:1.2rem 0 1.2rem 3.4rem;border-top:1px solid var(--rule-d)
+}
+.gets li::before{
+  content:"0" counter(got);position:absolute;left:0;top:1.15rem;
+  font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;
+  color:var(--gold-ink);letter-spacing:.02em
+}
+.gets h3{font-family:Manrope,sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.3rem}
+.gets p{font-size:.96rem;margin:0}
+@media (min-width:820px){
+  .gets li:nth-child(1),.gets li:nth-child(2){border-top:1px solid var(--rule-d)}
+}
+
+.promise{
+  margin-top:2.2rem;padding:clamp(1.3rem,3.6vw,1.9rem);
+  background:var(--cream);border-radius:5px
+}
+.promise h3{margin-bottom:.6rem}
+.promise p + p{margin-top:.8rem}
+.promise .small{font-size:.92rem;color:var(--ink-faint)}
+
+/* ============================================================
+   THE OFFER
+   ============================================================ */
+.offer{
+  border:1px solid var(--rule-l);border-radius:6px;
+  background:linear-gradient(180deg,rgba(243,239,231,.06),rgba(243,239,231,.02));
+  padding:clamp(1.4rem,4vw,2.4rem);margin-top:2rem
+}
+.price{
+  /* Manrope, not Playfair: Playfair sets a small raised dollar sign that reads
+     as a footnote marker at display size */
+  font-family:Manrope,sans-serif;font-weight:700;letter-spacing:-.02em;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-size:clamp(2rem,6vw,2.6rem);line-height:1;color:var(--gold);
+  margin:0 0 1rem
+}
+.spec{list-style:none;display:grid;gap:.5rem;margin:0 0 1.4rem}
+@media (min-width:640px){.spec{grid-template-columns:1fr 1fr;gap:.5rem 1.6rem}}
+.spec li{
+  display:flex;gap:.65rem;align-items:flex-start;
+  font-size:.95rem;color:var(--cream-soft)
+}
+.spec li svg{width:14px;height:14px;flex:none;margin-top:.38rem;color:var(--gold)}
+.refund{
+  font-size:.92rem;color:var(--cream-faint);
+  padding-top:1.1rem;border-top:1px solid var(--rule-l)
+}
+.only{
+  font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);margin:0 0 1rem
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font:inherit;font-weight:700;font-size:1rem;
+  color:var(--navy-deep);background:var(--gold);
+  border:0;border-radius:3px;padding:.95rem 1.9rem;
+  text-decoration:none;letter-spacing:.01em;
+  box-shadow:0 2px 10px rgba(0,0,0,.28);
+  transition:background .2s,color .2s,transform .2s,box-shadow .2s
+}
+.btn:hover{background:var(--gold-deep);color:var(--cream);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.34)}
+.btn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.btn svg{width:16px;height:16px}
+.btn .tag{font-weight:600;opacity:.75}
+.btnrow{margin:1.5rem 0 1.4rem}
+.byline{
+  margin-top:1.6rem;font-size:.92rem;color:var(--cream-faint)
+}
+.byline b{color:var(--cream-soft);font-weight:600}
+
+.reviewers{
+  margin:1.5rem 0;padding:1.2rem 1.3rem;
+  background:rgba(18,32,43,.45);border-radius:4px;
+  font-size:.95rem;color:var(--cream-soft)
+}
+.reviewers b{color:var(--cream)}
+.reviewers p + p{margin-top:.6rem}
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+.steps{list-style:none;counter-reset:step;margin:1.4rem 0 0}
+.steps li{
+  counter-increment:step;position:relative;
+  padding:1.1rem 0 1.1rem 3rem;border-top:1px solid var(--rule-d)
+}
+.steps li:first-child{border-top:0}
+.steps li::before{
+  content:counter(step);position:absolute;left:0;top:1.05rem;
+  width:1.9rem;height:1.9rem;border-radius:50%;
+  border:1px solid var(--gold-ink);color:var(--gold-ink);
+  font-family:"Playfair Display",Georgia,serif;font-size:.95rem;
+  display:grid;place-items:center
+}
+.steps h3{font-size:1.05rem;font-family:Manrope,sans-serif;font-weight:700;margin-bottom:.3rem}
+.steps p{font-size:.96rem}
+.s--deep .steps li,.s--navy .steps li{border-top-color:var(--rule-l)}
+.s--deep .steps li::before,.s--navy .steps li::before{border-color:var(--gold);color:var(--gold)}
+.s--deep .steps h3,.s--navy .steps h3{color:var(--cream)}
+
+/* ============================================================
+   DISCLOSURE / FAQ
+   ============================================================ */
+details{border-top:1px solid var(--rule-d)}
+details:last-of-type{border-bottom:1px solid var(--rule-d)}
+.s--navy details,.s--deep details{border-color:var(--rule-l)}
+summary{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:baseline;gap:1rem;
+  padding:1.15rem 0;
+  font-family:"Playfair Display",Georgia,serif;font-size:1.15rem;font-weight:600;
+  color:var(--ink);transition:color .18s
+}
+.s--navy summary,.s--deep summary{color:var(--cream)}
+summary::-webkit-details-marker{display:none}
+summary:hover{color:var(--gold-ink)}
+.s--navy summary:hover,.s--deep summary:hover{color:var(--gold)}
+summary .chev{width:14px;height:14px;flex:none;margin-left:auto;align-self:center;
+  color:var(--gold-ink);transition:transform .25s ease}
+.s--navy summary .chev,.s--deep summary .chev{color:var(--gold)}
+details[open] summary .chev{transform:rotate(180deg)}
+.dbody{padding:0 0 1.6rem}
+.dbody > :first-child{margin-top:0}
+.dbody p + p{margin-top:.8rem}
+.dbody a{color:var(--gold-ink);text-decoration:underline;text-underline-offset:3px}
+.dbody a:hover{color:var(--ink)}
+.s--navy .dbody a,.s--deep .dbody a{color:var(--gold)}
+.dbody .dev{font-weight:700;color:var(--ink)}
+
+.disclaimer{
+  margin-top:2.2rem;font-size:.88rem;color:var(--ink-faint);
+  padding-top:1.2rem;border-top:1px solid var(--rule-d)
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{
+  background:var(--navy-deep);color:var(--cream-faint);
+  padding:2.4rem clamp(1.25rem,5vw,2rem);text-align:center;font-size:.86rem
+}
+.foot .fmark{
+  font-family:"Playfair Display",Georgia,serif;font-size:1.05rem;color:var(--cream);
+  display:block;margin-bottom:.4rem
+}
+.foot .fmark em{font-style:italic;color:var(--gold)}
+.foot a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.foot a:hover{color:var(--cream)}
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.001ms !important;animation-delay:0ms !important;transition-duration:.001ms !important}
+  .gauge .arc{stroke-dashoffset:122}
+}
+
+@media print{
+  .topbar,.btnrow{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .s--navy,.s--deep,.hero,.offer,.gauge,.reviewers{background:#fff !important;color:#000 !important}
+  .s--navy h2,.s--deep h2,.hero h1{color:#000 !important}
+  details{border:0}
+  .dbody{padding-bottom:1rem}
+}
+</style>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TLRP9CF');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLRP9CF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<!-- ============================================================
+     ICON SPRITE. Single 1.6 stroke weight, currentColor.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-check"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-chev"><path d="M2 5.5 8 11l6-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g id="i-arrow"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </defs>
+</svg>
+
+<a class="skip" href="#top">Skip to the page</a>
+
+<header class="topbar">
+  <a class="mark" href="#top">Sleep Score <em>Review</em></a>
+  <nav class="topnav" aria-label="Sections of this page">
+    <a href="#familiar">Sound familiar</a>
+    <a href="#what-you-get">What you get</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#who">Who reviews it</a>
+    <a href="#faq">FAQ</a>
+    <a class="cta" href="#book">AUD$299</a>
+  </nav>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero s--deep" id="top">
+ <div class="hwrap">
+  <div class="hgrid">
+   <div>
+    <h1><span class="say">8 hours in bed.</span> <span class="say">Still tired.</span></h1>
+    <p class="deck">You slept 8 hours. Your ring says 61. And you feel like it.</p>
+    <div class="lines">
+      <p>You have the data, but not the answer.</p>
+      <p>We&rsquo;ll look at what your ring has been recording and how you actually live, then show you what to change first.</p>
+    </div>
+   </div>
+   <div class="gaugecol">
+     <div class="gauge">
+       <svg viewBox="0 0 120 120" role="img" aria-label="A sleep score of 61 out of 100.">
+         <circle class="track" cx="60" cy="60" r="50"/>
+         <circle class="arc" cx="60" cy="60" r="50" transform="rotate(-90 60 60)"/>
+         <text class="num" x="60" y="60" dominant-baseline="central" text-anchor="middle">61</text>
+       </svg>
+       <p class="eyebrow" style="margin:.7rem 0 0">SLEEP SCORE</p>
+       <p class="cap">Eight hours in bed. Sixty-one on the screen.</p>
+     </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================================================
+     SOUND FAMILIAR
+     ============================================================ -->
+<section class="s s--paper" id="familiar">
+  <div class="wrap">
+    <h2>Sound familiar?</h2>
+    <ul class="ticks">
+      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Your score is low again most mornings</li>
+      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;re in bed for 8 hours and still wake up tired</li>
+      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You&rsquo;ve tried magnesium, earlier nights and no screens</li>
+      <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>You have months of data and no idea what it&rsquo;s telling you</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHY THE RING CANNOT ANSWER IT
+     ============================================================ -->
+<section class="s s--navy" id="why">
+  <div class="wrap">
+    <h2><span class="say">Your ring shows what happened.</span> <span class="say">It can&rsquo;t tell you why.</span></h2>
+
+    <ul class="causes" aria-label="Things that can move a sleep score">
+      <li>A late workout</li>
+      <li>Afternoon coffee</li>
+      <li>A couple of wines</li>
+      <li>Stress</li>
+      <li>Travel</li>
+    </ul>
+
+    <p>One of these on its own may not matter much. A few together can.</p>
+    <p>So most people change five things at once, keep waking up tired, and never find out what actually worked.</p>
+
+    <div class="affirm">The answer is often already sitting in your data.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHAT YOU GET
+     ============================================================ -->
+<section class="s s--paper" id="what-you-get">
+  <div class="wrap--wide">
+    <h2>What you get</h2>
+    <ol class="gets">
+      <li>
+        <h3>We go through your data</h3>
+        <p>30 days of sleep and recovery data, alongside your routine, training, caffeine, alcohol and stress.</p>
+      </li>
+      <li>
+        <h3>A 30-minute video call</h3>
+        <p>We talk you through what we found, without all the science or jargon. No giant report that just adds more noise.</p>
+      </li>
+      <li>
+        <h3>A one-page plan</h3>
+        <p>Three changes to make, and which one to start with.</p>
+      </li>
+      <li>
+        <h3>A two-week check-in</h3>
+        <p>We look at what&rsquo;s changed and whether your scores are heading the right way. Not moving yet? We&rsquo;ll adjust your plan at no extra cost.</p>
+      </li>
+    </ol>
+
+    <div class="promise">
+      <h3>Money-back promise</h3>
+      <p>If we can&rsquo;t find at least one thing in your data worth changing, you get your money back in full. You&rsquo;ll know on the call, and you can ask for a refund any time up to the end of it.</p>
+      <p class="small">We can&rsquo;t promise how your body responds. That depends on the changes you make and things outside our control, which is what the two-week check-in is for.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     THE OFFER
+     ⚠ PRICE. Rachel set AUD$299 on 27 Sept 2026 and named this
+     destination herself. Verified the same day: the OSleeve product
+     page charges 119.00 USD (compare-at 179.00), which presents as
+     AUD$173 to an Australian visitor and NZD$211 to a New Zealand one,
+     under the label "OSleeve customer price". A reader sent from
+     AUD$299 pays less than this page quoted. Flagged to her and to
+     Luke; the same note sits on the two field guide CTAs. It ships
+     because a dead button on a live funnel is worse than a working
+     one, and it changes the moment they rule on the price.
+     ============================================================ -->
+<section class="s s--deep" id="book">
+  <div class="wrap">
+    <h2>You already have the data.</h2>
+    <p class="deck">Now find out what to do with it.</p>
+
+    <div class="offer">
+      <p class="price">AUD$299</p>
+      <ul class="spec">
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30 days of &#332;ura or WHOOP data</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Personal data review</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30-minute video call</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>One-page plan</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Two-week check-in</li>
+      </ul>
+      <div class="btnrow">
+        <a class="btn" href="https://osleeve.com/products/sleep-score-review" target="_blank" rel="noopener">
+          Buy now
+          <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+      <p class="refund">If we can&rsquo;t find at least one thing in your data worth changing, you can ask for a full refund any time up to the end of your call.</p>
+      <p class="byline"><b>Rachel Taylor MSc(Hons)</b> and <b>Luke Taylor PGDip SpSciHP</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="s s--cream" id="how-it-works">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="deck">It takes about 10 minutes to get started.</p>
+    <ol class="steps">
+      <li>
+        <h3>Book your review</h3>
+        <p>Answer a few questions and upload your data. We&rsquo;ll show you how.</p>
+      </li>
+      <li>
+        <h3>Choose a time for your 30-minute call</h3>
+        <p>Pick the slot that suits you once your data is in.</p>
+      </li>
+      <li>
+        <h3>Get your answers and your one-page plan</h3>
+        <p>Three changes to make, and which one to start with.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHO IS LOOKING AT YOUR DATA
+     ============================================================ -->
+<section class="s s--navy" id="who">
+  <div class="wrap">
+    <h2>Who&rsquo;s looking at your data</h2>
+    <div class="reviewers">
+      <p><b>Rachel Taylor MSc(Hons)</b> has a science background in biochemistry, genetics and toxicology.</p>
+      <p><b>Luke Taylor PGDip SpSciHP</b> specialises in human performance and physiology.</p>
+      <p>Together we run Taylored Health and co-founded OSleeve. We personally review every person&rsquo;s data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     All nine questions carried across from the OSleeve product page.
+     Wording is theirs. The one exception is noted inline.
+     ============================================================ -->
+<section class="s s--paper" id="faq">
+  <div class="wrap">
+    <h2>Frequently asked questions</h2>
+
+    <details>
+      <summary>Which rings and trackers can you review?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>&#332;ura and WHOOP. Using something else? Email us at <a href="mailto:hello@osleeve.com">hello@osleeve.com</a> before booking and we&rsquo;ll let you know if we can work with it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How do I send you my data?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>It depends on your device. Both involve asking for a copy of your data, which can take a little while to arrive, so request it as soon as you book.</p>
+        <p><span class="dev">&#332;ura:</span> Log in to the <a href="https://membership.ouraring.com/" target="_blank" rel="noopener">Membership Hub</a>, select Export data, then Request your data. &#332;ura can take up to 10 days to prepare it and will email you when it&rsquo;s ready.</p>
+        <p><span class="dev">WHOOP:</span> Request your export by following <a href="https://support.whoop.com/s/article/How-to-Export-Your-Data" target="_blank" rel="noopener">WHOOP&rsquo;s guide</a>. It usually arrives within 24 hours.</p>
+        <p>Once you have the file, upload it through the form in your confirmation email.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How quickly will I get my answers?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>Within 7 days of receiving your data.</p>
+        <p>Because &#332;ura exports can take up to 10 days to arrive, &#332;ura users should allow two to three weeks from booking to call.</p>
+        <p>WHOOP users can usually have their call within a week or so.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What happens to my data?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>We use it only for your review, store it securely, and delete it within 90 days unless you ask us to keep it. We never share or sell it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Is this medical advice?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>No. This is a sleep and recovery data review to help you understand patterns in your data. It is not a medical diagnosis or treatment.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Is this right for me?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>It&rsquo;s for people who wear an &#332;ura or WHOOP, have at least 30 days of data, and feel tired despite getting enough time in bed.</p>
+        <p>Please speak with your GP first if you snore loudly, someone has noticed you stop breathing while asleep, or you regularly fall asleep during the day. Those symptoms need proper medical assessment, not a data review.</p>
+      </div>
+    </details>
+
+    <!-- The OSleeve wording here is "Once the first 10 OSleeve customer places
+         are filled, this introductory price ends." That is a claim about a
+         different brand's introductory price, and it is not true at AUD$299 on
+         this page, so the second sentence is dropped rather than carried across
+         false. The first sentence, which is the actual reason, is theirs. -->
+    <details>
+      <summary>Why are places limited?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>Because we personally review every set of data. We only take on the number of reviews the two of us can read properly in a month.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What if my score doesn&rsquo;t improve?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+      <div class="dbody">
+        <p>Sleep responds to lots of things, and some changes take longer than two weeks to show. If your scores haven&rsquo;t moved by the check-in, we&rsquo;ll look at why and adjust your plan at no extra cost.</p>
+        <p>Refunds apply if we can&rsquo;t find anything worth changing in your data, and you can ask for one any time up to the end of your call.</p>
+      </div>
+    </details>
+
+    <p class="disclaimer">The Sleep Score Review is a tool for reflection and performance guidance, not medical diagnosis or treatment.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     CLOSING
+     ============================================================ -->
+<section class="s s--deep" id="closing">
+  <div class="wrap">
+    <h2><span class="say">You already have the data.</span></h2>
+    <p class="turn">Now find out what to do with it.</p>
+
+    <div class="offer">
+      <p class="only">&#332;URA AND WHOOP ONLY</p>
+      <ul class="spec">
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30 days of data</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Personal review</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>30-minute call</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Three changes</li>
+        <li><svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-check"/></svg>Two-week check-in</li>
+      </ul>
+      <div class="btnrow">
+        <!-- ⚠ Same price note as the offer section above. -->
+        <a class="btn" href="https://osleeve.com/products/sleep-score-review" target="_blank" rel="noopener">
+          Buy now <span class="tag">AUD$299</span>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a>
+      </div>
+      <p class="refund">If we can&rsquo;t find at least one thing worth changing, you can ask for a full refund any time up to the end of your call.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <span class="fmark">The <em>Biology</em> of Leadership</span>
+  <a href="https://wheel.taylored.health/">Take the Capacity Wheel</a>
+</footer>
+
+<script>
+/* Two small jobs, no dependencies.
+   1. A deep link into a collapsed FAQ has to open it, or the link is broken.
+   2. The sticky nav marks the section you are actually in. */
+(function(){
+  function openTarget(){
+    var el = location.hash && document.querySelector(location.hash);
+    if (!el) return;
+    var d = el.closest ? el.closest('details') : null;
+    while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); }
+  }
+  window.addEventListener('hashchange', openTarget);
+  openTarget();
+
+  var links = [].slice.call(document.querySelectorAll('.topnav a[href^="#"]'));
+  var targets = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      var i = targets.indexOf(e.target);
+      if (i < 0) return;
+      links.forEach(function(a){ a.classList.remove('now'); });
+      links[i].classList.add('now');
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  targets.forEach(function(t){ if (t) io.observe(t); });
+})();
+</script>
+</body>
+</html>
