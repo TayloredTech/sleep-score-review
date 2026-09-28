@@ -17,7 +17,9 @@
 <meta name="twitter:title" content="Sleep Score Review">
 <meta name="twitter:description" content="8 hours in bed. Still tired. You have the data, but not the answer.">
 <meta name="twitter:image" content="https://sleep.taylored.health/assets/og-sleep.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23b8924a' stroke-width='4' stroke-dasharray='46 75' transform='rotate(-90 16 16)'/%3E%3C/svg%3E">
+<link rel="icon" href="https://taylored.health/wp-content/uploads/2026/07/taylored-favicon-150x150.png" sizes="32x32">
+<link rel="icon" href="https://taylored.health/wp-content/uploads/2026/07/taylored-favicon.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://taylored.health/wp-content/uploads/2026/07/taylored-favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- identical href to the wheel pages, so a visitor arriving from the field
@@ -720,11 +722,14 @@ details[open] summary .chev{transform:rotate(180deg)}
    ============================================================ */
 @media (min-width:860px){
   .steps--row{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(1.6rem,4vw,3rem)}
+  /* Rachel, 29 Sept 2026, second pass: the first fix landed on the stacked
+     layout only. Across-the-page is where she was looking, and here the circle
+     sat at top:0, flush against the rule. Both numbers move together. */
   .steps--row li{
-    padding:2.6rem 0 0;border-top:1px solid var(--rule-d)
+    padding:3.9rem 0 0;border-top:1px solid var(--rule-d)
   }
   .steps--row li:first-child{border-top:1px solid var(--rule-d)}
-  .steps--row li::before{top:0}
+  .steps--row li::before{top:1.3rem}
 }
 
 /* ============================================================
