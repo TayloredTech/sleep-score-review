@@ -464,7 +464,9 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 
 .promise{
   margin-top:2.2rem;padding:clamp(1.3rem,3.6vw,1.9rem);
-  background:var(--cream);border-radius:5px
+  background:var(--cream);border-radius:5px;
+  /* Rachel, 29 Sept 2026: "The money-back promise needs to be centred." */
+  text-align:center;max-width:46rem;margin-left:auto;margin-right:auto
 }
 .promise h3{margin-bottom:.6rem}
 .promise p + p{margin-top:.8rem}
@@ -476,7 +478,8 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
 .offer{
   border:1px solid var(--rule-l);border-radius:6px;
   background:linear-gradient(180deg,rgba(243,239,231,.06),rgba(243,239,231,.02));
-  padding:clamp(1.4rem,4vw,2.4rem);margin-top:2rem
+  /* less inner padding, so the extra width becomes content rather than air */
+  padding:clamp(1.25rem,3vw,1.8rem);margin-top:2rem
 }
 .price{
   /* Manrope, not Playfair: Playfair sets a small raised dollar sign that reads
@@ -530,12 +533,16 @@ h3{font-size:clamp(1.2rem,3.2vw,1.45rem);margin:0 0 .5rem}
    ============================================================ */
 .steps{list-style:none;counter-reset:step;margin:1.4rem 0 0}
 .steps li{
+  /* Rachel, 29 Sept 2026: "there just needs to be a bigger gap between the line
+     above the circled number and the circled number." Top padding and the
+     circle's own offset move together, or the circle just slides down inside
+     the same gap. */
   counter-increment:step;position:relative;
-  padding:1.1rem 0 1.1rem 3rem;border-top:1px solid var(--rule-d)
+  padding:1.9rem 0 1.1rem 3rem;border-top:1px solid var(--rule-d)
 }
 .steps li:first-child{border-top:0}
 .steps li::before{
-  content:counter(step);position:absolute;left:0;top:1.05rem;
+  content:counter(step);position:absolute;left:0;top:1.85rem;
   width:1.9rem;height:1.9rem;border-radius:50%;
   border:1px solid var(--gold-ink);color:var(--gold-ink);
   font-family:"Playfair Display",Georgia,serif;font-size:.95rem;
@@ -577,8 +584,12 @@ details[open] summary .chev{transform:rotate(180deg)}
 .dbody .dev{font-weight:700;color:var(--ink)}
 
 .disclaimer{
+  /* ⛔ NO border-top. Rachel, 29 Sept 2026: "there is also a double line above
+     'the sleep score review is a tool...'". details:last-of-type already draws a
+     border-bottom to close the FAQ, so this one stacked a second rule directly
+     underneath it. The spacing does the separating instead. */
   margin-top:2.2rem;font-size:.88rem;color:var(--ink-faint);
-  padding-top:1.2rem;border-top:1px solid var(--rule-d)
+  padding-top:1.2rem
 }
 
 /* ------------------------------------------------------------
@@ -602,7 +613,10 @@ details[open] summary .chev{transform:rotate(180deg)}
 /* the promise sits under the right-hand half of the list above it,
    rather than spanning the band like everything else */
 @media (min-width:900px){
-  .promise{margin-left:auto;max-width:38rem;margin-top:2.8rem}
+  /* ⚠ This used to push the promise under the right-hand half of the list with
+     margin-left:auto and no margin-right, which silently overrode the centring
+     Rachel asked for on 29 Sept. Centred means centred at every width. */
+  .promise{margin-left:auto;margin-right:auto;max-width:38rem;margin-top:2.8rem}
 }
 
 /* ============================================================
@@ -623,16 +637,31 @@ details[open] summary .chev{transform:rotate(180deg)}
 .break .causes{margin:1.8rem 0 1.6rem}
 .break .causes li{font-size:.95rem;padding:.42rem 1.05rem}
 .break p{max-width:var(--measure)}
+/* ⛔ WAS AN ORPHAN. Rachel, 29 Sept 2026: "right now, it's on the right
+   directly after the main text and looks like a mistake." It was a hairline
+   rule with a right-aligned line hanging under it, which reads as something
+   that came loose rather than as a deliberate call-out. It is now a translucent
+   box that sits BESIDE the copy on desktop, which is what she asked for, and
+   stacks under it on a phone where there is no room to sit beside anything. */
 .pull{
-  margin:2.6rem 0 0;padding:1.6rem 0 0;
-  border-top:1px solid var(--line-soft);
+  margin:2.2rem 0 0;
+  padding:1.4rem 1.5rem;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line-soft);
+  border-left:2px solid var(--gold,#9a784b);
+  border-radius:3px;
   font-family:"Playfair Display",Georgia,serif;
-  font-size:clamp(1.3rem,3.4vw,1.85rem);line-height:1.3;
-  color:var(--cream);max-width:24ch
+  font-size:clamp(1.2rem,3.2vw,1.6rem);line-height:1.32;
+  color:var(--cream);
 }
 @media (min-width:900px){
-  /* offset, so the band is not one more left-aligned stack either */
-  .pull{margin-left:auto;margin-right:0;text-align:right;max-width:26ch}
+  /* Beside the copy, not after it: the text column keeps the left, this sits in
+     the space to its right and is vertically centred against the block. */
+  .pullwrap{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(16rem,22rem);
+    gap:2.4rem;align-items:center
+  }
+  .pull{margin:0;max-width:none}
 }
 
 /* ============================================================
@@ -641,8 +670,11 @@ details[open] summary .chev{transform:rotate(180deg)}
 .buygrid{display:grid;gap:1.8rem 0}
 @media (min-width:900px){
   .buygrid{
-    grid-template-columns:minmax(0,1fr) minmax(0,26rem);
-    gap:0 clamp(2.5rem,6vw,5rem);align-items:center
+    /* Rachel, 29 Sept 2026: the buy card needed to be WIDER, it was carrying a
+       lot of padding for its width. 26rem -> 30rem, and the gap tightened to
+       give it that room rather than taking it off the copy column. */
+    grid-template-columns:minmax(0,1fr) minmax(0,30rem);
+    gap:0 clamp(2rem,4.5vw,3.5rem);align-items:center
   }
 }
 .buygrid .said h2{max-width:14ch}
@@ -651,20 +683,31 @@ details[open] summary .chev{transform:rotate(180deg)}
 /* the card is 26rem wide here, so the spec stays in one column
    whatever the viewport media query would otherwise do */
 @media (min-width:900px){.buygrid .spec{grid-template-columns:1fr}}
+/* the card is 30rem from 29 Sept, see .buygrid */
 
 /* the one secondary restatement, far down the page. A line and a
    link, deliberately not a second copy of the offer card. */
 .tail{
-  display:flex;flex-wrap:wrap;align-items:baseline;
-  gap:.6rem clamp(1.2rem,4vw,2.6rem);
+  /* Rachel, 29 Sept 2026: "the book the review button just needs to have more
+     padding and vertical centered." It was a bare underlined link sharing a
+     BASELINE with the heading, so it sat low and had no box of its own. Centre
+     alignment gives it the vertical centring; the padding comes from .again. */
+  display:flex;flex-wrap:wrap;align-items:center;
+  gap:.9rem clamp(1.2rem,4vw,2.6rem);
   max-width:66rem;margin:0 auto
 }
 .tail h2{font-size:clamp(1.35rem,3.4vw,1.85rem);margin:0;flex:1 1 18rem}
 .tail .again{
   font-weight:700;color:var(--gold);text-decoration:none;
-  border-bottom:1px solid rgba(184,146,74,.45);padding-bottom:.15rem;
-  transition:color .18s,border-color .18s
+  /* A real box rather than an underline, so it reads as the button she is
+     calling it. ⛔ Still not a second offer card: it stays a bordered link, per
+     the one-primary-CTA note on #book. */
+  display:inline-flex;align-items:center;
+  padding:.85rem 1.35rem;
+  border:1px solid rgba(184,146,74,.55);border-radius:3px;
+  transition:color .18s,border-color .18s,background .18s
 }
+.tail .again:hover{background:rgba(184,146,74,.1)}
 /* The link is allowed to wrap at 320, because nowrap on the whole
    phrase overflows the moment Manrope fails to load and a wider
    fallback comes up. Only the price and the arrow are held together. */
@@ -690,6 +733,13 @@ details[open] summary .chev{transform:rotate(180deg)}
 .people{display:grid;gap:1.4rem;margin:0}
 @media (min-width:720px){.people{grid-template-columns:1fr 1fr;gap:0 clamp(2rem,5vw,3.4rem)}}
 .person{padding-top:1.1rem;border-top:1px solid var(--rule-l)}
+/* ⛔ Rachel, 29 Sept 2026: "There is a double line above our names, the second
+   line is broken between our names. Just pick one." The continuous rule comes
+   from split--ruled on the wrapper; these two add a SECOND one that the grid gap
+   cuts in half. Side by side, the per-person rule is the broken one, so it goes.
+   It stays on mobile, where the two stack and it is the only thing separating
+   one person from the next. */
+@media (min-width:720px){.person{border-top:0;padding-top:0}}
 .person .nm{
   font-family:"Playfair Display",Georgia,serif;font-size:1.2rem;
   font-weight:600;color:var(--cream);margin:0 0 .35rem
@@ -897,10 +947,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li>Travel</li>
     </ul>
 
-    <p>One of these on its own may not matter much. A few together can.</p>
-    <p>So most people change five things at once, keep waking up tired, and never find out what actually worked.</p>
-
-    <p class="pull">The answer is often already sitting in your data.</p>
+    <div class="pullwrap">
+      <div>
+        <p>One of these on its own may not matter much. A few together can.</p>
+        <p>So most people change five things at once, keep waking up tired, and never find out what actually worked.</p>
+      </div>
+      <p class="pull">The answer is often already sitting in your data.</p>
+    </div>
   </div>
 </section>
 
@@ -1058,7 +1111,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <details>
       <summary>Which rings and trackers can you review?<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><use href="#i-chev"/></svg></summary>
       <div class="dbody">
-        <p>&#332;ura and WHOOP. Using something else? Email us at <a href="mailto:hello@osleeve.com">hello@osleeve.com</a> before booking and we&rsquo;ll let you know if we can work with it.</p>
+        <p>&#332;ura and WHOOP. Using something else? Email us at <a href="mailto:hello@taylored.health">hello@taylored.health</a> before booking and we&rsquo;ll let you know if we can work with it.</p>
       </div>
     </details>
 
