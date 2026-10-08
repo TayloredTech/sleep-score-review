@@ -909,6 +909,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="sect-n">YOUR UPLOAD</p>
     <h2 id="slotHead">Picking up where you left off</h2>
     <p id="slotSub" style="margin-top:.6rem">Checking your link.</p>
+    <!-- Same Sleep Score Review schedule as the confirmation screen's button
+         (fCGESrA…), never the nav and footer's rbkUhUne… one. Shown once the file is in. -->
+    <div class="btnrow" id="slotBook" style="display:none">
+      <a class="btn" href="https://calendar.app.google/fCGESrAbvRYCCNN47" target="_blank" rel="noopener">Book my call <svg viewBox="0 0 16 16" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
 
     <div id="slotLive" style="display:none">
       <div class="refbox">
@@ -1931,14 +1936,17 @@ function tokenView(token){
   show("slot");
 
   post({action:"status", upload_token:token}).then(function(j){
-    $("slotHead").textContent = "Hello " + j.name;
+    /* The function stops sending the name once the file is in, so never
+       print a name we were not given. */
+    $("slotHead").textContent = j.name ? "Hello " + j.name : (j.uploaded ? "Your file is in" : "Hello");
     if (j.uploaded){
       $("slotSub").textContent = "Your export is already in. There is nothing left to do here.";
+      $("slotBook").style.display = "";
       return;
     }
     $("slotSub").textContent = "Your answers are saved. All that is left is the export file.";
     $("slotLive").style.display = "";
-    $("slotRef").textContent = j.ref;
+    $("slotRef").textContent = j.ref || " ";
     $("slotGuide").innerHTML = $(j.device === "whoop" ? "gWhoop" : "gOura").innerHTML;
 
     var f2 = null;
@@ -1960,6 +1968,7 @@ function tokenView(token){
           : "That is your export in. It is scheduled to be deleted 90 days from now. " +
             "Next step is to book your call.";
         $("slotHead").textContent = "Your file is in";
+        $("slotBook").style.display = "";
       }).catch(function(err){
         $("slotSend").disabled = false;
         $("slotSend").firstChild.textContent = "Upload my export ";
