@@ -740,6 +740,16 @@ select.in{
 .prog.on{display:block}
 .prog i{display:block;height:100%;width:0;background:var(--sage);transition:width .2s}
 
+/* ---- "I do not have the file here", its own block under the file field.
+   It was one pill in a row of nothing and people missed it. ---- */
+.laterbox{
+  margin-top:1rem;padding:1.15rem 1.25rem;
+  background:var(--cream);border:1px solid var(--gold);border-radius:5px
+}
+.laterbox b{display:block;color:var(--ink);font-size:1.02rem;margin-bottom:.25rem}
+.laterbox p{font-size:.95rem;margin:0}
+.laterbox .opts{margin-top:.75rem}
+
 /* ---- submit ---- */
 .send{margin-top:2.6rem;padding-top:1.8rem;border-top:1px solid var(--rule-d)}
 .send .btn{width:100%;justify-content:center;font-size:1.05rem;padding:1.05rem 1.9rem}
@@ -894,6 +904,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h1 style="font-size:clamp(1.9rem,6vw,2.8rem);margin:0 0 .9rem">Let&rsquo;s Get Started</h1>
     <p class="deck">Your tracker shows how you slept. We need a few answers from you to understand the factors that influence it.</p>
     <div class="lines">
+      <p><span class="say">Request your tracker export first, because it can take a while to arrive.</span> <span class="say">You can start this form while you wait.</span></p>
       <p><span class="say">It takes about ten minutes, and you can stop and come back.</span></p>
       <p><span class="say">Your answers save as you type.</span></p>
     </div>
@@ -945,7 +956,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="rail-in">
     <span class="rail-lab">PROGRESS</span>
     <span class="bar"><i id="barFill"></i></span>
-    <span class="rail-n" id="railN">0 of 23</span>
+    <span class="rail-n" id="railN">0 of 27</span>
     <span class="saved" id="savedFlag">SAVED</span>
   </div>
 </div>
@@ -1057,14 +1068,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <div class="q" data-q="8">
-      <span class="lab">How long do you spend in bed awake, before sleep or in the night?</span>
+    <!-- Q8 was one question, "in bed awake, before sleep or in the night", and it
+         is now two. The night-waking half keeps the name q8 because drafts saved
+         before the split answered it about waking in the night. -->
+    <div class="q" data-q="8a">
+      <span class="lab">How long does it usually take you to fall asleep?</span>
+      <div class="opts" role="radiogroup" aria-label="How long does it usually take you to fall asleep">
+        <label><input type="radio" name="q8fall" value="Under 15 minutes"> Under 15 minutes</label>
+        <label><input type="radio" name="q8fall" value="15 to 30 minutes"> 15 to 30 minutes</label>
+        <label><input type="radio" name="q8fall" value="30 to 60 minutes"> 30 to 60 minutes</label>
+        <label><input type="radio" name="q8fall" value="Over an hour"> Over an hour</label>
+      </div>
+    </div>
+
+    <div class="q" data-q="8b">
+      <span class="lab">If you wake in the night, how long are you usually awake for?</span>
       <p class="help" data-help="1">Misunderstood: time in bed isn&rsquo;t time asleep. Going to bed earlier to &ldquo;catch up&rdquo; often means more time lying awake.</p>
-      <div class="opts" role="radiogroup" aria-label="How long do you spend in bed awake">
+      <div class="opts" role="radiogroup" aria-label="If you wake in the night, how long are you usually awake for">
         <label><input type="radio" name="q8" value="Under 15 minutes"> Under 15 minutes</label>
         <label><input type="radio" name="q8" value="15 to 30 minutes"> 15 to 30 minutes</label>
         <label><input type="radio" name="q8" value="30 to 60 minutes"> 30 to 60 minutes</label>
         <label><input type="radio" name="q8" value="Over an hour"> Over an hour</label>
+        <label><input type="radio" name="q8" value="I don't usually wake"> I don&rsquo;t usually wake</label>
       </div>
     </div>
   </div>
@@ -1094,7 +1119,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="checkbox" name="q10" value="Laptop or work"> Laptop or work</label>
         <label><input type="checkbox" name="q10" value="TV"> TV</label>
         <label><input type="checkbox" name="q10" value="Bright overhead lights on"> Bright overhead lights on</label>
-        <label><input type="checkbox" name="q10" value="Reading"> Reading</label>
+        <label><input type="checkbox" name="q10" value="Reading a paper book"> Reading a paper book</label>
+        <label><input type="checkbox" name="q10" value="Reading on a tablet or e-reader"> Reading on a tablet or e-reader</label>
         <label><input type="checkbox" name="q10" value="Other"> Other</label>
       </div>
     </div>
@@ -1117,8 +1143,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="checkbox" name="q11" value="Soda"> Soda</label>
         <label><input type="checkbox" name="q11" value="Chocolate"> Chocolate</label>
       </div>
-      <label class="sub" for="q11time">TIME OF YOUR LAST ONE</label>
-      <input class="in" type="time" id="q11time" name="q11time" style="max-width:11rem">
+      <!-- align-items:end because the first label wraps to two lines on a phone
+           and the two boxes would otherwise sit at different heights -->
+      <div class="row2" style="align-items:end">
+        <div><label class="sub" for="q11amt">HOW MANY CUPS OR CANS A DAY?</label><input class="in" type="number" id="q11amt" name="q11amt" min="0" step="any" inputmode="decimal"></div>
+        <div><label class="sub" for="q11time">LAST CAFFEINE OF THE DAY AT</label><input class="in" type="time" id="q11time" name="q11time"></div>
+      </div>
+      <label class="sub" for="q11note">ANYTHING TO ADD?</label>
+      <input class="in" type="text" id="q11note" name="q11note">
     </div>
   </div>
 
@@ -1235,6 +1267,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label><input type="radio" name="q16noise" value="Some"> Some</label>
         <label><input type="radio" name="q16noise" value="Noisy"> Noisy</label>
       </div>
+      <label class="sub" for="q16note">ANYTHING DIFFERENT LATELY?</label>
+      <input class="in" type="text" id="q16note" name="q16note">
+    </div>
+
+    <div class="q" data-q="16a">
+      <span class="lab">Do you use any of these at night? <span class="opt-tag">OPTIONAL</span></span>
+      <p class="opt-note">Tick all that apply.</p>
+      <div class="opts" id="q16aidsBox" role="group" aria-label="Do you use any of these at night, optional, tick all">
+        <label><input type="checkbox" name="q16aids" value="Eye mask"> Eye mask</label>
+        <label><input type="checkbox" name="q16aids" value="Earplugs"> Earplugs</label>
+        <label><input type="checkbox" name="q16aids" value="Fan or white noise"> Fan or white noise</label>
+        <label><input type="checkbox" name="q16aids" value="Blackout curtains or blinds"> Blackout curtains or blinds</label>
+        <label><input type="checkbox" name="q16aids" value="Amber or blue-light glasses in the evening"> Amber or blue-light glasses in the evening</label>
+        <label><input type="checkbox" name="q16aids" value="CPAP or another breathing device"> CPAP or another breathing device</label>
+        <label><input type="checkbox" name="q16aids" value="Mouth tape"> Mouth tape</label>
+        <label><input type="checkbox" name="q16aids" value="None of these" data-solo="1"> None of these</label>
+      </div>
     </div>
 
     <div class="q" data-q="17">
@@ -1288,7 +1337,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="help" data-help="1">Commonly missed: hormonal changes shift temperature and HRV readings, and travel or illness can make a whole month look bad.</p>
       <div class="opts col" role="group" aria-label="Does anything here apply to you, optional, tick all">
         <label><input type="checkbox" name="q20" value="Menstrual cycle tracking"> Menstrual cycle tracking</label>
-        <label><input type="checkbox" name="q20" value="Perimenopause or menopause"> Perimenopause or menopause</label>
+        <label><input type="checkbox" name="q20" value="Perimenopause"> Perimenopause</label>
+        <label><input type="checkbox" name="q20" value="Menopause"> Menopause</label>
+        <label><input type="checkbox" name="q20" value="Post-menopause"> Post-menopause</label>
         <label><input type="checkbox" name="q20" value="Shift work"> Shift work</label>
         <label><input type="checkbox" name="q20" value="Frequent travel across time zones"> Frequent travel across time zones</label>
         <label><input type="checkbox" name="q20" value="Young children waking at night"> Young children waking at night</label>
@@ -1309,6 +1360,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="sect-n">SECTION 12</p>
     <h2>Safety check</h2>
 
+    <!-- Wording approved by Rachel, 9 Oct 2026 ("Great. Go live.").
+         Optional. No data-flag on anything here and it sits outside #q22box,
+         so it can never raise the GP panel or the safety flag. -->
+    <div class="q" data-q="21a">
+      <span class="lab">Have you been diagnosed with a sleep condition? <span class="opt-tag">OPTIONAL</span></span>
+      <p class="opt-note">Tick all that apply.</p>
+      <div class="opts" id="qdxBox" role="group" aria-label="Have you been diagnosed with a sleep condition, optional, tick all">
+        <label><input type="checkbox" name="qdx" value="Sleep apnoea"> Sleep apnoea</label>
+        <label><input type="checkbox" name="qdx" value="Insomnia"> Insomnia</label>
+        <label><input type="checkbox" name="qdx" value="Restless legs"> Restless legs</label>
+        <label><input type="checkbox" name="qdx" value="Narcolepsy"> Narcolepsy</label>
+        <label><input type="checkbox" name="qdx" value="Something else"> Something else</label>
+        <label><input type="checkbox" name="qdx" value="No" data-solo="1"> No</label>
+      </div>
+      <label class="sub" for="qdxTreat">IF YES, WHAT TREATMENT DO YOU USE, IF ANY?</label>
+      <input class="in" type="text" id="qdxTreat" name="qdxTreat">
+    </div>
+
     <div class="q" data-q="22">
       <span class="lab">Do any of these apply? <span class="req">*</span></span>
       <div class="opts col" id="q22box" role="group" aria-label="Safety check, do any of these apply">
@@ -1322,6 +1391,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p>These need a proper medical check.</p>
       </div>
       <p class="err" id="e22" role="alert" aria-live="assertive"></p>
+    </div>
+
+    <div class="q" data-q="22a">
+      <span class="lab">Anything else we should know about your sleep? <span class="opt-tag">OPTIONAL</span></span>
+      <label class="vh" for="qmore">Anything else we should know about your sleep?</label>
+      <textarea class="in" id="qmore" name="qmore" rows="3" placeholder="In your own words"></textarea>
     </div>
   </div>
 
@@ -1369,8 +1444,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="dsub" id="dsub">CSV, ZIP, JSON, TXT or XLSX, up to 50MB</span>
       </label>
       <div class="prog" id="prog"><i></i></div>
-      <div class="opts col" style="margin-top:.9rem">
-        <label><input type="checkbox" id="later" name="later"> I do not have the file here. Show me my own upload link so I can come back to it.</label>
+      <div class="laterbox">
+        <b>Don&rsquo;t have your file yet?</b>
+        <p>You can send your answers now and add the file later from your own link.</p>
+        <div class="opts col">
+          <label><input type="checkbox" id="later" name="later"> I do not have the file here. Show me my own upload link so I can come back to it.</label>
+        </div>
       </div>
       <p class="err" id="e23" role="alert" aria-live="assertive"></p>
     </div>
@@ -1486,9 +1565,12 @@ var $ = function(id){ return document.getElementById(id); };
 var form = $("f");
 var q18Touched = false;   /* see readAll, the stress slider cannot be blank */
 
-/* ---- the 23 questions, in Rachel's order and her wording. The labels
+/* ---- the questions, in Rachel's order and her wording. The labels
    travel with the answers so the stored row and Rachel's copy both read
-   as themselves and not as q1, q2, q3. ---- */
+   as themselves and not as q1, q2, q3.
+   The original 23 keep their numbers, because the notifier names 20 and 21
+   and validate() names 1, 2, 5, 22, 23 and 24. Questions added on 9 Oct 2026
+   take a letter after the number they follow (8a, 16a, 21a, 22a). ---- */
 var QS = [
   {n:1,  q:"Name and email", f:["q1name","q1email"], sub:["Name","Email"]},
   {n:2,  q:"Which device do you wear?", r:"q2"},
@@ -1497,21 +1579,26 @@ var QS = [
   {n:5,  q:"What bothers you most?", c:"q5"},
   {n:6,  q:"What would a good result look like in a month?", f:["q6"]},
   {n:7,  q:"What time do you usually go to bed and get up?", f:["q7wdBed","q7wdUp","q7weBed","q7weUp"], sub:["Weekday bed","Weekday up","Weekend bed","Weekend up"]},
-  {n:8,  q:"How long do you spend in bed awake, before sleep or in the night?", r:"q8"},
+  {n:"8a", q:"How long does it usually take you to fall asleep?", r:"q8fall"},
+  {n:"8b", q:"If you wake in the night, how long are you usually awake for?", r:"q8"},
   {n:9,  q:"How much time do you spend outdoors in daylight before midday?", r:"q9"},
   {n:10, q:"In the last hour before bed, what are you doing?", c:"q10"},
-  {n:11, q:"What caffeine do you have, and what time is your last one?", c:"q11", f:["q11time"], sub:["Last one at"]},
+  {n:11, q:"What caffeine do you have, and what time is your last one?", c:"q11", f:["q11amt","q11time","q11note"], sub:["Cups or cans a day","Last caffeine of the day at","Anything to add"]},
   {n:12, q:"How many alcoholic drinks do you have a week, and when?", r:"q12", rsub:"Drinks a week", r2:"q12when", r2sub:"Usual timing"},
   {n:13, q:"What time is your last meal, and is dinner your biggest meal?", f:["q13time","q13big"], sub:["Last meal","Biggest meal"]},
   {n:14, q:"Do you snack or drink much fluid within 2 hours of bed?", r:"q14"},
   {n:15, q:"What exercise do you do, and at what time of day?", f:["q15type","q15days","q15time"], sub:["Type","Days per week","Typical time"], r:"q15int", rsub:"Intensity"},
-  {n:16, q:"Describe your bedroom at night:", r:"q16temp", rsub:"Temperature", r2:"q16dark", r2sub:"Darkness", r3:"q16noise", r3sub:"Noise"},
+  {n:16, q:"Describe your bedroom at night:", f:["q16note"], sub:["Anything different lately"], r:"q16temp", rsub:"Temperature", r2:"q16dark", r2sub:"Darkness", r3:"q16noise", r3sub:"Noise"},
+  {n:"16a", q:"Do you use any of these at night?", c:"q16aids", optional:true},
   {n:17, q:"Who or what else sleeps in the room?", c:"q17"},
   {n:18, q:"How stressed have you been over the last month (1 to 10), and what's the main source?", f:["q18n","q18src"], sub:["Stress, 1 to 10","Main source"]},
   {n:19, q:"Do you lie in bed thinking about work or problems?", r:"q19"},
   {n:20, q:"Does anything here apply to you?", c:"q20", optional:true},
   {n:21, q:"Any medications or supplements, and when do you take them?", f:["q21"], optional:true},
+  /* wording approved by Rachel, 9 Oct 2026 */
+  {n:"21a", q:"Have you been diagnosed with a sleep condition?", c:"qdx", f:["qdxTreat"], sub:["Treatment"], optional:true},
   {n:22, q:"Do any of these apply?", c:"q22"},
+  {n:"22a", q:"Anything else we should know about your sleep?", f:["qmore"], optional:true},
   {n:23, q:"Upload your data export", upload:true}
 ];
 
@@ -1569,8 +1656,8 @@ function answeredCount(){
 
 function paintProgress(){
   var n = answeredCount();
-  $("railN").textContent = n + " of 23";
-  $("barFill").style.width = Math.round((n / 23) * 100) + "%";
+  $("railN").textContent = n + " of " + QS.length;
+  $("barFill").style.width = Math.round((n / QS.length) * 100) + "%";
 }
 
 /* ============================================================
@@ -1988,6 +2075,8 @@ function tokenView(token){
 restore();
 soloRules($("q17box"));
 soloRules($("q22box"));
+soloRules($("q16aidsBox"));
+soloRules($("qdxBox"));
 capTwo();
 paintGuide();
 paintGp();
