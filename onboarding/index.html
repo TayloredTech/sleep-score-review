@@ -892,9 +892,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="intro" id="intro">
     <p class="eyebrow">SLEEP SCORE REVIEW</p>
     <h1 style="font-size:clamp(1.9rem,6vw,2.8rem);margin:0 0 .9rem">Let&rsquo;s Get Started</h1>
-    <p class="deck">Your tracker knows what happened. It does not know why.</p>
+    <p class="deck">Your tracker shows how you slept. We need a few answers from you to understand why.</p>
     <div class="lines">
-      <p><span class="say">These questions fill in the part the data cannot see.</span> <span class="say">About ten minutes, and you can stop and come back.</span></p>
+      <p><span class="say">It takes about ten minutes, and you can stop and come back.</span></p>
       <p><span class="say">Your answers save as you type.</span></p>
     </div>
   </div>
@@ -1940,7 +1940,7 @@ function tokenView(token){
        print a name we were not given. */
     $("slotHead").textContent = j.name ? "Hello " + j.name : (j.uploaded ? "Your file is in" : "Hello");
     if (j.uploaded){
-      $("slotSub").textContent = "Your export is already in. There is nothing left to do here.";
+      $("slotSub").textContent = "Your export is already in. The next step is to book your call.";
       $("slotBook").style.display = "";
       return;
     }
