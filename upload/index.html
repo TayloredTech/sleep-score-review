@@ -27,10 +27,46 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font:400 17px/1.6 Manrope,system-ui,sans-serif}
-header{background:var(--band);color:var(--hd);padding:18px 16px}
-header .in{max-width:40rem;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
-header a{color:var(--hd);text-decoration:none;font:600 15px/1 Poppins,sans-serif;letter-spacing:.02em}
-header span{font:400 12px/1 var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+/* Site nav, lifted from /onboarding/ (same markup and rules). Two changes:
+   the dropdown wrapper is .ndrop because this page's file picker owns .drop,
+   and the bar is a solid band in the flow, not fixed over a dark hero. */
+.nav{--line:rgba(217,189,146,.16);--gold-soft:#cdaa6b;--gold-bright:#d9c08a;--tx-dim:#9fb1bc;--navh:4.6rem;line-height:1.74}
+.xos{color:#b8924a}
+.nav{position:relative;z-index:60;height:var(--navh); display:flex;align-items:center;justify-content:space-between;gap:1rem; padding:0 clamp(1.1rem,3.5vw,2.6rem); background:var(--band);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;text-decoration:none;flex:none}
+.brand img{height:clamp(2.1rem,1.7rem + 1vw,2.6rem);width:auto}
+.nav .links{display:flex;align-items:center;gap:clamp(.85rem,1.8vw,1.6rem)}
+.nlink{font-family:var(--label);font-size:.72rem;font-weight:400;letter-spacing:.19em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.5em 0 .35em;border-bottom:1px solid transparent;white-space:nowrap}
+.nlink:hover{color:var(--gold-bright)}
+.pill{font-family:var(--label);font-size:.7rem;font-weight:600;letter-spacing:.16em!important;text-transform:uppercase!important; color:#0b1420;background:var(--gold);text-decoration:none;padding:.8em 1.45em .66em;border-radius:2px;white-space:nowrap}
+.pill:hover{background:var(--gold-soft)}
+.pill-ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(217,189,146,.5)}
+.pill-ghost:hover{background:rgba(217,189,146,.08);border-color:var(--gold-bright);color:var(--gold-bright)}
+.ndrop{position:relative;display:flex;align-items:center}
+.ndrop>.nlink::after{content:"";display:inline-block;width:.42em;height:.42em; border-right:1px solid var(--gold);border-bottom:1px solid var(--gold); transform:rotate(45deg);margin-left:.55em;vertical-align:.14em}
+.dmenu{position:absolute;top:100%;right:-1rem;min-width:15.5rem;padding:.7rem 0;margin-top:.4rem; background:rgba(11,26,44,.97);border:1px solid var(--line);border-top:2px solid var(--gold); opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .22s,transform .22s,visibility .22s}
+.ndrop:hover .dmenu, .ndrop:focus-within .dmenu{opacity:1;visibility:visible;transform:none}
+.dmenu a{display:block;font-family:var(--label);font-size:.72rem;letter-spacing:.16em!important;text-transform:uppercase!important; color:#d5dde2;text-decoration:none;padding:.78em 1.4em .6em}
+.dmenu a:hover{color:var(--gold-bright);background:rgba(217,189,146,.06)}
+.navtog{position:absolute;opacity:0;pointer-events:none}
+.navbtn{display:none;width:2.3rem;height:2.3rem;cursor:pointer;position:relative;z-index:62;flex:none}
+.navbtn span{position:absolute;left:.35rem;right:.35rem;height:2px;background:var(--hd);transition:transform .3s,opacity .3s}
+.navbtn span:nth-child(1){top:.82rem}
+.navbtn span:nth-child(2){top:1.4rem}
+@media (max-width:1080px){
+.navbtn{display:block}
+.nav .links{position:fixed;inset:0;top:0;padding-top:calc(var(--navh) + 1.2rem); flex-direction:column;justify-content:flex-start;gap:0;background:#091422; opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+.nlink{font-size:.95rem;padding:.95rem 0 .8rem;width:min(21rem,80vw);text-align:center; border-bottom:1px solid rgba(217,189,146,.13)}
+.ndrop{width:min(21rem,80vw);display:flex;flex-direction:column;align-items:center}
+.ndrop>.nlink{width:100%}
+.ndrop>.nlink::after{content:""}
+.dmenu{position:static;opacity:1;visibility:visible;transform:none;border:0;background:transparent; min-width:0;width:100%;padding:0;margin:0}
+.dmenu a{font-size:.83rem;color:var(--tx-dim);padding:.85em 0 .7em;text-align:center;border-bottom:1px solid rgba(217,189,146,.08)}
+.pill{margin:1.7rem 0 2.5rem;font-size:.82rem;padding:1em 2.1em .85em}
+.navtog:checked ~ .links{opacity:1;pointer-events:auto}
+.navtog:checked ~ .navbtn span:nth-child(1){transform:translateY(.29rem) rotate(45deg)}
+.navtog:checked ~ .navbtn span:nth-child(2){transform:translateY(-.29rem) rotate(-45deg)}
+}
 main{max-width:40rem;margin:0 auto;padding:40px 16px 64px}
 .kick{font:600 12px/1 var(--label);letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 14px}
 h1{font:500 clamp(30px,6vw,40px)/1.15 'Playfair Display',Georgia,serif;margin:0 0 14px}
@@ -88,7 +124,38 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLRP9CF"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<header><div class="in"><a href="https://taylored.health/">Taylored Health</a><span>Health Strategy Session</span></div></header>
+<nav class="nav">
+  <a class="brand" href="https://taylored.health/" aria-label="Taylored Health home">
+    <img decoding="async" src="https://taylored.health/wp-content/uploads/2026/08/taylored-logo-400.png" alt="Taylored. Health &amp; Performance Technologies" width="400" height="124">
+  </a>
+  <input type="checkbox" id="navtog" class="navtog" aria-hidden="true">
+  <label for="navtog" class="navbtn" aria-label="Menu"><span></span><span></span></label>
+  <div class="links">
+    <div class="ndrop">
+      <a class="nlink" href="https://taylored.health/services/">Services</a>
+      <div class="dmenu">
+        <a href="https://sleep.taylored.health/">Sleep Score Review</a>
+        <a href="https://taylored.health/metabolic-health/">Metabolic Profile</a>
+        <a href="https://taylored.health/executive-program/">Executive Uplift Program</a>
+        <a href="https://taylored.health/private-advisory/">The Private Advisory</a>
+      </div>
+    </div>
+    <a class="nlink" href="https://taylored.health/events/">Events</a>
+    <a class="nlink" href="https://taylored.health/beacon/">The Book</a>
+    <a class="nlink" href="https://taylored.health/execos/">Exec<span class="xos">OS</span></a>
+    <div class="ndrop">
+      <a class="nlink" href="https://taylored.health/about/">About</a>
+      <div class="dmenu">
+        <a href="https://taylored.health/about/">Who you work with</a>
+        <a href="https://taylored.health/results/">Results</a>
+        <a href="https://taylored.health/apply/">Apply</a>
+        <a href="https://taylored.health/leadership-capacity/">Leadership Capacity</a>
+      </div>
+    </div>
+    <a class="pill pill-ghost" href="https://wheel.taylored.health">The Capacity Wheel &rarr;</a>
+    <a class="pill" href="https://calendar.app.google/rbkUhUneDWnEKRQv9" target="_blank" rel="noopener">Book a conversation</a>
+  </div>
+</nav>
 <main>
   <p class="kick">Optional</p>
   <h1 id="hello">Send us your wearable data</h1>
