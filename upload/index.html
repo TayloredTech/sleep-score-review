@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Health Strategy Session &middot; Your wearable data</title>
+<meta name="description" content="Send us your wearable data before your Health Strategy Session.">
+<link rel="canonical" href="https://sleep.taylored.health/upload/">
+<!-- Post-purchase page, reached only from a personal link. Not for search. -->
+<meta name="robots" content="noindex,follow">
+<!-- The upload token is in the query string. Never send the path off this origin. -->
+<meta name="referrer" content="strict-origin">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23b8924a' stroke-width='4' stroke-dasharray='46 75' transform='rotate(-90 16 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --band:#0e2136; --hd:#f3f1ea; --tx:#c3ced6;
+  --gold:#b8924a; --gold-ink:#8f6f45;
+  --paper:#f0ede4; --paper-line:#d9d3c4;
+  --ink:#16222e; --ink-soft:#41505c; --ink-faint:#75838d;
+  --sage:#5f8a5a; --clay:#b4593c;
+  --label:'Josefin Sans',Verdana,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.6 Manrope,system-ui,sans-serif}
+header{background:var(--band);color:var(--hd);padding:18px 16px}
+header .in{max-width:40rem;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+header a{color:var(--hd);text-decoration:none;font:600 15px/1 Poppins,sans-serif;letter-spacing:.02em}
+header span{font:400 12px/1 var(--label);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+main{max-width:40rem;margin:0 auto;padding:40px 16px 64px}
+.kick{font:600 12px/1 var(--label);letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 14px}
+h1{font:500 clamp(30px,6vw,40px)/1.15 'Playfair Display',Georgia,serif;margin:0 0 14px}
+h2{font:500 22px/1.3 'Playfair Display',Georgia,serif;margin:34px 0 10px}
+p{margin:0 0 14px;color:var(--ink-soft)}
+.devices{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.devices button{font:600 14px/1 Manrope,sans-serif;padding:11px 14px;border:1px solid var(--paper-line);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer}
+.devices button[aria-pressed="true"]{background:var(--ink);color:var(--hd);border-color:var(--ink)}
+.guide{display:none;background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:18px 20px;margin:0 0 20px}
+.guide.on{display:block}
+.guide h3{font:600 16px/1.3 Manrope,sans-serif;margin:0 0 8px}
+.guide ol{margin:0 0 10px;padding-left:20px}
+.guide li{margin:0 0 4px}
+.guide .note{font-size:14px;color:var(--ink-faint);margin:0}
+.guide a{color:var(--gold-ink)}
+.drop{display:block;border:1.5px dashed var(--ink-faint);border-radius:6px;padding:26px 18px;text-align:center;cursor:pointer;background:#fff}
+.drop.hot{border-color:var(--gold)}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.drop b{display:block;font-size:16px;color:var(--ink)}
+.drop small{color:var(--ink-faint);font-size:13px}
+.btn{display:inline-block;margin-top:16px;font:600 15px/1 Manrope,sans-serif;padding:15px 24px;border:0;border-radius:4px;background:var(--ink);color:var(--hd);cursor:pointer}
+.btn[disabled]{opacity:.45;cursor:default}
+.prog{height:6px;background:var(--paper-line);border-radius:3px;margin-top:16px;display:none}
+.prog.on{display:block}
+.prog i{display:block;height:100%;width:0;background:var(--gold);border-radius:3px;transition:width .2s}
+.msg{margin-top:14px;font-weight:600}
+.msg.ok{color:var(--sage)}
+.msg.bad{color:var(--clay)}
+.privacy{font-size:14px;color:var(--ink-faint);border-top:1px solid var(--paper-line);padding-top:18px;margin-top:34px}
+.hide{display:none}
+</style>
+<script>
+/* ⛔ MUST STAY ABOVE GTM: lift the upload token out of the URL before any tag
+   can record page_location. Same rule as /onboarding/. */
+(function(){
+  try {
+    var m = /[?&]t=([0-9a-f]{64})\b/.exec(location.search);
+    if (!m) return;
+    window.__hssToken = m[1];
+    var clean = location.pathname + location.search.replace(m[0], "").replace(/^&/, "?") + location.hash;
+    history.replaceState(null, "", clean.replace(/\?$/, ""));
+  } catch (e) {}
+})();
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TLRP9CF');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLRP9CF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<header><div class="in"><a href="https://taylored.health/">Taylored Health</a><span>Health Strategy Session</span></div></header>
+<main>
+  <p class="kick">Optional</p>
+  <h1 id="hello">Send us your wearable data</h1>
+  <p>If you wear a Whoop, Oura, Garmin, Apple Watch or Ultrahuman ring, your data shows us how your sleep and recovery are really tracking. We read it alongside your questionnaire before we meet. No wearable? That's fine, there's nothing to do here.</p>
+
+  <div id="nolink" class="hide">
+    <p class="msg bad">This page needs your personal link. Open it from our email, or just reply to that email and we'll sort it out.</p>
+  </div>
+
+  <div id="tool">
+    <h2>1. Which one do you wear?</h2>
+    <div class="devices" role="group" aria-label="Your wearable">
+      <button type="button" data-d="whoop" aria-pressed="false">Whoop</button>
+      <button type="button" data-d="oura" aria-pressed="false">&#332;ura</button>
+      <button type="button" data-d="apple" aria-pressed="false">Apple Watch</button>
+      <button type="button" data-d="garmin" aria-pressed="false">Garmin</button>
+      <button type="button" data-d="ultrahuman" aria-pressed="false">Ultrahuman</button>
+    </div>
+
+    <div class="guide" id="g-whoop">
+      <h3>Export from Whoop</h3>
+      <ol>
+        <li>In the Whoop app, tap <b>More</b>. On iPhone go to <b>App Settings</b>, then <b>Data Export</b>. On Android it's <b>Data Export</b> straight from More.</li>
+        <li>Check your email address and tap <b>Create Export</b>.</li>
+        <li>Whoop emails you a download link, usually within 24 hours. Download the file and upload it below. The link stops working after 7 days.</li>
+      </ol>
+      <p class="note"><a href="https://support.whoop.com/s/article/How-to-Export-Your-Data" target="_blank" rel="noopener">Whoop's own guide</a></p>
+    </div>
+    <div class="guide" id="g-oura">
+      <h3>Export from &#332;ura</h3>
+      <ol>
+        <li>Log in to the <a href="https://membership.ouraring.com/data-export" target="_blank" rel="noopener">&#332;ura Membership Hub</a>.</li>
+        <li>Choose <b>Export data</b>, then <b>Request your data</b>.</li>
+        <li>&#332;ura emails you when it's ready. Go back to the Hub, download it and upload it below.</li>
+      </ol>
+      <p class="note">It can take a few days to arrive, so request it now. <a href="https://support.ouraring.com/hc/en-us/articles/360025441594" target="_blank" rel="noopener">&#332;ura's own guide</a></p>
+    </div>
+    <div class="guide" id="g-apple">
+      <h3>Export from Apple Health (Apple Watch)</h3>
+      <ol>
+        <li>On your iPhone, open the <b>Health</b> app.</li>
+        <li>Tap your picture or initials at the top right.</li>
+        <li>Tap <b>Export All Health Data</b>, then <b>Export</b>. Save the file (export.zip) to Files and upload it below.</li>
+      </ol>
+      <p class="note">This file is often bigger than 50MB. If it is, just reply to our email and we'll send you another way to share it. <a href="https://support.apple.com/guide/iphone/share-your-health-data-iph5ede58c3d/ios" target="_blank" rel="noopener">Apple's own guide</a></p>
+    </div>
+    <div class="guide" id="g-garmin">
+      <h3>Export from Garmin</h3>
+      <ol>
+        <li>Sign in to your Garmin account at <a href="https://www.garmin.com/" target="_blank" rel="noopener">garmin.com</a>.</li>
+        <li>Go to <b>Data Management</b>, then <b>Export Your Data</b>, and tap <b>Request Data Export</b>.</li>
+        <li>Garmin emails you a download link, usually within a couple of days. Upload the zip below.</li>
+      </ol>
+      <p class="note">If the file is bigger than 50MB, reply to our email and we'll find another way.</p>
+    </div>
+    <div class="guide" id="g-ultrahuman">
+      <h3>Ultrahuman ring</h3>
+      <p>Ultrahuman doesn't offer a direct export of ring data. On an iPhone, switch on Apple Health sync in the Ultrahuman app, then use the Apple Watch steps above. On Android, reply to our email and we'll work it out with you.</p>
+    </div>
+
+    <h2>2. Upload your file</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".csv,.zip,.json,.txt,.xlsx,.fit" aria-label="Choose your export file">
+      <b id="dlab">Choose your export file</b>
+      <small id="dsub">ZIP, CSV, JSON, TXT, XLSX or FIT, up to 50MB</small>
+    </label>
+    <button class="btn" id="send" type="button" disabled>Send my data</button>
+    <div class="prog" id="prog"><i></i></div>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+  </div>
+
+  <p class="privacy">Your file is stored privately. Only Rachel and Luke can open it, and we use it only to prepare for your session. Questions? Reply to any of our emails.</p>
+</main>
+<script>
+var API = "https://gdsdtawkigzpyseavkqp.supabase.co/functions/v1/hss-upload";
+var MAX_BYTES = 50 * 1024 * 1024;
+var token = window.__hssToken || null, device = null, picked = null;
+function $(id){ return document.getElementById(id); }
+function say(t, cls){ var m = $("msg"); m.textContent = t; m.className = "msg " + (cls || ""); }
+function post(body){
+  return fetch(API, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)})
+    .then(function(r){ return r.json().catch(function(){ return {ok:false, error:"unreadable reply"}; })
+      .then(function(j){ if (!r.ok || !j.ok) throw new Error(j.error || ("status " + r.status)); return j; }); });
+}
+function plural(n){ return n === 1 ? "1 file" : n + " files"; }
+
+if (!token){ $("tool").classList.add("hide"); $("nolink").classList.remove("hide"); }
+else {
+  post({action:"status", upload_token:token}).then(function(j){
+    if (j.name) $("hello").textContent = "Hi " + j.name + ", send us your wearable data";
+    if (j.files > 0) say("We already have " + plural(j.files) + " from you, thank you. You can add another if you like.", "ok");
+  }).catch(function(){
+    $("tool").classList.add("hide"); $("nolink").classList.remove("hide");
+  });
+}
+
+Array.prototype.forEach.call(document.querySelectorAll(".devices button"), function(b){
+  b.addEventListener("click", function(){
+    device = b.dataset.d;
+    Array.prototype.forEach.call(document.querySelectorAll(".devices button"), function(o){ o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+    Array.prototype.forEach.call(document.querySelectorAll(".guide"), function(g){ g.classList.toggle("on", g.id === "g-" + device); });
+  });
+});
+
+var drop = $("drop"), input = $("file");
+["dragenter","dragover"].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("hot"); }); });
+["dragleave","drop"].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("hot"); }); });
+drop.addEventListener("drop", function(e){
+  if (e.dataTransfer && e.dataTransfer.files.length){ input.files = e.dataTransfer.files; input.dispatchEvent(new Event("change")); }
+});
+input.addEventListener("change", function(){
+  var f = input.files[0]; picked = null; $("send").disabled = true; say("");
+  if (!f){ $("dlab").textContent = "Choose your export file"; return; }
+  if (f.size > MAX_BYTES){
+    input.value = ""; $("dlab").textContent = "Choose your export file";
+    say("That file is over 50MB. Reply to our email and we'll send you another way to share it.", "bad");
+    return;
+  }
+  picked = f; $("dlab").textContent = f.name;
+  $("dsub").textContent = (f.size / 1048576).toFixed(1) + "MB, ready to send";
+  $("send").disabled = false;
+});
+
+$("send").addEventListener("click", function(){
+  if (!picked || !token) return;
+  var bar = $("prog"); bar.classList.add("on"); bar.firstChild.style.width = "8%";
+  $("send").disabled = true; say("Sending...");
+  post({action:"upload-url", upload_token:token, filename:picked.name})
+    .then(function(j){
+      bar.firstChild.style.width = "25%";
+      return new Promise(function(res, rej){
+        var x = new XMLHttpRequest();
+        x.open("PUT", j.url, true);
+        x.setRequestHeader("Content-Type", picked.type || "application/octet-stream");
+        x.upload.onprogress = function(e){ if (e.lengthComputable) bar.firstChild.style.width = (25 + Math.round(e.loaded / e.total * 65)) + "%"; };
+        x.onload = function(){ (x.status >= 200 && x.status < 300) ? res(j.path) : rej(new Error("upload failed, status " + x.status)); };
+        x.onerror = function(){ rej(new Error("the upload dropped, check your connection and try again")); };
+        x.send(picked);
+      });
+    })
+    .then(function(path){ bar.firstChild.style.width = "95%"; return post({action:"upload-done", upload_token:token, path:path, device:device || "other"}); })
+    .then(function(j){
+      bar.firstChild.style.width = "100%";
+      say("Got it, thank you. We have " + plural(j.files) + " from you and we'll read it before your session.", "ok");
+      input.value = ""; picked = null; $("dlab").textContent = "Add another file (optional)"; $("dsub").textContent = "ZIP, CSV, JSON, TXT, XLSX or FIT, up to 50MB";
+    })
+    .catch(function(e){
+      bar.classList.remove("on"); $("send").disabled = !picked;
+      say("That didn't go through (" + e.message + "). Try again, or reply to our email and we'll help.", "bad");
+    });
+});
+</script>
+</body>
+</html>
